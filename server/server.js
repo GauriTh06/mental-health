@@ -64,12 +64,21 @@ app.post('/api/auth/register', async (req, res) => {
         if (!email || !password) return res.status(400).json({ error: "Email and password required" });
 
         const hashedPassword = await bcrypt.hash(password, 10);
-        const query = `INSERT INTO users (name, email, password, age, gender, occupation) VALUES (?, ?, ?, ?, ?, ?)`;
+        // Check compatibility
+        const isPostgres = !!process.env.DATABASE_URL;
+        let query = `INSERT INTO users (name, email, password, age, gender, occupation) VALUES (?, ?, ?, ?, ?, ?)`;
+        if (isPostgres) query += ` RETURNING id`;
+
         db.run(query, [name, email, hashedPassword, age, gender, occupation], function (err) {
             if (err) {
-                if (err.message.includes('UNIQUE constraint failed')) return res.status(400).json({ error: 'Email already exists' });
+                // Determine constraint violation message based on DB type
+                const msg = err.message || "";
+                if (msg.includes('UNIQUE constraint failed') || msg.includes('duplicate key')) {
+                    return res.status(400).json({ error: 'Email already exists' });
+                }
                 return res.status(500).json({ error: err.message });
             }
+            // For Postgres, our adapter puts the returned ID in 'this.lastID' via callback.call() logic
             res.status(201).json({ message: 'User registered successfully', userId: this.lastID });
         });
     } catch (error) {
@@ -123,7 +132,10 @@ app.post('/api/assessment', authenticateToken, (req, res) => {
         // Use the robust analysis engine
         const analysis = generateAnalysis(round1_score, round2_score, answers);
 
-        const query = `INSERT INTO assessments (user_id, round1_score, round2_score, answers, analysis) VALUES (?, ?, ?, ?, ?)`;
+        const isPostgres = !!process.env.DATABASE_URL;
+        let query = `INSERT INTO assessments (user_id, round1_score, round2_score, answers, analysis) VALUES (?, ?, ?, ?, ?)`;
+        if (isPostgres) query += ` RETURNING id`;
+
         db.run(query, [userId, round1_score, round2_score, JSON.stringify(answers), analysis], function (err) {
             if (err) return res.status(500).json({ error: err.message });
             res.json({ message: 'Assessment saved', id: this.lastID, analysis });
