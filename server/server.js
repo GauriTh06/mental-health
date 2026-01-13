@@ -124,6 +124,61 @@ app.put('/api/auth/profile', authenticateToken, (req, res) => {
 });
 
 // --- API ROUTES ---
+// Init Endpoint
+app.get('/api/init', async (req, res) => {
+    try {
+        const isPostgres = !!process.env.DATABASE_URL;
+        if (!isPostgres) return res.json({ message: "Running in SQLite mode (tables auto-created)" });
+
+        const queries = [
+            `CREATE TABLE IF NOT EXISTS users (
+                id SERIAL PRIMARY KEY,
+                name TEXT NOT NULL,
+                email TEXT UNIQUE NOT NULL,
+                password TEXT NOT NULL,
+                age INTEGER,
+                gender TEXT,
+                occupation TEXT,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            );`,
+            `CREATE TABLE IF NOT EXISTS assessments (
+                id SERIAL PRIMARY KEY,
+                user_id INTEGER NOT NULL REFERENCES users(id),
+                round1_score INTEGER,
+                round2_score INTEGER,
+                answers TEXT,
+                analysis TEXT,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            );`,
+            `CREATE TABLE IF NOT EXISTS messages (
+                id SERIAL PRIMARY KEY,
+                user_id INTEGER NOT NULL REFERENCES users(id),
+                content TEXT NOT NULL,
+                sender TEXT NOT NULL,
+                context TEXT,
+                timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            );`
+        ];
+
+        // Helper for sequential execution
+        const runQuery = (q) => new Promise((resolve, reject) => {
+            db.run(q, [], (err) => {
+                if (err) reject(err);
+                else resolve();
+            });
+        });
+
+        for (const q of queries) {
+            await runQuery(q);
+        }
+        res.json({ message: "Tables initialized successfully" });
+
+    } catch (e) {
+        res.status(500).json({ error: e.message });
+    }
+});
+
+// --- API ROUTES ---
 app.post('/api/assessment', authenticateToken, (req, res) => {
     try {
         const { round1_score, round2_score, answers } = req.body;
