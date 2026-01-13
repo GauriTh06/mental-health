@@ -11,6 +11,8 @@ if (isPostgres) {
         ssl: { rejectUnauthorized: false }
     });
     console.log("Connected to PostgreSQL (Neon/Cloud)");
+} else if (process.env.NODE_ENV === 'production') {
+    throw new Error("CRITICAL ERROR: DATABASE_URL is missing in production. Cannot use SQLite.");
 } else {
     const dbPath = path.resolve(__dirname, 'database.sqlite');
     db = new sqlite3.Database(dbPath, (err) => {

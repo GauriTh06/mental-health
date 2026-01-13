@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const api = axios.create({
-    baseURL: 'http://localhost:5000/api', // Server URL
+    baseURL: '/api', // Relative path for Vercel/Proxy
 });
 
 // Add a request interceptor to include the token
