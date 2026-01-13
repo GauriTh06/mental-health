@@ -1,0 +1,12 @@
+{
+    "name": "mental-health-app",
+    "version": "1.0.0",
+    "private": true,
+    "scripts": {
+        "install": "cd client && npm install && cd ../server && npm install",
+        "build": "cd client && npm install && npm run build"
+    },
+    "engines": {
+        "node": "18.x"
+    }
+}
