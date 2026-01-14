@@ -325,6 +325,16 @@ app.post('/api/chat', authenticateToken, (req, res) => {
         botResponse = "Physical Activity: Just 20 minutes of brisk walking can release endorphins that boost mood for hours. You don't need intense workouts; consistency is key.";
     } else if (lowerMsg.includes('diet') || lowerMsg.includes('nutrition')) {
         botResponse = "Nutrition for Mind: Focus on 'Brain Foods' like Omega-3s (walnuts, salmon), leafy greens, and complex carbs. Avoid sugar spikes which can lead to energy and mood crashes.";
+    } else if (lowerMsg.includes('mindfulness')) {
+        botResponse = "Mindfulness: Try a 'Sense Scan'. Spend 1 minute just noticing your breath, the feeling of your feet on the floor, and the weight of your body. It grounds your nervous system instantly.";
+    } else if (lowerMsg.includes('grief')) {
+        botResponse = "Coping with Grief: Be patient with yourself. Grief isn't linear. Allow yourself to feel the emotions without judgment. Talking to a professional or a support group can help process the loss.";
+    } else if (lowerMsg.includes('self-esteem')) {
+        botResponse = "Self-Esteem: Practice 'Positive Self-Talk'. Replace 'I am a failure' with 'I am learning and doing my best.' Keep a 'Win Journal' where you write one small success every day.";
+    } else if (lowerMsg.includes('anger')) {
+        botResponse = "Anger Management: Try the 'Cool Down' rule. Before reacting, take 10 deep breaths or walk away for 5 minutes. Identify the underlying emotion (often it's hurt or fear).";
+    } else if (lowerMsg.includes('social media')) {
+        botResponse = "Social Media Impact: Limit your screen time and unfollow accounts that make you feel 'less than'. Remember that social media is a highlight reel, not real life.";
     } else if (lowerMsg.includes('thanks') || lowerMsg.includes('thank you')) {
         botResponse = "You're very welcome! I'm here for you 24/7 if you need to talk or find solutions.";
     }

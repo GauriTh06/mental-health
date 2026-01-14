@@ -17,21 +17,26 @@ const Chat = () => {
     useEffect(scrollToBottom, [messages, loading]);
 
     const predefinedQuestions = [
-        "How can I manage stress?",
-        "I feel very anxious lately",
+        "How can I manage daily stress?",
+        "I'm feeling very anxious today",
         "Explain my assessment results",
-        "Suggest breathing exercises",
-        "How do I improve my sleep?",
-        "Tips for better focus",
-        "How to handle loneliness?",
-        "Managing work-life balance",
-        "Self-care for depression",
-        "Dealing with panic attacks",
-        "Journaling for mental health",
-        "Improving social confidence",
-        "Dealing with negative thoughts",
-        "Physical activity & mood",
-        "Healthy diet for mind"
+        "Suggest deep breathing exercises",
+        "How do I improve my sleep quality?",
+        "Quick tips for better focus",
+        "How to handle deep loneliness?",
+        "Improve my work-life balance",
+        "Self-care tips for depression",
+        "How to stop a panic attack?",
+        "Benefits of mental health journaling",
+        "Building social confidence",
+        "Stop negative overthinking",
+        "Does exercise help my mood?",
+        "The best diet for mental health",
+        "How to practice mindfulness?",
+        "Coping with sudden grief",
+        "Ways to build self-esteem",
+        "Healthy ways to manage anger",
+        "Social media & mental health"
     ];
 
     const sendMessage = async (e, customMsg = null) => {
