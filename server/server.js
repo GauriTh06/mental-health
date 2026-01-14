@@ -35,8 +35,6 @@ const generateAnalysis = (r1, r2, answers) => {
             'Not at all': 0, 'Several days': 1, 'More than half the days': 2, 'Nearly every day': 3,
             'Rarely': 0, 'Sometimes': 1, 'Often': 2, 'Always': 3,
             'No': 0, 'Yes, gained': 1, 'Yes, lost': 1,
-            'Yes, definitely': 0, 'Somewhat': 2, 'No, not really': 3, // Inverted for "Healthy" answers (e.g., 'Yes, definitely' support is low distress, so 0)
-            'Daily': 0, '3-4 times/week': 1, '1-2 times/week': 2, // Inverted for exercise (Daily exercise is low distress, so 0)
             'Yes, definitely': 0, 'Somewhat': 2, 'No, not really': 3,
             'Daily': 0, '3-4 times/week': 1, '1-2 times/week': 2,
             'Never': 0, 'Occasionally': 1, 'Frequently': 2, 'Regularly': 0,
@@ -52,38 +50,37 @@ const generateAnalysis = (r1, r2, answers) => {
         }
     };
 
-    // Calculate Category Distress (Total 15 Round 2 + Round 1 components)
+    // New Category Distribution based on 7 new R2 questions + R1 metrics
 
-    // Depression Distress (4 items)
+    // Depression (4 items)
     let depSum = 0;
-    depSum += mapDistress(a1.q1, 3, true); // Mood
-    depSum += mapDistress(a1.q3, 3, true); // Interest
-    depSum += mapDistress(a2.q14, 3, true); // Hopelessness
-    depSum += (a1.q7 === 'Normal' ? 0 : 50); // Appetite
+    depSum += mapDistress(a1.q1, 3, true); // Mood (R1)
+    depSum += mapDistress(a1.q3, 3, true); // Interest (R1)
+    depSum += mapDistress(a2.q4, 3, true); // Hopelessness (R2)
+    depSum += mapDistress(a2.q6, 3, true); // Self-harm (R2)
     const depressionScore = Math.round(depSum / 4);
 
-    // Anxiety Distress (4 items)
+    // Anxiety (3 items)
     let anxSum = 0;
-    anxSum += mapDistress(a2.q1, 3, true); // Nervous
-    anxSum += mapDistress(a2.q2, 3, true); // Worry
-    anxSum += mapDistress(a2.q13, 3, true); // Physical symptoms
-    anxSum += mapDistress(a2.q9, 3, true); // Avoidance
-    const anxietyScore = Math.round(anxSum / 4);
+    anxSum += mapDistress(a2.q3, 3, true); // Physical symptoms (R2)
+    anxSum += mapDistress(a1.q8, 3, true); // Fatigue (R1)
+    anxSum += (a1.q7 === 'Normal' ? 0 : 50); // Appetite (R1)
+    const anxietyScore = Math.round(anxSum / 3);
 
-    // Stress Distress (4 items)
+    // Stress (2 items)
     let strSum = 0;
-    strSum += mapDistress(a1.q6, 3, true); // Overwhelm
-    strSum += mapDistress(a2.q3, 5, true); // Relaxing problem
-    strSum += mapDistress(a2.q11, 3, true); // Deadline pressure
-    strSum += mapDistress(a2.q7, 3, true); // Racing thoughts
-    const stressScore = Math.round(strSum / 4);
+    strSum += mapDistress(a1.q6, 3, true); // Overwhelm (R1)
+    strSum += mapDistress(a2.q1, 3, true); // Deadline pressure (R2)
+    const stressScore = Math.round(strSum / 2);
 
-    // Wellness Risk (3 items)
+    // Wellness Risk (5 items)
     let welRiskSum = 0;
-    welRiskSum += mapDistress(a2.q10, 3, false); // Confidence
-    welRiskSum += mapDistress(a2.q12, 5, false); // Meal regularity
-    welRiskSum += mapDistress(a2.q15, 3, true); // Social isolation
-    const wellnessRiskScore = Math.round((welRiskSum) / 3);
+    welRiskSum += mapDistress(a2.q2, 5, false); // Meals (R2)
+    welRiskSum += mapDistress(a2.q5, 3, true); // Social isolation (R2)
+    welRiskSum += mapDistress(a2.q7, 3, false); // Mindfulness (R2)
+    welRiskSum += mapDistress(a1.q5, 3, false); // Support (R1)
+    welRiskSum += mapDistress(a1.q9, 3, false); // Exercise (R1)
+    const wellnessRiskScore = Math.round((welRiskSum) / 5);
 
     const totalDistress = Math.round((depressionScore + anxietyScore + stressScore + wellnessRiskScore) / 4);
 
@@ -91,27 +88,25 @@ const generateAnalysis = (r1, r2, answers) => {
     let summary = "";
     let recommendations = [];
 
-    if (totalDistress > 80) {
-        summary = "CRITICAL: Your results indicate a high level of psychological distress.";
-        recommendations.push("PRO ACTION: We strongly recommend scheduling a clinical consultation immediately.");
-        recommendations.push("Our records show you are in a high-risk category. Please visit our 'Consult Doctors' section to connect with a specialist.");
+    if (a2.q6 && a2.q6 !== 'Never') {
+        summary = "URGENT SAFETY ALERT: Markers for immediate intervention detected.";
+        recommendations.push("PRO ACTION: Please contact a crisis support specialist immediately. You are not alone.");
+    } else if (totalDistress > 80) {
+        summary = "CRITICAL: High psychological distress level detected.";
+        recommendations.push("URGENT: Schedule a clinical consultation this week.");
     } else if (totalDistress > 50) {
-        summary = "MODERATE: You are showing signs of significant mental strain.";
-        recommendations.push("Consider speaking with a counselor to prevent burnout.");
-        recommendations.push("Focus on immediate stress-reduction techniques and maintaining a healthy physical routine.");
+        summary = "MODERATE: Significant mental strain detected.";
+        recommendations.push("Consider professional counseling and strict focus on self-care.");
     } else {
-        summary = "NORMAL: Your mental wellness appears stable.";
-        recommendations.push("Continue practicing your healthy habits. You are maintaining a good balance.");
+        summary = "NORMAL: Mental wellness appears stable.";
+        recommendations.push("Maintain your positive habits and routine.");
     }
 
     const details = [];
-    if (a2.q14 && a2.q14 !== 'Not at all') details.push("Hopelessness Detected: Feeling unsure about the future is a key marker for low mood. Small, daily accomplishments can provide a sense of progress.");
-    if (a2.q13 && a2.q13 !== 'Never') details.push("Physical Response: Sweating or rapid heartbeat indicates physiological anxiety. Diaphragmatic breathing can help calm these symptoms.");
-    if (a2.q11 === 'Severe') details.push("High Workplace Pressure: Extreme deadline stress detected. Prioritizing rest and time boundaries is critical right now.");
-
-    if (details.length === 0 && totalDistress < 30) {
-        details.push("No immediate triggers found. Your current lifestyle habits are supporting your mental health effectively.");
-    }
+    if (a2.q4 && a2.q4 !== 'Not at all') details.push("Anhedonia/Hopelessness: You mentioned feeling unsure about the future. This is a critical marker for low mood.");
+    if (a2.q3 && a2.q3 !== 'Never') details.push("Physiological Anxiety: Rapid heartbeat or sweating suggests high autonomic arousal.");
+    if (a2.q1 === 'Severe') details.push("High Workplace Distress: Severe pressure from deadlines is significantly affecting your mental balance.");
+    if (a2.q7 === 'Never') details.push("Coping Deficit: You mentioned not using relaxation techniques. Learning mindfulness could improve your resilience.");
 
     return JSON.stringify({
         summary,

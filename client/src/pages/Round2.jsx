@@ -4,21 +4,13 @@ import api from '../services/api';
 import DashboardLayout from '../components/DashboardLayout';
 
 const questions = [
-    { id: 'q1', text: 'How often do you feel nervous, anxious, or on edge?', type: 'select', options: ['Not at all', 'Several days', 'More than half the days', 'Nearly every day'] },
-    { id: 'q2', text: 'Are you able to stop or control worrying?', type: 'select', options: ['Yes, mostly', 'Sometimes', 'Rarely', 'No'] },
-    { id: 'q3', text: 'Do you have trouble relaxing?', type: 'scale' },
-    { id: 'q4', text: 'How often do you get easily annoyed or irritable?', type: 'select', options: ['Not at all', 'Several days', 'More than half the days', 'Nearly every day'] },
-    { id: 'q5', text: 'Do you feel afraid as if something awful might happen?', type: 'scale' },
-    { id: 'q6', text: 'How much does your physical health affect your mental well-being?', type: 'scale' },
-    { id: 'q7', text: 'Do you struggle with racing thoughts, especially at night?', type: 'select', options: ['Rarely', 'Sometimes', 'Often', 'Always'] },
-    { id: 'q8', text: 'Have you noticed changes in your weight without trying?', type: 'select', options: ['No', 'Yes, gained', 'Yes, lost'] },
-    { id: 'q9', text: 'Do you avoid social situations due to anxiety?', type: 'select', options: ['Never', 'Occasionally', 'Frequently', 'Always'] },
-    { id: 'q10', text: 'How confident do you feel in your ability to handle personal problems?', type: 'scale' },
-    { id: 'q11', text: 'Do you feel pressure to meet deadlines?', type: 'select', options: ['Not at all', 'Mild', 'Moderate', 'Severe'] },
-    { id: 'q12', text: 'How regular are your meals?', type: 'scale', labels: { 1: 'Very Irregular (Skip meals)', 2: 'Somewhat Irregular', 3: 'Average / Neutral', 4: 'Mostly Regular', 5: 'Very Regular (Fixed times)' } },
-    { id: 'q13', text: 'Do you get physical symptoms like sweating, rapid heartbeat, or trembling?', type: 'select', options: ['Never', 'Sometimes', 'Often'] },
-    { id: 'q14', text: 'Do you feel hopeless about the future?', type: 'select', options: ['Not at all', 'Sometimes', 'Often'] },
-    { id: 'q15', text: 'Do you feel socially isolated?', type: 'select', options: ['Never', 'Sometimes', 'Often'] },
+    { id: 'q1', text: 'Do you feel pressure to meet deadlines?', type: 'select', options: ['Not at all', 'Mild', 'Moderate', 'Severe'] },
+    { id: 'q2', text: 'How regular are your meals?', type: 'scale', labels: { 1: 'Very irregular', 2: 'Somewhat irregular', 3: 'Average', 4: 'Mostly regular', 5: 'Very regular' } },
+    { id: 'q3', text: 'Do you get physical symptoms like sweating, rapid heartbeat, or trembling?', type: 'select', options: ['Never', 'Sometimes', 'Often'] },
+    { id: 'q4', text: 'Do you feel hopeless about the future?', type: 'select', options: ['Not at all', 'Sometimes', 'Often'] },
+    { id: 'q5', text: 'Do you feel socially isolated?', type: 'select', options: ['Never', 'Sometimes', 'Often'] },
+    { id: 'q6', text: 'Have you had thoughts of harming yourself?', type: 'select', options: ['Never', 'Rarely', 'Sometimes', 'Often'] },
+    { id: 'q7', text: 'Do you practice mindfulness or relaxation techniques?', type: 'select', options: ['Never', 'Occasionally', 'Regularly'] },
 ];
 
 const Round2 = () => {
@@ -37,24 +29,16 @@ const Round2 = () => {
         let round2Score = 0;
 
         const optionScores = {
-            'Not at all': 5, 'Several days': 3, 'More than half the days': 2, 'Nearly every day': 1,
-            'Yes, mostly': 5, 'Sometimes': 3, 'Rarely': 2, 'No': 1,
-            'Rarely': 5, 'Often': 2, 'Always': 1,
-            'No': 5, 'Yes, gained': 2, 'Yes, lost': 2,
-            'Never': 5, 'Occasionally': 3, 'Frequently': 2,
-            'Mild': 4, 'Moderate': 2, 'Severe': 1
+            'Not at all': 5, 'Mild': 4, 'Moderate': 2, 'Severe': 1,
+            'Never': 5, 'Sometimes': 3, 'Often': 1,
+            'Rarely': 4, 'Regularly': 5,
+            'Occasionally': 3
         };
 
         Object.entries(answers).forEach(([key, value]) => {
             if (!value) return;
             if (!isNaN(value)) {
-                let val = parseInt(value);
-                const inverted = ['q3', 'q5', 'q6'];
-                if (inverted.includes(key)) {
-                    round2Score += (6 - val);
-                } else {
-                    round2Score += val;
-                }
+                round2Score += parseInt(value);
             } else if (optionScores[value]) {
                 round2Score += optionScores[value];
             } else {
