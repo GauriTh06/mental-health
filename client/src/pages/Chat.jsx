@@ -16,13 +16,32 @@ const Chat = () => {
 
     useEffect(scrollToBottom, [messages, loading]);
 
-    const sendMessage = async (e) => {
-        e.preventDefault();
-        if (!input.trim()) return;
+    const predefinedQuestions = [
+        "How can I manage stress?",
+        "I feel very anxious lately",
+        "Explain my assessment results",
+        "Suggest breathing exercises",
+        "How do I improve my sleep?",
+        "Tips for better focus",
+        "How to handle loneliness?",
+        "Managing work-life balance",
+        "Self-care for depression",
+        "Dealing with panic attacks",
+        "Journaling for mental health",
+        "Improving social confidence",
+        "Dealing with negative thoughts",
+        "Physical activity & mood",
+        "Healthy diet for mind"
+    ];
 
-        const userMsg = { sender: 'user', content: input };
+    const sendMessage = async (e, customMsg = null) => {
+        if (e) e.preventDefault();
+        const messageText = customMsg || input;
+        if (!messageText.trim()) return;
+
+        const userMsg = { sender: 'user', content: messageText };
         setMessages((prev) => [...prev, userMsg]);
-        setInput('');
+        if (!customMsg) setInput('');
         setLoading(true);
 
         try {
@@ -62,8 +81,8 @@ const Chat = () => {
                                 </div>
                             )}
                             <div className={`max-w-[75%] px-6 py-4 rounded-3xl text-sm leading-relaxed shadow-sm ${msg.sender === 'user'
-                                    ? 'bg-brand-primary text-white rounded-br-none'
-                                    : 'bg-white text-gray-700 border border-gray-100 rounded-bl-none'
+                                ? 'bg-brand-primary text-white rounded-br-none'
+                                : 'bg-white text-gray-700 border border-gray-100 rounded-bl-none'
                                 }`}>
                                 {msg.content}
                             </div>
@@ -86,9 +105,21 @@ const Chat = () => {
                     <div ref={messagesEndRef} />
                 </div>
 
-                {/* Input */}
+                {/* Predefined Questions & Input */}
                 <div className="bg-white p-4 border-t border-gray-100">
-                    <form onSubmit={sendMessage} className="relative">
+                    <div className="flex flex-wrap gap-2 mb-4">
+                        {predefinedQuestions.map((q, i) => (
+                            <button
+                                key={i}
+                                onClick={() => sendMessage(null, q)}
+                                disabled={loading}
+                                className="bg-brand-sidebar text-brand-primary text-xs font-bold px-4 py-2 rounded-full border border-brand-primary/10 hover:bg-brand-primary hover:text-white transition-all disabled:opacity-50"
+                            >
+                                {q}
+                            </button>
+                        ))}
+                    </div>
+                    <form onSubmit={(e) => sendMessage(e)} className="relative">
                         <input
                             type="text"
                             value={input}
