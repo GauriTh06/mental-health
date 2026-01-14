@@ -26,35 +26,108 @@ const authenticateToken = (req, res, next) => {
 
 // Mock AI Logic Engine
 const generateAnalysis = (r1, r2, answers) => {
-    let report = [];
-    const total = r1 + r2;
+    // Parse answers if they are strings (just in case)
+    const a1 = answers.round1 || {};
+    const a2 = answers.round2 || {};
 
-    // 1. Overall Status
-    if (total < 40) report.push("Your overall mental wellness appears strong. You seem to have effective coping mechanisms in place.");
-    else if (total < 80) report.push("You are showing signs of moderate strain. While you are managing, there are areas of your life that may need attention to prevent further stress.");
-    else report.push("Your results indicate high levels of distress. It is important to treat this seriously and consider seeking professional support.");
+    // Calculate sub-scores (Max 25 per category for simple normalization to 100 total)
+    // Depression Indicators: R1.Q1(Mood), R1.Q3(Interest), R1.Q7(Appetite), R1.Q8(Fatigue)
+    // Anxiety Indicators: R2.Q1(Nervous), R2.Q2(Worry), R2.Q5(Fear), R2.Q9(Avoidance)
+    // Stress Indicators: R1.Q6(Overwhelm), R2.Q3(Relaxing), R2.Q4(Irritable), R2.Q7(Racing Thoughts)
+    // Wellness/Resilience: R1.Q2(Sleep), R1.Q5(Support), R1.Q9(Exercise), R2.Q10(Confidence)
 
-    // 2. Specific Factor Analysis (Logic assuming specific question keys exist)
-    // Round 1 Mock Keys: q2=Sleep, q3=Focus
-    const sleepScore = parseInt(answers.round1?.q2 || 0); // Assuming Q2 is sleep (0-5 scale)
-    if (sleepScore < 6 && sleepScore > 0) {
-        report.push("Sleep Deprivation: Your reported sleep duration is below recommended levels. This is a critical factor often amplifying stress and anxiety.");
-    }
+    const mapVal = (val, max = 5, inverse = false) => {
+        let v = parseInt(val) || 0;
+        // Text to val mappings for select inputs
+        const textMap = {
+            'Not at all': 0, 'Several days': 1, 'More than half the days': 2, 'Nearly every day': 3, // PHQ-style 0-3
+            'Rarely': 0, 'Sometimes': 1, 'Often': 2, 'Always': 3, // General freq
+            'No': 0, 'Yes, gained': 2, 'Yes, lost': 2,
+            'Yes, definitely': 4, 'Somewhat': 2, 'No, not really': 0,
+            'Daily': 4, '3-4 times/week': 3, '1-2 times/week': 1,
+            'Never': 0, 'Occasionally': 1, 'Frequently': 2
+        };
 
-    // Round 2 Mock Keys: q1=AnxietyFreq, q5=Social
-    const anxietyFreq = answers.round2?.q1;
-    if (anxietyFreq === 'Often' || anxietyFreq === 'Always') {
-        report.push("Anxiety Patterns: You reported frequent feelings of anxiety. This suggests a need for grounding techniques or Cognitive Behavioral Therapy (CBT) exercises.");
-    }
+        if (typeof val === 'string' && textMap[val] !== undefined) v = textMap[val];
 
-    // 3. Recommendation
-    if (total > 80) {
-        report.push("Recommendation: We strongly advise speaking with a healthcare provider. In the meantime, focus on the 'Immediate Calm' exercises in our chatbot.");
-    } else {
-        report.push("Recommendation: Try to incorporate 15 minutes of 'me-time' daily. Our AI assistant can guide you through simple breathing exercises.");
-    }
+        // Normalize to 0-1 range
+        // For 1-5 scales: (v-1)/4
+        // For 0-3 scales: v/3
+        // Simplified: assume 0-5 roughly
 
-    return report.join("\n\n");
+        if (inverse) return Math.max(0, 100 - (v * 20)); // High val = Low Score
+        return Math.min(100, v * 20); // High val = High Score
+    };
+
+    // Calculate Category Scores (0-100, where 100 is HEALTHY)
+    // Note: Inputs are mix of strings/numbers. 
+
+    // Depression (Low score = Depressed)
+    let depSum = 0;
+    depSum += mapVal(a1.q1, 5, true); // Mood (Inv)
+    depSum += mapVal(a1.q3, 5, true); // Interest (Inv)
+    // Q7 Appetite: 'Normal' is good. Others bad.
+    depSum += (a1.q7 === 'Normal' ? 100 : 50);
+    // Q8 Fatigue: 'Rarely' is good.
+    depSum += mapVal(a1.q8, 3, true);
+    const depressionScore = Math.round(depSum / 4);
+
+    // Anxiety (Low score = Anxious)
+    let anxSum = 0;
+    anxSum += mapVal(a2.q1, 3, true); // Nervous
+    anxSum += mapVal(a2.q2, 3, true); // Control Worry
+    anxSum += mapVal(a2.q5, 5, true); // Fear
+    anxSum += mapVal(a2.q9, 3, true); // Avoidance
+    const anxietyScore = Math.round(anxSum / 4);
+
+    // Stress (Low score = Stressed)
+    let strSum = 0;
+    strSum += mapVal(a1.q6, 5, true); // Overwhelm
+    strSum += mapVal(a2.q3, 5, true); // Relaxing problem
+    strSum += mapVal(a2.q4, 3, true); // Irritable
+    strSum += mapVal(a2.q7, 3, true); // Racing thoughts
+    const stressScore = Math.round(strSum / 4);
+
+    // Wellness (High score = Good)
+    let welSum = 0;
+    // Sleep: 7-9 is 100, others lower
+    let sleepVal = parseInt(a1.q2) || 0;
+    if (sleepVal >= 7 && sleepVal <= 9) welSum += 100;
+    else if (sleepVal >= 5 && sleepVal <= 10) welSum += 70;
+    else welSum += 40;
+
+    welSum += mapVal(a1.q5, 2, false); // Support
+    welSum += mapVal(a1.q9, 3, false); // Exercise
+    welSum += mapVal(a2.q10, 5, false); // Confidence
+    const wellnessScore = Math.round(welSum / 4);
+
+    const totalScore = Math.round((depressionScore + anxietyScore + stressScore + wellnessScore) / 4);
+
+    // Generate Report Text
+    let summary = "";
+    if (totalScore > 80) summary = "You are thriving! Your mental resilience is high.";
+    else if (totalScore > 50) summary = "You are doing okay, but there are some areas causing strain.";
+    else summary = "You seem to be going through a tough time. It's important to prioritize self-care right now.";
+
+    const details = [];
+    if (depressionScore < 60) details.push("Mood: You've indicated signs of low mood or lack of interest. Connecting with loved ones or engaging in small hobbies can help.");
+    if (anxietyScore < 60) details.push("Anxiety: Frequent nervousness was noted. Grounding techniques like 5-4-3-2-1 can be very effective.");
+    if (stressScore < 60) details.push("Stress: You seem overwhelmed. Try to break tasks into smaller steps and take short breaks.");
+    if (wellnessScore < 50) details.push("Lifestyle: Sleep and exercise are foundational. Improving these slightly can have a huge impact on your mood.");
+
+    if (details.length === 0) details.push("Keep up the great work maintaining your mental hygiene!");
+
+    return JSON.stringify({
+        summary,
+        details,
+        metrics: {
+            depression: depressionScore,
+            anxiety: anxietyScore,
+            stress: stressScore,
+            wellness: wellnessScore,
+            total: totalScore
+        }
+    });
 };
 
 // --- AUTH ROUTES ---

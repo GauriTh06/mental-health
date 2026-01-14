@@ -30,7 +30,38 @@ const Round2 = () => {
         // Final Submission
         const round1Data = JSON.parse(localStorage.getItem('round1') || '{}');
         const round1Score = round1Data.score || 0;
-        const round2Score = Object.values(answers).length * 4; // Mock scoring
+        let round2Score = 0;
+        const optionScores = {
+            'Not at all': 5, 'Several days': 3, 'More than half the days': 2, 'Nearly every day': 1,
+            'Yes, mostly': 5, 'Sometimes': 3, 'Rarely': 2, 'No': 1,
+            'Rarely': 5, 'Often': 2, 'Always': 1,
+            'No': 5, 'Yes, gained': 2, 'Yes, lost': 2,
+            'Never': 5, 'Occasionally': 3, 'Frequently': 2
+        };
+
+        Object.entries(answers).forEach(([key, value]) => {
+            if (!value) return;
+            if (!isNaN(value)) {
+                let val = parseInt(value);
+                // Questions:
+                // q3 (Trouble relaxing): 1(Not at all)=Good, 5(Extreme)=Bad -> Invert
+                // q5 (Afraid): 1(Not at all)=Good, 5(Extreme)=Bad -> Invert
+                // q6 (Physical affect): 1(Not at all)=Good, 5(A lot)=Bad -> Invert
+                // q10 (Confident): 1(Not at all)=Bad, 5(Very)=Good -> Keep
+
+                const inverted = ['q3', 'q5', 'q6'];
+                if (inverted.includes(key)) {
+                    round2Score += (6 - val);
+                } else {
+                    round2Score += val;
+                }
+            } else if (optionScores[value]) {
+                round2Score += optionScores[value];
+            } else {
+                // Fallback for unmapped options
+                round2Score += 3;
+            }
+        });
 
         const payload = {
             round1_score: round1Score,

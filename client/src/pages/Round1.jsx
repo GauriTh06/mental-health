@@ -36,8 +36,51 @@ const Round1 = () => {
     };
 
     const calculateScore = (ans) => {
-        // Simple mock score calculation
-        return Object.values(ans).filter(v => typeof v === 'number').reduce((a, b) => a + Number(b), 0);
+        let score = 0;
+        // Mapping for specific select questions
+        const optionScores = {
+            'Yes, definitely': 5, 'Somewhat': 3, 'No, not really': 1,
+            'Normal': 5, 'Poor': 2, 'Overeating': 2,
+            'Rarely': 1, 'Sometimes': 2, 'Often': 3, 'Constantly': 4,
+            'Daily': 5, '3-4 times/week': 4, '1-2 times/week': 3
+        };
+
+        Object.entries(ans).forEach(([key, value]) => {
+            if (!value) return;
+
+            // Handle numeric/scale inputs (which might be strings)
+            if (!isNaN(value)) {
+                let val = parseInt(value);
+                // Invert logic for negative questions if needed? 
+                // For now, assuming 1=Low/Bad, 5=High/Good? 
+                // Wait, typically 1=Never(Good for depression), 5=Always(Bad for depression)
+                // Let's standardise: Higher score = Better Mental Health
+
+                // Q1 (Depressed): 1(Never)=Good, 5(Always)=Bad -> Invert
+                // Q2 (Sleep): Number. 7-9 is good. >9 or <6 bad. 
+                // Q3 (Interest): 1(Never)=Good, 5(Always)=Bad -> Invert
+                // Q4 (Focus): 1(Bad) to 5(Good)? Scale usually 1=Poor, 5=Great -> Keep
+                // Q6 (Overwhelmed): 1(Never)=Good, 5(Always)=Bad -> Invert
+                // Q10 (Overall): 1(Poor) to 5(Great) -> Keep
+
+                const inverted = ['q1', 'q3', 'q6'];
+
+                if (key === 'q2') {
+                    // Sleep logic: 7-9 = 5pts, 6 or 10 = 3pts, <6 or >10 = 1pt
+                    if (val >= 7 && val <= 9) score += 5;
+                    else if (val === 6 || val === 10) score += 3;
+                    else score += 1;
+                } else if (inverted.includes(key)) {
+                    score += (6 - val); // 1->5, 5->1
+                } else {
+                    score += val;
+                }
+            } else if (optionScores[value]) {
+                score += optionScores[value];
+            }
+        });
+
+        return score;
     };
 
     const q = questions[currentStep];
