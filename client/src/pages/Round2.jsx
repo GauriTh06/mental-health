@@ -15,12 +15,10 @@ const questions = [
     { id: 'q9', text: 'Do you avoid social situations due to anxiety?', type: 'select', options: ['Never', 'Occasionally', 'Frequently', 'Always'] },
     { id: 'q10', text: 'How confident do you feel in your ability to handle personal problems?', type: 'scale' },
     { id: 'q11', text: 'Do you feel pressure to meet deadlines?', type: 'select', options: ['Not at all', 'Mild', 'Moderate', 'Severe'] },
-    { id: 'q12', text: 'How regular are your meals?', type: 'scale' },
+    { id: 'q12', text: 'How regular are your meals?', type: 'scale', labels: { 1: 'Very Irregular (Skip meals)', 2: 'Somewhat Irregular', 3: 'Average / Neutral', 4: 'Mostly Regular', 5: 'Very Regular (Fixed times)' } },
     { id: 'q13', text: 'Do you get physical symptoms like sweating, rapid heartbeat, or trembling?', type: 'select', options: ['Never', 'Sometimes', 'Often'] },
     { id: 'q14', text: 'Do you feel hopeless about the future?', type: 'select', options: ['Not at all', 'Sometimes', 'Often'] },
     { id: 'q15', text: 'Do you feel socially isolated?', type: 'select', options: ['Never', 'Sometimes', 'Often'] },
-    { id: 'q16', text: 'Have you had thoughts of harming yourself?', type: 'select', options: ['Never', 'Rarely', 'Sometimes', 'Often'] },
-    { id: 'q17', text: 'Do you practice mindfulness or relaxation techniques?', type: 'select', options: ['Never', 'Occasionally', 'Regularly'] },
 ];
 
 const Round2 = () => {
@@ -34,31 +32,23 @@ const Round2 = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        // Final Submission
         const round1Data = JSON.parse(localStorage.getItem('round1') || '{}');
         const round1Score = round1Data.score || 0;
         let round2Score = 0;
+
         const optionScores = {
             'Not at all': 5, 'Several days': 3, 'More than half the days': 2, 'Nearly every day': 1,
             'Yes, mostly': 5, 'Sometimes': 3, 'Rarely': 2, 'No': 1,
             'Rarely': 5, 'Often': 2, 'Always': 1,
             'No': 5, 'Yes, gained': 2, 'Yes, lost': 2,
             'Never': 5, 'Occasionally': 3, 'Frequently': 2,
-            'Mild': 4, 'Moderate': 2, 'Severe': 1,
-            'Regularly': 5, 'Rarely': 2,
+            'Mild': 4, 'Moderate': 2, 'Severe': 1
         };
 
         Object.entries(answers).forEach(([key, value]) => {
             if (!value) return;
             if (!isNaN(value)) {
                 let val = parseInt(value);
-                // Questions:
-                // q3 (Trouble relaxing): 1(Not at all)=Good, 5(Extreme)=Bad -> Invert
-                // q5 (Afraid): 1(Not at all)=Good, 5(Extreme)=Bad -> Invert
-                // q6 (Physical affect): 1(Not at all)=Good, 5(A lot)=Bad -> Invert
-                // q10 (Confident): 1(Not at all)=Bad, 5(Very)=Good -> Keep
-                // q12 (Meal regularity): 1(Irregular)=Bad, 5(Regular)=Good -> Keep
-
                 const inverted = ['q3', 'q5', 'q6'];
                 if (inverted.includes(key)) {
                     round2Score += (6 - val);
@@ -121,12 +111,19 @@ const Round2 = () => {
                                         <div className="flex items-center justify-between">
                                             <div className="flex items-center">
                                                 <input type="radio" name={q.id} value={num} onChange={(e) => handleChange(q.id, e.target.value)} className="sr-only" checked={answers[q.id] == num} />
-                                                <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center ${answers[q.id] == num ? 'border-white' : 'border-gray-300'}`}>
-                                                    {answers[q.id] == num && <div className="w-3 h-3 bg-white rounded-full"></div>}
+                                                <div className={`w-8 h-8 rounded-full border-2 flex items-center justify-center ${answers[q.id] == num ? 'border-white' : 'border-gray-300'}`}>
+                                                    {answers[q.id] == num && <div className="w-4 h-4 bg-white rounded-full"></div>}
                                                 </div>
-                                                <span className={`ml-4 font-semibold text-lg ${answers[q.id] == num ? 'text-white' : 'text-gray-700'}`}>
-                                                    {num}
-                                                </span>
+                                                <div className="ml-4 text-left">
+                                                    <span className={`block font-bold text-lg ${answers[q.id] == num ? 'text-white' : 'text-gray-700'}`}>
+                                                        {num}
+                                                    </span>
+                                                    {q.labels && q.labels[num] && (
+                                                        <span className={`text-xs font-medium ${answers[q.id] == num ? 'text-white/80' : 'text-gray-400'}`}>
+                                                            {q.labels[num]}
+                                                        </span>
+                                                    )}
+                                                </div>
                                             </div>
                                         </div>
                                     </label>
