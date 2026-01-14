@@ -26,106 +26,110 @@ const authenticateToken = (req, res, next) => {
 
 // Mock AI Logic Engine
 const generateAnalysis = (r1, r2, answers) => {
-    // Parse answers if they are strings (just in case)
     const a1 = answers.round1 || {};
     const a2 = answers.round2 || {};
 
-    // Calculate sub-scores (Max 25 per category for simple normalization to 100 total)
-    // Depression Indicators: R1.Q1(Mood), R1.Q3(Interest), R1.Q7(Appetite), R1.Q8(Fatigue)
-    // Anxiety Indicators: R2.Q1(Nervous), R2.Q2(Worry), R2.Q5(Fear), R2.Q9(Avoidance)
-    // Stress Indicators: R1.Q6(Overwhelm), R2.Q3(Relaxing), R2.Q4(Irritable), R2.Q7(Racing Thoughts)
-    // Wellness/Resilience: R1.Q2(Sleep), R1.Q5(Support), R1.Q9(Exercise), R2.Q10(Confidence)
-
-    const mapVal = (val, max = 5, inverse = false) => {
+    const mapDistress = (val, max = 5, inverse = false) => {
         let v = parseInt(val) || 0;
-        // Text to val mappings for select inputs
         const textMap = {
-            'Not at all': 0, 'Several days': 1, 'More than half the days': 2, 'Nearly every day': 3, // PHQ-style 0-3
-            'Rarely': 0, 'Sometimes': 1, 'Often': 2, 'Always': 3, // General freq
+            'Not at all': 0, 'Several days': 1, 'More than half the days': 2, 'Nearly every day': 3,
+            'Rarely': 0, 'Sometimes': 1, 'Often': 2, 'Always': 3,
             'No': 0, 'Yes, gained': 2, 'Yes, lost': 2,
-            'Yes, definitely': 4, 'Somewhat': 2, 'No, not really': 0,
-            'Daily': 4, '3-4 times/week': 3, '1-2 times/week': 1,
+            'Yes, definitely': 0, 'Somewhat': 2, 'No, not really': 3, // Inverted for "Healthy" answers (e.g., 'Yes, definitely' support is low distress, so 0)
+            'Daily': 0, '3-4 times/week': 1, '1-2 times/week': 2, // Inverted for exercise (Daily exercise is low distress, so 0)
             'Never': 0, 'Occasionally': 1, 'Frequently': 2
         };
 
         if (typeof val === 'string' && textMap[val] !== undefined) v = textMap[val];
 
-        // Normalize to 0-1 range
-        // For 1-5 scales: (v-1)/4
-        // For 0-3 scales: v/3
-        // Simplified: assume 0-5 roughly
+        // Now, higher 'v' should always mean higher distress.
+        // For 0-3 scales, max distress is 3. For 0-5 scales, max distress is 5.
+        // Normalize to 0-100 where 100 is max distress.
+        // If inverse is true, the raw value 'v' already represents distress (e.g., 'Nearly every day' = 3 distress).
+        // If inverse is false, the raw value 'v' represents wellness (e.g., 'Yes, definitely' support = 0 distress, 'No, not really' = 3 distress).
 
-        if (inverse) return Math.max(0, 100 - (v * 20)); // High val = Low Score
-        return Math.min(100, v * 20); // High val = High Score
+        if (inverse) { // Raw value directly maps to distress (e.g., PHQ-style questions)
+            return Math.min(100, (v / (max === 3 ? 3 : 5)) * 100); // Scale 0-3 or 0-5 to 0-100
+        } else { // Raw value maps to wellness, so invert for distress (e.g., support, exercise, confidence)
+            return Math.min(100, ((max === 3 ? 3 : 5) - v) / (max === 3 ? 3 : 5) * 100);
+        }
     };
 
-    // Calculate Category Scores (0-100, where 100 is HEALTHY)
-    // Note: Inputs are mix of strings/numbers. 
+    // Calculate Category Distress (0-100, where 100 is HIGHEST RISK)
 
-    // Depression (Low score = Depressed)
+    // Depression Distress (High = More Depressed)
     let depSum = 0;
-    depSum += mapVal(a1.q1, 5, true); // Mood (Inv)
-    depSum += mapVal(a1.q3, 5, true); // Interest (Inv)
-    // Q7 Appetite: 'Normal' is good. Others bad.
-    depSum += (a1.q7 === 'Normal' ? 100 : 50);
-    // Q8 Fatigue: 'Rarely' is good.
-    depSum += mapVal(a1.q8, 3, true);
+    depSum += mapDistress(a1.q1, 3, true); // Mood (0-3 scale, higher = more distress)
+    depSum += mapDistress(a1.q3, 3, true); // Interest (0-3 scale, higher = more distress)
+    depSum += (a1.q7 === 'Normal' ? 0 : 70); // Appetite (Normal = 0 distress, others = 70 distress)
+    depSum += mapDistress(a1.q8, 3, true); // Fatigue (0-3 scale, higher = more distress)
     const depressionScore = Math.round(depSum / 4);
 
-    // Anxiety (Low score = Anxious)
+    // Anxiety Distress (High = More Anxious)
     let anxSum = 0;
-    anxSum += mapVal(a2.q1, 3, true); // Nervous
-    anxSum += mapVal(a2.q2, 3, true); // Control Worry
-    anxSum += mapVal(a2.q5, 5, true); // Fear
-    anxSum += mapVal(a2.q9, 3, true); // Avoidance
+    anxSum += mapDistress(a2.q1, 3, true); // Nervous (0-3 scale, higher = more distress)
+    anxSum += mapDistress(a2.q2, 3, true); // Worry (0-3 scale, higher = more distress)
+    anxSum += mapDistress(a2.q5, 3, true); // Fear (0-3 scale, higher = more distress)
+    anxSum += mapDistress(a2.q9, 3, true); // Avoidance (0-3 scale, higher = more distress)
     const anxietyScore = Math.round(anxSum / 4);
 
-    // Stress (Low score = Stressed)
+    // Stress Distress (High = More Stressed)
     let strSum = 0;
-    strSum += mapVal(a1.q6, 5, true); // Overwhelm
-    strSum += mapVal(a2.q3, 5, true); // Relaxing problem
-    strSum += mapVal(a2.q4, 3, true); // Irritable
-    strSum += mapVal(a2.q7, 3, true); // Racing thoughts
+    strSum += mapDistress(a1.q6, 3, true); // Overwhelm (0-3 scale, higher = more distress)
+    strSum += mapDistress(a2.q3, 3, true); // Relaxing problem (0-3 scale, higher = more distress)
+    strSum += mapDistress(a2.q4, 3, true); // Irritable (0-3 scale, higher = more distress)
+    strSum += mapDistress(a2.q7, 3, true); // Racing thoughts (0-3 scale, higher = more distress)
     const stressScore = Math.round(strSum / 4);
 
-    // Wellness (High score = Good)
-    let welSum = 0;
-    // Sleep: 7-9 is 100, others lower
+    // Lifestyle/Wellness Risk (High = Poor Lifestyle)
+    let welRiskSum = 0;
     let sleepVal = parseInt(a1.q2) || 0;
-    if (sleepVal >= 7 && sleepVal <= 9) welSum += 100;
-    else if (sleepVal >= 5 && sleepVal <= 10) welSum += 70;
-    else welSum += 40;
+    if (sleepVal >= 7 && sleepVal <= 9) welRiskSum += 0; // Optimal sleep = 0 risk
+    else if (sleepVal >= 5 && sleepVal <= 11) welRiskSum += 40; // Suboptimal sleep = 40 risk
+    else welRiskSum += 80; // Very poor sleep = 80 risk
 
-    welSum += mapVal(a1.q5, 2, false); // Support
-    welSum += mapVal(a1.q9, 3, false); // Exercise
-    welSum += mapVal(a2.q10, 5, false); // Confidence
-    const wellnessScore = Math.round(welSum / 4);
+    welRiskSum += mapDistress(a1.q5, 3, false); // No Support = High Risk (0-3 scale, 0=Yes, definitely, 3=No, not really)
+    welRiskSum += mapDistress(a1.q9, 3, false); // No Exercise = High Risk (0-3 scale, 0=Daily, 3=1-2 times/week)
+    welRiskSum += mapDistress(a2.q10, 3, false); // No Confidence = High Risk (0-3 scale, 0=Yes, definitely, 3=No, not really)
+    const wellnessRiskScore = Math.round((welRiskSum) / 4);
 
-    const totalScore = Math.round((depressionScore + anxietyScore + stressScore + wellnessScore) / 4);
+    const totalDistress = Math.round((depressionScore + anxietyScore + stressScore + wellnessRiskScore) / 4);
 
     // Generate Report Text
     let summary = "";
-    if (totalScore > 80) summary = "You are thriving! Your mental resilience is high.";
-    else if (totalScore > 50) summary = "You are doing okay, but there are some areas causing strain.";
-    else summary = "You seem to be going through a tough time. It's important to prioritize self-care right now.";
+    let recommendations = [];
+
+    if (totalDistress > 80) {
+        summary = "CRITICAL: Your results indicate a high level of psychological distress.";
+        recommendations.push("PRO ACTION: We strongly recommend scheduling a clinical consultation immediately.");
+        recommendations.push("Our records show you are in a high-risk category. Please visit our 'Consult Doctors' section to connect with a specialist.");
+    } else if (totalDistress > 50) {
+        summary = "MODERATE: You are showing signs of significant mental strain.";
+        recommendations.push("Consider speaking with a counselor to prevent burnout.");
+        recommendations.push("Focus on immediate stress-reduction techniques and maintaining a strict sleep schedule.");
+    } else {
+        summary = "NORMAL: Your mental wellness appears stable.";
+        recommendations.push("Continue practicing your healthy habits. You are maintaining a good balance.");
+    }
 
     const details = [];
-    if (depressionScore < 60) details.push("Mood: You've indicated signs of low mood or lack of interest. Connecting with loved ones or engaging in small hobbies can help.");
-    if (anxietyScore < 60) details.push("Anxiety: Frequent nervousness was noted. Grounding techniques like 5-4-3-2-1 can be very effective.");
-    if (stressScore < 60) details.push("Stress: You seem overwhelmed. Try to break tasks into smaller steps and take short breaks.");
-    if (wellnessScore < 50) details.push("Lifestyle: Sleep and exercise are foundational. Improving these slightly can have a huge impact on your mood.");
+    if (depressionScore > 60) details.push("High Depression Markers: Persistent low mood detected. Solution: Focus on behavioral activation—start with one small task today.");
+    if (anxietyScore > 60) details.push("High Anxiety Markers: Significant worry detected. Solution: Try the cognitive reframing tool in our chat.");
+    if (stressScore > 60) details.push("High Stress Level: Overwhelming pressure detected. Solution: Urgent need for boundary setting and digital detox.");
 
-    if (details.length === 0) details.push("Keep up the great work maintaining your mental hygiene!");
+    if (details.length === 0 && totalDistress < 30) {
+        details.push("No immediate triggers found. Your current coping mechanisms are highly effective.");
+    }
 
     return JSON.stringify({
         summary,
-        details,
+        details: [...details, ...recommendations],
         metrics: {
             depression: depressionScore,
             anxiety: anxietyScore,
             stress: stressScore,
-            wellness: wellnessScore,
-            total: totalScore
+            wellness: wellnessRiskScore,
+            total: totalDistress
         }
     });
 };
