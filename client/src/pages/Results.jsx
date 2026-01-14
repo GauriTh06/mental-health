@@ -34,15 +34,19 @@ const Results = () => {
                     <div className="space-y-8">
                         {history.map((record, idx) => {
                             let analysisData;
-                            try {
-                                analysisData = JSON.parse(record.analysis);
-                            } catch (e) {
-                                // Fallback for old string records
-                                analysisData = {
-                                    summary: record.analysis,
-                                    details: [],
-                                    metrics: { total: Math.min(100, Math.round(((record.round1_score + record.round2_score) / 100) * 100)) }
-                                };
+                            if (typeof record.analysis === 'object' && record.analysis !== null) {
+                                analysisData = record.analysis;
+                            } else {
+                                try {
+                                    analysisData = JSON.parse(record.analysis);
+                                } catch (e) {
+                                    // Fallback for old string records
+                                    analysisData = {
+                                        summary: record.analysis,
+                                        details: [],
+                                        metrics: { total: Math.min(100, Math.round(((record.round1_score + record.round2_score) / 100) * 100)) }
+                                    };
+                                }
                             }
 
                             const { metrics, summary, details } = analysisData;
