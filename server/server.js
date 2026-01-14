@@ -32,11 +32,12 @@ const generateAnalysis = (r1, r2, answers) => {
     const mapDistress = (val, maxVal = 3, inverse = true) => {
         const textMap = {
             'Not at all': 0, 'Several days': 1, 'More than half the days': 2, 'Nearly every day': 3,
-            'Rarely': 0, 'Sometimes': 1, 'Often': 2, 'Always': 3,
-            'No': 0, 'Yes, gained': 1, 'Yes, lost': 1,
+            'Rarely': 0, 'Sometimes': 1, 'Often': 2, 'Always': 3, 'Constantly': 3,
+            'No': 0, 'Yes, gained': 1, 'Yes, lost': 1, 'Poor': 1, 'Overeating': 1,
             'Yes, definitely': 3, 'Somewhat': 2, 'No, not really': 0,
             'Daily': 3, '3-4 times/week': 2, '1-2 times/week': 1,
             'Never': 0, 'Rarely': 1, 'Sometimes': 2, 'Often': 3,
+            'Very irregular': 0, 'Somewhat irregular': 1, 'Mostly regular': 3, 'Very regular': 4,
             'Mild': 1, 'Moderate': 2, 'Severe': 3,
             'Regularly': 3, 'Occasionally': 1
         };
