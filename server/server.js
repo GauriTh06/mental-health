@@ -29,58 +29,64 @@ const generateAnalysis = (r1, r2, answers) => {
     const a1 = answers.round1 || {};
     const a2 = answers.round2 || {};
 
-    const mapDistress = (val, max = 5, inverse = false) => {
-        let v = parseInt(val) || 0;
+    const mapDistress = (val, maxVal = 3, inverse = true) => {
         const textMap = {
             'Not at all': 0, 'Several days': 1, 'More than half the days': 2, 'Nearly every day': 3,
             'Rarely': 0, 'Sometimes': 1, 'Often': 2, 'Always': 3,
             'No': 0, 'Yes, gained': 1, 'Yes, lost': 1,
-            'Yes, definitely': 0, 'Somewhat': 2, 'No, not really': 3,
-            'Daily': 0, '3-4 times/week': 1, '1-2 times/week': 2,
-            'Never': 0, 'Occasionally': 1, 'Frequently': 2, 'Regularly': 0,
-            'Mild': 1, 'Moderate': 2, 'Severe': 3
+            'Yes, definitely': 3, 'Somewhat': 2, 'No, not really': 0,
+            'Daily': 3, '3-4 times/week': 2, '1-2 times/week': 1,
+            'Never': 0, 'Rarely': 1, 'Sometimes': 2, 'Often': 3,
+            'Mild': 1, 'Moderate': 2, 'Severe': 3,
+            'Regularly': 3, 'Occasionally': 1
         };
 
-        if (typeof val === 'string' && textMap[val] !== undefined) v = textMap[val];
+        let v = 0;
+        if (!isNaN(val)) {
+            v = parseInt(val) - 1; // Convert 1-5 scale to 0-4
+            if (v < 0) v = 0;
+        } else if (textMap[val] !== undefined) {
+            v = textMap[val];
+        }
 
         if (inverse) {
-            return Math.min(100, (v / (max === 3 ? 3 : 5)) * 100);
+            return Math.min(100, Math.round((v / maxVal) * 100));
         } else {
-            return Math.min(100, ((max === 3 ? 3 : 5) - v) / (max === 3 ? 3 : 5) * 100);
+            return Math.min(100, Math.round(((maxVal - v) / maxVal) * 100));
         }
     };
 
-    // New Category Distribution based on 7 new R2 questions + R1 metrics
+    // Calculate Category Distress
 
     // Depression (4 items)
     let depSum = 0;
-    depSum += mapDistress(a1.q1, 3, true); // Mood (R1)
-    depSum += mapDistress(a1.q3, 3, true); // Interest (R1)
-    depSum += mapDistress(a2.q4, 3, true); // Hopelessness (R2)
-    depSum += mapDistress(a2.q6, 3, true); // Self-harm (R2)
+    depSum += mapDistress(a1.q1, 3, true);   // Mood (R1)
+    depSum += mapDistress(a1.q3, 3, true);   // Interest (R1)
+    depSum += mapDistress(a2.q4, 2, true);   // Hopelessness (R2, maps Often to 2, so maxVal=2)
+    depSum += mapDistress(a2.q6, 3, true);   // Self-harm (R2, maxVal=3)
     const depressionScore = Math.round(depSum / 4);
 
     // Anxiety (3 items)
     let anxSum = 0;
-    anxSum += mapDistress(a2.q3, 3, true); // Physical symptoms (R2)
-    anxSum += mapDistress(a1.q8, 3, true); // Fatigue (R1)
-    anxSum += (a1.q7 === 'Normal' ? 0 : 50); // Appetite (R1)
+    anxSum += mapDistress(a2.q3, 2, true);   // Phys symptoms (R2, maps Often to 2, so maxVal=2)
+    anxSum += mapDistress(a1.q8, 3, true);   // Fatigue (R1)
+    anxSum += (a1.q7 === 'Normal' ? 0 : 100); // Appetite penalty (Maxed to 100)
     const anxietyScore = Math.round(anxSum / 3);
 
     // Stress (2 items)
     let strSum = 0;
-    strSum += mapDistress(a1.q6, 3, true); // Overwhelm (R1)
-    strSum += mapDistress(a2.q1, 3, true); // Deadline pressure (R2)
+    strSum += mapDistress(a1.q6, 3, true);   // Overwhelm (R1)
+    strSum += mapDistress(a2.q1, 3, true);   // Deadline pressure (R2)
     const stressScore = Math.round(strSum / 2);
 
     // Wellness Risk (5 items)
     let welRiskSum = 0;
-    welRiskSum += mapDistress(a2.q2, 5, false); // Meals (R2)
-    welRiskSum += mapDistress(a2.q5, 3, true); // Social isolation (R2)
-    welRiskSum += mapDistress(a2.q7, 3, false); // Mindfulness (R2)
-    welRiskSum += mapDistress(a1.q5, 3, false); // Support (R1)
-    welRiskSum += mapDistress(a1.q9, 3, false); // Exercise (R1)
-    const wellnessRiskScore = Math.round((welRiskSum) / 5);
+    welRiskSum += mapDistress(a2.q2, 4, false);  // Meals (R2, 1-5 scale becomes 0-4, maxVal=4)
+    welRiskSum += mapDistress(a2.q5, 2, true);   // Isolation (R2, maxVal=2)
+    welRiskSum += mapDistress(a2.q7, 3, false);  // Mindfulness (R2, maxVal=3)
+    welRiskSum += mapDistress(a1.q5, 3, false);  // Support (R1)
+    welRiskSum += mapDistress(a1.q9, 3, false);  // Exercise (R1)
+    const wellnessRiskScore = Math.round(welRiskSum / 5);
 
     const totalDistress = Math.round((depressionScore + anxietyScore + stressScore + wellnessRiskScore) / 4);
 
@@ -89,24 +95,23 @@ const generateAnalysis = (r1, r2, answers) => {
     let recommendations = [];
 
     if (a2.q6 && a2.q6 !== 'Never') {
-        summary = "URGENT SAFETY ALERT: Markers for immediate intervention detected.";
-        recommendations.push("PRO ACTION: Please contact a crisis support specialist immediately. You are not alone.");
-    } else if (totalDistress > 80) {
-        summary = "CRITICAL: High psychological distress level detected.";
-        recommendations.push("URGENT: Schedule a clinical consultation this week.");
+        summary = "URGENT SAFETY ALERT: Markers for intervention detected.";
+        recommendations.push("PRO ACTION: Please reach out to specialized support immediately.");
+    } else if (totalDistress >= 80) {
+        summary = "CRITICAL DISTRESS: Your results indicate severe psychological strain.";
+        recommendations.push("URGENT: Professional consultation is highly recommended immediately.");
     } else if (totalDistress > 50) {
-        summary = "MODERATE: Significant mental strain detected.";
-        recommendations.push("Consider professional counseling and strict focus on self-care.");
+        summary = "MODERATE STRAIN: You are experiencing significant mental fatigue.";
+        recommendations.push("Consider professional counseling to prevent burnout.");
     } else {
-        summary = "NORMAL: Mental wellness appears stable.";
-        recommendations.push("Maintain your positive habits and routine.");
+        summary = "STABLE: Your wellness markers are within a healthy range.";
+        recommendations.push("Continue your positive habits.");
     }
 
     const details = [];
-    if (a2.q4 && a2.q4 !== 'Not at all') details.push("Anhedonia/Hopelessness: You mentioned feeling unsure about the future. This is a critical marker for low mood.");
-    if (a2.q3 && a2.q3 !== 'Never') details.push("Physiological Anxiety: Rapid heartbeat or sweating suggests high autonomic arousal.");
-    if (a2.q1 === 'Severe') details.push("High Workplace Distress: Severe pressure from deadlines is significantly affecting your mental balance.");
-    if (a2.q7 === 'Never') details.push("Coping Deficit: You mentioned not using relaxation techniques. Learning mindfulness could improve your resilience.");
+    if (a2.q4 === 'Often') details.push("High Hopelessness: Feeling stuck is a critical marker for depression.");
+    if (a2.q3 === 'Often') details.push("Acute Physical Stress: High heartbeat/sweating detected.");
+    if (a2.q1 === 'Severe') details.push("Deadline Crisis: Workplace pressure is at critical levels.");
 
     return JSON.stringify({
         summary,
