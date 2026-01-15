@@ -2,27 +2,30 @@
 
 @theme {
   /* Using specific colors from the reference image */
-  --color-brand-bg: #F0F4F7;
-  /* Even Softer Background */
+  --color-brand-bg: #F3F7FA;
+  /* Soft Blue-Grey Background */
   --color-brand-card: #FFFFFF;
-  --color-brand-primary: #528E8D;
-  /* Muted Sage Teal */
-  --color-brand-primary-hover: #437574;
+  /* White Card */
+  --color-brand-primary: #589998;
+  /* Updated Primary Sage */
+  --color-brand-primary-hover: #4a807f;
   --color-brand-sidebar: #DDEBF7;
-  --color-brand-text: #1F2937;
-  /* Deep Slate for readability */
+  /* Light Blue Sidebar BG */
+  --color-brand-text: #2D3748;
+  /* Dark Slate Text */
   --color-brand-accent: #65849D;
+  /* Muted Blue Accents */
 
   --font-family-sans: "Inter", system-ui, sans-serif;
 }
 
 :root {
-  --brand-primary: #528E8D;
-  --brand-primary-hover: #437574;
-  --brand-bg: #F0F4F7;
-  --brand-text: #1F2937;
-  --glass-bg: rgba(255, 255, 255, 0.65);
-  --glass-border: rgba(255, 255, 255, 0.4);
+  --brand-primary: #589998;
+  --brand-primary-hover: #4a807f;
+  --brand-bg: #F3F7FA;
+  --brand-text: #2D3748;
+  --glass-bg: rgba(255, 255, 255, 0.7);
+  --glass-border: rgba(255, 255, 255, 0.3);
 }
 
 body {
@@ -37,20 +40,19 @@ body {
 
 .glass {
   background: var(--glass-bg);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   border: 1px solid var(--glass-border);
 }
 
 .text-gradient {
-  /* More subtle, soothing gradient */
-  background: linear-gradient(135deg, #528E8D 0%, #769998 100%);
+  background: linear-gradient(135deg, #589998 0%, #65849D 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
 .bg-hero-pattern {
-  background-image: url('./assets/redesign/bg_v3.png');
+  background-image: url('./assets/redesign/bg.png');
   background-size: cover;
   background-position: center;
 }
@@ -61,7 +63,7 @@ body {
   }
 
   50% {
-    transform: translateY(-12px);
+    transform: translateY(-10px);
   }
 
   100% {
@@ -70,22 +72,16 @@ body {
 }
 
 .animate-float {
-  animation: float 7s ease-in-out infinite;
+  animation: float 6s ease-in-out infinite;
 }
 
 .reveal {
   opacity: 0;
-  transform: translateY(40px);
-  transition: all 1s cubic-bezier(0.2, 1, 0.2, 1);
+  transform: translateY(30px);
+  transition: all 0.8s ease-out;
 }
 
 .reveal.active {
   opacity: 1;
   transform: translateY(0);
-}
-
-h1,
-h2,
-h3 {
-  letter-spacing: -0.02em;
 }
