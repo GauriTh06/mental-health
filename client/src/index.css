@@ -6,26 +6,26 @@
   /* Soft Blue-Grey Background */
   --color-brand-card: #FFFFFF;
   /* White Card */
-  --color-brand-primary: #589998;
-  /* Updated Primary Sage */
-  --color-brand-primary-hover: #4a807f;
+  --color-brand-primary: #4A8180;
+  /* Darker, higher contrast Sage */
+  --color-brand-primary-hover: #3A6665;
   --color-brand-sidebar: #DDEBF7;
   /* Light Blue Sidebar BG */
-  --color-brand-text: #2D3748;
-  /* Dark Slate Text */
-  --color-brand-accent: #65849D;
-  /* Muted Blue Accents */
+  --color-brand-text: #1A202C;
+  /* Darker Slate for maximum visibility */
+  --color-brand-accent: #4A6072;
+  /* Higher contrast blue accents */
 
   --font-family-sans: "Inter", system-ui, sans-serif;
 }
 
 :root {
-  --brand-primary: #589998;
-  --brand-primary-hover: #4a807f;
+  --brand-primary: #4A8180;
+  --brand-primary-hover: #3A6665;
   --brand-bg: #F3F7FA;
-  --brand-text: #2D3748;
-  --glass-bg: rgba(255, 255, 255, 0.7);
-  --glass-border: rgba(255, 255, 255, 0.3);
+  --brand-text: #1A202C;
+  --glass-bg: rgba(255, 255, 255, 0.75);
+  --glass-border: rgba(255, 255, 255, 0.4);
 }
 
 body {
@@ -46,15 +46,31 @@ body {
 }
 
 .text-gradient {
-  background: linear-gradient(135deg, #589998 0%, #65849D 100%);
+  /* Darker, more vivid gradient for better visibility */
+  background: linear-gradient(135deg, #4A8180 0%, #305872 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
+  /* Subtle drop shadow for clarity on complex backgrounds */
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.05));
 }
 
 .bg-hero-pattern {
   background-image: url('./assets/redesign/bg.png');
   background-size: cover;
   background-position: center;
+  position: relative;
+}
+
+/* Subtle overlay to help text stand out */
+.bg-hero-pattern::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(90deg, rgba(243, 247, 250, 0.4) 0%, rgba(243, 247, 250, 0) 100%);
+  z-index: 0;
 }
 
 @keyframes float {
@@ -84,4 +100,8 @@ body {
 .reveal.active {
   opacity: 1;
   transform: translateY(0);
+}
+
+.shadow-text {
+  text-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }

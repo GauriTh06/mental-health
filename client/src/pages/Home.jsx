@@ -49,7 +49,7 @@ const Home = () => {
             <header className="relative min-h-screen flex items-center pt-24 overflow-hidden bg-hero-pattern">
                 <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-2 gap-16 items-center relative z-10 w-full">
                     <div className="reveal">
-                        <span className="inline-block px-6 py-2 mb-8 text-base font-black tracking-widest text-brand-primary uppercase bg-brand-primary/10 rounded-full">
+                        <span className="inline-block px-6 py-2 mb-8 text-base font-black tracking-widest text-brand-primary uppercase bg-white/70 glass rounded-full shadow-sm border border-brand-primary/20">
                             Mental Health Intelligence
                         </span>
                         <h1 className="text-7xl lg:text-9xl font-black text-gray-900 leading-[1] mb-10 tracking-tight">
