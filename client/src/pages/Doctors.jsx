@@ -17,7 +17,7 @@ const doctors = [
         specialty: "Psychiatrist",
         experience: "15 years experience",
         rating: 4.8,
-        image: "https://img.freepik.com/premium-photo/portrait-male-doctor-with-stethoscope-medical-concept_1254992-166245.jpg",
+        image: "https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=400&h=400&fit=crop",
         bio: "Expert in mood disorders and medication management. Focuses on holistic recovery plans."
     },
     {

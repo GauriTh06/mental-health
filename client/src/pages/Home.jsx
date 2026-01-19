@@ -63,8 +63,11 @@ const Home = () => {
                             <Link to="/register" className="bg-brand-primary text-white px-12 py-6 rounded-[2.5rem] font-black text-xl shadow-2xl hover:bg-brand-primary-hover transition-all transform hover:-translate-y-1">
                                 Start Assessment
                             </Link>
-                            <button className="bg-white glass text-gray-800 border-2 border-white px-12 py-6 rounded-[2.5rem] font-black text-xl hover:bg-white transition-all shadow-xl">
-                                Watch Demo
+                            <button
+                                onClick={() => document.getElementById('features')?.scrollIntoView({ behavior: 'smooth' })}
+                                className="bg-white glass text-gray-800 border-2 border-white px-12 py-6 rounded-[2.5rem] font-black text-xl hover:bg-white transition-all shadow-xl"
+                            >
+                                Explore Tools
                             </button>
                         </div>
                     </div>
