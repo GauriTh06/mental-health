@@ -52,7 +52,7 @@ const Profile = () => {
             </div>
             <div>
                 <p className="text-[10px] font-black text-slate-300 uppercase tracking-[0.2em] mb-1">{label}</p>
-                <p className="text-[15px] font-bold text-slate-700 tracking-tight">{value || 'Not Documented'}</p>
+                <p className="text-[15px] font-bold text-slate-950 tracking-tight">{value || 'Not Documented'}</p>
             </div>
         </div>
     );
@@ -99,7 +99,7 @@ const Profile = () => {
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                             <div className="md:col-span-2 space-y-4">
                                 <label className="text-[10px] font-black text-[#4A8180] uppercase tracking-[0.4em] ml-2 italic">Comprehensive Clinical Bio</label>
-                                <textarea name="bio" value={formData.bio} onChange={handleChange} className="w-full bg-slate-50 border border-slate-100 rounded-3xl p-6 text-sm font-semibold outline-none focus:ring-8 ring-[#4A8180]/5 h-32 transition-all resize-none" placeholder="Establish your identity narrative..." />
+                                <textarea name="bio" value={formData.bio} onChange={handleChange} className="w-full bg-slate-50 border border-slate-100 rounded-3xl p-6 text-sm font-bold text-slate-950 outline-none focus:ring-8 ring-[#4A8180]/5 h-32 transition-all resize-none" placeholder="Establish your identity narrative..." />
                             </div>
 
                             {[
@@ -113,13 +113,13 @@ const Profile = () => {
                             ].map((field) => (
                                 <div key={field.name} className="space-y-3">
                                     <label className="text-[10px] font-black text-slate-300 uppercase tracking-[0.3em] ml-2 italic">{field.label}</label>
-                                    <input name={field.name} type={field.type} value={formData[field.name]} onChange={handleChange} className="w-full bg-slate-50 border border-slate-100 rounded-2xl p-4 text-sm font-bold text-slate-700 outline-none focus:ring-8 ring-[#4A8180]/5 transition-all" />
+                                    <input name={field.name} type={field.type} value={formData[field.name]} onChange={handleChange} className="w-full bg-slate-50 border border-slate-100 rounded-2xl p-4 text-sm font-bold text-slate-950 outline-none focus:ring-8 ring-[#4A8180]/5 transition-all" style={{ fontFamily: 'Inter, sans-serif' }} />
                                 </div>
                             ))}
 
                             <div className="space-y-3">
                                 <label className="text-[10px] font-black text-slate-300 uppercase tracking-[0.3em] ml-2 italic">Gender Alignment</label>
-                                <select name="gender" value={formData.gender} onChange={handleChange} className="w-full bg-slate-50 border border-slate-100 rounded-2xl p-4 text-sm font-bold text-slate-700 outline-none focus:ring-8 ring-[#4A8180]/5 transition-all appearance-none cursor-pointer">
+                                <select name="gender" value={formData.gender} onChange={handleChange} className="w-full bg-slate-50 border border-slate-100 rounded-2xl p-4 text-sm font-bold text-slate-950 outline-none focus:ring-8 ring-[#4A8180]/5 transition-all appearance-none cursor-pointer" style={{ fontFamily: 'Inter, sans-serif' }}>
                                     <option value="">Select Integrity</option>
                                     <option>Male</option>
                                     <option>Female</option>
@@ -129,7 +129,7 @@ const Profile = () => {
 
                             <div className="md:col-span-2 space-y-4">
                                 <label className="text-[10px] font-black text-[#4A8180] uppercase tracking-[0.4em] ml-2 italic">Wellness Trajectory Objectives</label>
-                                <textarea name="wellness_goals" value={formData.wellness_goals} onChange={handleChange} className="w-full bg-slate-50 border border-slate-100 rounded-3xl p-6 text-sm font-semibold outline-none focus:ring-8 ring-[#4A8180]/5 h-32 transition-all resize-none" />
+                                <textarea name="wellness_goals" value={formData.wellness_goals} onChange={handleChange} className="w-full bg-slate-50 border border-slate-100 rounded-3xl p-6 text-sm font-bold text-slate-950 outline-none focus:ring-8 ring-[#4A8180]/5 h-32 transition-all resize-none" style={{ fontFamily: 'Inter, sans-serif' }} />
                             </div>
                         </div>
 
@@ -145,7 +145,7 @@ const Profile = () => {
                             <div className="bg-white rounded-[3rem] p-10 border border-slate-100 shadow-sm relative overflow-hidden group">
                                 <div className="absolute top-0 left-0 w-32 h-32 bg-[#4A8180]/5 rounded-full blur-3xl group-hover:scale-150 transition-all duration-700"></div>
                                 <h3 className="text-[10px] font-black text-[#4A8180] uppercase tracking-[0.5em] mb-8 italic">Clinical Bio Portfolio</h3>
-                                <p className="text-2xl font-bold text-slate-700 leading-relaxed italic relative z-10">
+                                <p className="text-2xl font-bold text-slate-950 leading-relaxed italic relative z-10" style={{ fontFamily: 'Inter, sans-serif' }}>
                                     "{user?.bio || "No clinical narrative established. Documentation is recommended for tailored AI analysis."}"
                                 </p>
                             </div>

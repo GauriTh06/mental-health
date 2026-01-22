@@ -9,7 +9,7 @@
   --color-brand-text: #1A202C;
   --color-brand-accent: #4A6072;
 
-  --font-family-sans: "Montserrat", "Inter", system-ui, sans-serif;
+  --font-family-sans: "Inter", "Outfit", "Montserrat", system-ui, sans-serif;
 }
 
 :root {
@@ -22,7 +22,7 @@
 body {
   background-color: var(--brand-bg);
   color: var(--brand-text);
-  font-family: "Montserrat", sans-serif;
+  font-family: "Inter", sans-serif;
   margin: 0;
   -webkit-font-smoothing: antialiased;
   scroll-behavior: smooth;

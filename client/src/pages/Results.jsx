@@ -77,7 +77,7 @@ const Results = () => {
 
     return (
         <DashboardLayout title="Clinical Diagnostics Dashboard">
-            <div className="max-w-[1600px] mx-auto space-y-6 font-['Public_Sans',_sans-serif] text-slate-700">
+            <div className="max-w-[1600px] mx-auto space-y-6 text-slate-900">
 
                 {/* TOP HEADER / SELECTOR */}
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-[#4A6072] p-4 rounded-xl text-white shadow-md">

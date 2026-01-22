@@ -50,8 +50,8 @@ const Dashboard = () => {
                         <h2 className="text-3xl font-bold text-slate-900 tracking-tight mb-2">
                             {getGreeting()}, {user?.name?.split(' ')[0]}
                         </h2>
-                        <p className="text-slate-500 text-sm font-medium max-w-xl leading-relaxed">
-                            System analysis indicates <span className="text-slate-900 font-bold">{history.length} documented assessments</span> in your clinical history.
+                        <p className="text-slate-700 text-sm font-semibold max-w-xl leading-relaxed">
+                            System analysis indicates <span className="text-slate-950 font-black">{history.length} documented assessments</span> in your clinical history.
                             Your current longitudinal trend suggests a positive shift in emotional stability.
                         </p>
                         <div className="flex flex-wrap gap-3 mt-6">
@@ -119,7 +119,7 @@ const Dashboard = () => {
 
                             <textarea
                                 placeholder="Enter clinical observations or personal notes for the AI assistant..."
-                                className="w-full bg-slate-50 border border-slate-200 rounded-xl p-6 text-sm font-medium text-slate-600 outline-none focus:ring-4 ring-slate-100 h-32 transition-all resize-none placeholder:text-slate-400"
+                                className="w-full bg-slate-50 border border-slate-200 rounded-xl p-6 text-sm font-bold text-slate-900 outline-none focus:ring-4 ring-slate-100 h-32 transition-all resize-none placeholder:text-slate-400"
                             />
                             <div className="flex justify-end mt-4">
                                 <button className="bg-slate-900 text-white px-8 py-2 rounded-xl font-semibold text-xs transition-all hover:bg-black">
@@ -172,7 +172,7 @@ const Dashboard = () => {
                                     </div>
                                 </div>
                             </div>
-                            <p className="text-xs font-medium text-slate-400 italic leading-relaxed text-center relative z-10">
+                            <p className="text-xs font-bold text-slate-200 italic leading-relaxed text-center relative z-10">
                                 "Analysis suggests focus on neurobiological regulation techniques."
                             </p>
                         </div>
