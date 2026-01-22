@@ -322,7 +322,13 @@ app.post('/api/chat', authenticateToken, async (req, res) => {
         }
     } catch (err) {
         console.error("AI Service Error:", err.message);
-        botResponse = `AI Connection Error: ${err.message}. Please check if your OpenAI key is valid and has credits.`;
+
+        if (err.message.includes('429') || err.message.includes('quota')) {
+            // Compassionate Fallback instead of raw error
+            botResponse = "I'm currently moving at a slower pace than usual, but I'm still here for you. Remember that taking things one step at a time is a victory in itself. How are you feeling in this moment?";
+        } else {
+            botResponse = `MindWell is temporarily unavailable (Error: ${err.message}). Please try again shortly.`;
+        }
     }
 
     db.run(`INSERT INTO messages (user_id, content, sender) VALUES (?, ?, ?)`, [userId, message, 'user']);
