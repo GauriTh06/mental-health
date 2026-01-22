@@ -11,13 +11,15 @@ if (isPostgres) {
         ssl: { rejectUnauthorized: false }
     });
     console.log("Connected to PostgreSQL (Neon/Cloud)");
-} else if (process.env.NODE_ENV === 'production') {
-    throw new Error("CRITICAL ERROR: DATABASE_URL is missing in production. Cannot use SQLite.");
 } else {
+    if (process.env.NODE_ENV === 'production') {
+        console.warn("⚠️  WARNING: DATABASE_URL is missing. Falling back to SQLite.");
+        console.warn("⚠️  Data will be local/ephemeral. Set DATABASE_URL for persistent Neon DB.");
+    }
     const dbPath = path.resolve(__dirname, 'database.sqlite');
     db = new sqlite3.Database(dbPath, (err) => {
         if (err) console.error('Error opening database: ' + err.message);
-        else console.log('Connected to SQLite (Local)');
+        else console.log('Connected to SQLite (Local/Fallback)');
     });
 }
 
