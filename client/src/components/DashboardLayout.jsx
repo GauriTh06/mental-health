@@ -10,25 +10,25 @@ const DashboardLayout = ({ children, title }) => {
     const navigate = useNavigate();
 
     const menuItems = [
-        { label: 'Dashboard', path: '/dashboard', icon: 'M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6' },
+        { label: 'Dashboard', path: '/dashboard', icon: 'M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z' },
         { label: 'Round 1 Assessment', path: '/round1', icon: 'M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z' },
-        { label: 'Round 2 Assessment', path: '/round2', icon: 'M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z' },
-        { label: 'Analysis Results', path: '/results', icon: 'M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 m0 0a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z' },
+        { label: 'Round 2 Assessment', path: '/round2', icon: 'M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01' },
+        { label: 'Analysis Results', path: '/results', icon: 'M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 m0 0a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2' },
         { label: 'AI Assistant', path: '/chat', icon: 'M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z' },
-        { label: 'Consult Doctors', path: '/doctors', icon: 'M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z' },
+        { label: 'Consult Doctors', path: '/doctors', icon: 'M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z' },
         { label: 'My Profile', path: '/profile', icon: 'M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z' },
     ];
 
     const SidebarContent = () => (
-        <div className="flex flex-col h-full bg-white border-r border-slate-100">
-            <div className="p-10 flex items-center gap-4">
-                <div className="w-12 h-12 bg-[#4A8180] rounded-2xl shadow-lg shadow-[#4A8180]/30 flex items-center justify-center text-white text-xl font-black">
+        <div className="flex flex-col h-full bg-[#DDEBF7] border-r border-[#CBD5E1]">
+            <div className="p-8 pb-12 flex items-center gap-4">
+                <div className="w-10 h-10 bg-[#4A8180] rounded-xl flex items-center justify-center text-white text-lg font-black shadow-md">
                     MW
                 </div>
-                <span className="text-2xl font-black text-slate-800 tracking-tighter">MindWell</span>
+                <span className="text-2xl font-black text-[#1F2937] tracking-tighter">MindWell</span>
             </div>
 
-            <nav className="flex-1 px-6 space-y-6 py-8 overflow-y-auto">
+            <nav className="flex-1 px-4 space-y-3 py-6 overflow-y-auto">
                 {menuItems.map((item) => {
                     const active = location.pathname === item.path;
                     return (
@@ -36,12 +36,12 @@ const DashboardLayout = ({ children, title }) => {
                             key={item.path}
                             to={item.path}
                             onClick={() => setIsMobileMenuOpen(false)}
-                            className={`flex items-center px-6 py-4 rounded-[2rem] transition-all group ${active
-                                ? 'bg-[#4A8180] text-white shadow-xl shadow-[#4A8180]/20'
-                                : 'text-slate-500 hover:bg-slate-50 hover:text-[#4A8180]'
+                            className={`flex items-center px-6 py-4 rounded-xl transition-all group ${active
+                                ? 'bg-[#4A8180] text-white shadow-lg'
+                                : 'text-[#4B5563] hover:bg-white/40 hover:text-[#4A8180]'
                                 }`}
                         >
-                            <svg className={`w-7 h-7 mr-6 ${active ? 'text-white' : 'text-slate-300 group-hover:text-[#4A8180]'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg className={`w-6 h-6 mr-6 ${active ? 'text-white' : 'text-[#6B7280] group-hover:text-[#4A8180]'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d={item.icon} />
                             </svg>
                             <span className={`text-[19px] tracking-tight font-premium-serif italic ${active ? 'font-black' : 'font-medium opacity-90'}`}>{item.label}</span>
@@ -50,12 +50,12 @@ const DashboardLayout = ({ children, title }) => {
                 })}
             </nav>
 
-            <div className="p-8 border-t border-slate-50">
+            <div className="p-6 border-t border-[#CBD5E1]">
                 <button
                     onClick={() => { logout(); navigate('/login'); }}
-                    className="flex items-center gap-4 text-slate-400 hover:text-rose-500 w-full px-6 py-4 transition-all font-bold text-[15px] group"
+                    className="flex items-center gap-4 text-[#4B5563] hover:text-rose-600 w-full px-6 py-4 transition-all group"
                 >
-                    <div className="w-10 h-10 rounded-xl bg-slate-50 flex items-center justify-center group-hover:bg-rose-50 group-hover:text-rose-500 transition-colors">
+                    <div className="w-10 h-10 rounded-xl bg-white/40 flex items-center justify-center group-hover:bg-rose-50 transition-colors">
                         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" /></svg>
                     </div>
                     <span className="font-premium-serif italic text-lg">Sign Out</span>
@@ -65,9 +65,9 @@ const DashboardLayout = ({ children, title }) => {
     );
 
     return (
-        <div className="flex h-screen bg-[#F8FAFC]">
+        <div className="flex h-screen bg-[#F3F7FA]">
             {/* Desktop Sidebar */}
-            <aside className="hidden md:block w-80 h-full flex-shrink-0">
+            <aside className="hidden lg:block w-80 h-full flex-shrink-0">
                 <SidebarContent />
             </aside>
 
@@ -78,14 +78,14 @@ const DashboardLayout = ({ children, title }) => {
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
-                        className="fixed inset-0 z-50 md:hidden bg-slate-900/10 backdrop-blur-sm"
+                        className="fixed inset-0 z-50 lg:hidden bg-slate-900/10 backdrop-blur-sm"
                         onClick={() => setIsMobileMenuOpen(false)}
                     >
                         <motion.div
                             initial={{ x: -300 }}
                             animate={{ x: 0 }}
                             exit={{ x: -300 }}
-                            className="absolute inset-y-0 left-0 w-80 bg-white shadow-2xl"
+                            className="absolute inset-y-0 left-0 w-80 bg-[#DDEBF7] shadow-2xl"
                             onClick={(e) => e.stopPropagation()}
                         >
                             <SidebarContent />
@@ -97,9 +97,9 @@ const DashboardLayout = ({ children, title }) => {
             {/* Main Content Area */}
             <main className="flex-1 flex flex-col min-w-0 overflow-hidden dashboard-bg-container">
                 <div className="dashboard-bg-image"></div>
-                <header className="h-20 flex items-center justify-between px-8 md:px-12 bg-white/80 backdrop-blur-md border-b border-slate-100 flex-shrink-0 relative z-10">
+                <header className="h-20 flex items-center justify-between px-8 lg:px-12 bg-white/80 backdrop-blur-md border-b border-slate-200 flex-shrink-0 relative z-10">
                     <div className="flex items-center gap-4">
-                        <button className="md:hidden text-slate-600 p-2 hover:bg-slate-50 rounded-lg transition-colors" onClick={() => setIsMobileMenuOpen(true)}>
+                        <button className="lg:hidden text-slate-600 p-2 hover:bg-slate-50 rounded-lg transition-colors" onClick={() => setIsMobileMenuOpen(true)}>
                             <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16" /></svg>
                         </button>
                         <h1 className="text-xl font-bold text-slate-800 tracking-tight">{title}</h1>
@@ -108,15 +108,15 @@ const DashboardLayout = ({ children, title }) => {
                     <div className="flex items-center gap-6">
                         <div className="hidden sm:flex flex-col text-right">
                             <span className="text-sm font-bold text-slate-800">Account Verified</span>
-                            <span className="text-[10px] font-black text-[#4A8180] uppercase tracking-widest">Clinical Standard</span>
+                            <span className="text-[10px] font-black text-[#4A8180] uppercase tracking-widest leading-none">Clinical Standard</span>
                         </div>
-                        <div className="w-10 h-10 rounded-full bg-[#4A8180]/10 flex items-center justify-center border border-[#4A8180]/20 text-[#4A8180] font-black group cursor-pointer hover:bg-[#4A8180] hover:text-white transition-all">
+                        <div className="w-10 h-10 rounded-full bg-[#4A8180]/10 flex items-center justify-center border border-[#4A8180]/20 text-[#4A8180] font-black cursor-pointer hover:bg-[#4A8180] hover:text-white transition-all">
                             U
                         </div>
                     </div>
                 </header>
 
-                <div className="flex-1 overflow-y-auto px-8 md:px-12 py-10 space-y-12 relative z-10">
+                <div className="flex-1 overflow-y-auto px-8 lg:px-12 py-10 space-y-12 relative z-10">
                     {children}
                 </div>
             </main>
