@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import heroImg from '../assets/redesign/hero.png';
 import aiIcon from '../assets/redesign/ai-icon.png';
 import communityImg from '../assets/redesign/community.png';
+import bgImg from '../assets/redesign/bg_v3.png';
 
 const Home = () => {
     useEffect(() => {
@@ -46,7 +47,14 @@ const Home = () => {
             </nav>
 
             {/* Hero Section */}
-            <header className="relative min-h-screen flex items-center pt-24 overflow-hidden bg-hero-pattern">
+            <header
+                className="relative min-h-screen flex items-center pt-24 overflow-hidden"
+                style={{
+                    backgroundImage: `url(${bgImg})`,
+                    backgroundSize: 'cover',
+                    backgroundPosition: 'center'
+                }}
+            >
                 <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-2 gap-16 items-center relative z-10 w-full">
                     <div className="reveal">
                         <span className="inline-block px-6 py-2 mb-8 text-base font-black tracking-widest text-brand-primary uppercase bg-white/70 glass rounded-full shadow-sm border border-brand-primary/20">
@@ -54,7 +62,7 @@ const Home = () => {
                         </span>
                         <h1 className="text-7xl lg:text-9xl font-black text-gray-900 leading-[1] mb-10 tracking-tight">
                             Predict & <br />
-                            <span className="text-gradient">Heal Together</span>
+                            <span className="text-[#4A8180]">Heal Together</span>
                         </h1>
                         <p className="text-2xl text-gray-700 mb-12 max-w-2xl leading-relaxed font-medium">
                             Empowering mental wellness through scientifically validated AI assessments and a supportive clinical network. Your journey to clarity starts here.
