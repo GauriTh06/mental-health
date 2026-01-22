@@ -318,7 +318,7 @@ app.post('/api/chat', authenticateToken, async (req, res) => {
                     { role: "system", content: "You are MindWell, a compassionate mental health AI. Provide supportive, non-judgmental advice. You are NOT a doctor. If the user is in danger, provide crisis resources. Keep responses concise and empathetic." },
                     { role: "user", content: message }
                 ],
-                model: "llama-3.3-70b-specdec",
+                model: "llama-3.3-70b-versatile",
             });
             botResponse = completion.choices[0].message.content;
 
