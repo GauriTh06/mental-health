@@ -50,24 +50,31 @@ const Round1 = () => {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
+        // Fetch history to determine set
         api.get('/history').then(res => {
             const count = res.data.length;
+            // Use modulo to cycle through ALL sets (0, 1, 2, 0, 1, 2...)
             const setIndex = count % questionSets.length;
+            console.log("Assessment Count:", count, "Selected Set:", setIndex); // Debug
             setQuestions(questionSets[setIndex]);
             setLoading(false);
-        }).catch(() => {
-            setQuestions(questionSets[0]);
+        }).catch(err => {
+            console.error(err);
+            setQuestions(questionSets[0]); // Fallback
             setLoading(false);
         });
     }, []);
 
-    const handleChange = (id, value) => setAnswers({ ...answers, [id]: value });
+    const handleChange = (id, value) => {
+        setAnswers({ ...answers, [id]: value });
+    };
 
     const handleNext = (e) => {
         e.preventDefault();
         if (currentStep < questions.length - 1) {
             setCurrentStep(currentStep + 1);
         } else {
+            // Submit
             localStorage.setItem('round1', JSON.stringify({ answers, score: calculateScore(answers) }));
             navigate('/round2');
         }
@@ -75,10 +82,12 @@ const Round1 = () => {
 
     const calculateScore = (ans) => {
         let score = 0;
+        // Generic scoring heuristic for the MVP
         Object.entries(ans).forEach(([key, value]) => {
             if (!value) return;
             if (!isNaN(value)) {
-                score += parseInt(value);
+                let val = parseInt(value);
+                score += val;
             } else {
                 if (['Yes, definitely', 'Normal', 'Always', 'Daily', 'Regularly'].includes(value)) score += 5;
                 if (['Rarely', 'Somewhat', 'Sometimes', '3-4 times/week'].includes(value)) score += 3;
@@ -88,105 +97,72 @@ const Round1 = () => {
         return score;
     };
 
-    if (loading) return (
-        <DashboardLayout title="Protocol Initialization">
-            <div className="flex h-[70vh] items-center justify-center">
-                <div className="w-10 h-10 border-4 border-slate-100 border-t-[#4A8180] rounded-full animate-spin"></div>
-            </div>
-        </DashboardLayout>
-    );
+    if (loading) return <DashboardLayout title="Round 1 Assessment"><div className="p-12 text-center text-gray-400">Loading Assessment...</div></DashboardLayout>;
 
     const q = questions[currentStep];
     const progress = ((currentStep + 1) / questions.length) * 100;
 
     return (
-        <DashboardLayout title="Initial Diagnostic Round">
-            <div className="max-w-3xl mx-auto space-y-8 pb-32">
-
-                {/* PROGRESS INDICATOR */}
-                <div className="bg-white rounded-2xl p-6 border border-slate-100 shadow-sm flex items-center justify-between gap-10">
-                    <div className="flex-1">
-                        <div className="flex justify-between items-center mb-2">
-                            <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Diagnostic Progress</span>
-                            <span className="text-[10px] font-black text-[#4A8180] uppercase tracking-widest leading-none">{Math.round(progress)}% Complete</span>
-                        </div>
-                        <div className="h-1.5 w-full bg-slate-50 rounded-full overflow-hidden">
-                            <div className="h-full bg-[#4A8180] rounded-full transition-all duration-700 ease-out" style={{ width: `${progress}%` }}></div>
+        <DashboardLayout title="Round 1 Assessment">
+            <div className="max-w-2xl mx-auto">
+                <div className="bg-white rounded-3xl shadow-sm border border-gray-100 p-8 md:p-12">
+                    <div className="flex items-center justify-between mb-8">
+                        <span className="text-sm font-bold text-gray-400 uppercase tracking-widest">Question {currentStep + 1}/{questions.length}</span>
+                        <div className="w-1/3 h-2 bg-gray-100 rounded-full">
+                            <div className="h-2 bg-brand-primary rounded-full transition-all duration-300" style={{ width: `${progress}%` }}></div>
                         </div>
                     </div>
-                    <div className="hidden sm:block">
-                        <span className="text-xl font-bold text-slate-900 tracking-tighter tabular-nums px-4 py-2 bg-slate-50 rounded-xl border border-slate-100">
-                            {currentStep + 1} / {questions.length}
-                        </span>
-                    </div>
-                </div>
 
-                {/* QUESTION CARD */}
-                <div className="bg-white rounded-[2.5rem] p-12 border border-slate-200 shadow-xl shadow-slate-200/20 relative overflow-hidden min-h-[500px] flex flex-col">
-                    <div className="absolute top-0 right-0 w-48 h-48 bg-slate-50 rounded-full -mr-24 -mt-24 pointer-events-none"></div>
+                    <h2 className="text-3xl font-bold text-gray-900 mb-10 leading-tight">{q.text}</h2>
 
-                    <div className="relative z-10 flex-1">
-                        <span className="inline-block px-3 py-1 bg-[#4A8180]/10 text-[#4A8180] text-[10px] font-bold uppercase tracking-widest rounded-md mb-8">Clinical Input Phase</span>
-                        <h2 className="text-4xl font-bold text-slate-900 tracking-tight leading-[1.1] mb-12">
-                            {q.text}
-                        </h2>
-
-                        <form onSubmit={handleNext} className="space-y-4">
-                            {(q.type === 'scale' || q.type === 'select') && (
-                                <div className="grid grid-cols-1 gap-3">
-                                    {(q.type === 'scale' ? [1, 2, 3, 4, 5] : q.options).map(opt => {
-                                        const isSelected = answers[q.id] == opt;
-                                        return (
-                                            <label key={opt} className={`group cursor-pointer flex items-center p-5 rounded-2xl border transition-all ${isSelected
-                                                ? 'bg-slate-900 border-slate-900 text-white shadow-lg'
-                                                : 'bg-white border-slate-100 hover:border-[#4A8180] hover:bg-slate-50'}`}
-                                            >
-                                                <input type="radio" name={q.id} value={opt} onChange={(e) => handleChange(q.id, e.target.value)} className="sr-only" checked={isSelected} />
-                                                <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center transition-colors ${isSelected ? 'border-[#4A8180]' : 'border-slate-200'}`}>
-                                                    {isSelected && <div className="w-2.5 h-2.5 bg-[#4A8180] rounded-full animate-pulse"></div>}
+                    <form onSubmit={handleNext}>
+                        {q.type === 'scale' && (
+                            <div className="space-y-4">
+                                {[1, 2, 3, 4, 5].map(num => (
+                                    <label key={num} className={`group block border-2 p-5 rounded-2xl cursor-pointer transition-all ${answers[q.id] == num ? 'bg-brand-primary border-brand-primary text-white shadow-lg transform scale-[1.02]' : 'bg-white border-gray-100 hover:border-brand-primary/50'}`}>
+                                        <div className="flex items-center justify-between">
+                                            <div className="flex items-center">
+                                                <input type="radio" name={q.id} value={num} onChange={(e) => handleChange(q.id, e.target.value)} className="sr-only" checked={answers[q.id] == num} />
+                                                <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center ${answers[q.id] == num ? 'border-white' : 'border-gray-300'}`}>
+                                                    {answers[q.id] == num && <div className="w-3 h-3 bg-white rounded-full"></div>}
                                                 </div>
-                                                <span className="ml-5 font-bold text-base tracking-tight">
-                                                    {q.type === 'scale' ? (opt === 1 ? 'Never / Very Low' : opt === 5 ? 'Always / Very High' : opt) : opt}
+                                                <span className={`ml-4 font-semibold text-lg ${answers[q.id] == num ? 'text-white' : 'text-gray-700'}`}>
+                                                    {num === 1 ? 'Never / Very Low' : num === 5 ? 'Always / Very High' : num}
                                                 </span>
-                                            </label>
-                                        );
-                                    })}
-                                </div>
-                            )}
+                                            </div>
+                                        </div>
+                                    </label>
+                                ))}
+                            </div>
+                        )}
 
-                            {q.type === 'number' && (
-                                <div className="max-w-xs">
-                                    <input
-                                        type="number" required min={q.min} max={q.max}
-                                        className="w-full bg-slate-50 border-2 border-slate-100 rounded-2xl p-6 text-3xl font-bold text-slate-900 focus:border-[#4A8180] outline-none transition-all shadow-inner"
-                                        placeholder="0"
-                                        onChange={(e) => handleChange(q.id, e.target.value)}
-                                        value={answers[q.id] || ''}
-                                    />
-                                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-4 ml-2">Quantitative Metric Input</p>
-                                </div>
-                            )}
-                        </form>
-                    </div>
+                        {q.type === 'select' && (
+                            <div className="space-y-4">
+                                {q.options.map(opt => (
+                                    <label key={opt} className={`group block border-2 p-5 rounded-2xl cursor-pointer transition-all ${answers[q.id] === opt ? 'bg-brand-primary border-brand-primary text-white shadow-lg transform scale-[1.02]' : 'bg-white border-gray-100 hover:border-brand-primary/50'}`}>
+                                        <div className="flex items-center">
+                                            <input type="radio" name={q.id} value={opt} onChange={(e) => handleChange(q.id, e.target.value)} className="sr-only" checked={answers[q.id] === opt} />
+                                            <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center ${answers[q.id] === opt ? 'border-white' : 'border-gray-300'}`}>
+                                                {answers[q.id] === opt && <div className="w-3 h-3 bg-white rounded-full"></div>}
+                                            </div>
+                                            <span className={`ml-4 font-semibold text-lg ${answers[q.id] === opt ? 'text-white' : 'text-gray-700'}`}>{opt}</span>
+                                        </div>
+                                    </label>
+                                ))}
+                            </div>
+                        )}
 
-                    <div className="mt-12 flex justify-between items-center relative z-10 pt-8 border-t border-slate-50">
-                        <button type="button" disabled={currentStep === 0} onClick={() => setCurrentStep(prev => prev - 1)} className="text-xs font-black text-slate-300 uppercase tracking-widest hover:text-slate-900 disabled:opacity-0 transition-all flex items-center gap-2">
-                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M15 19l-7-7 7-7" /></svg>
-                            Back
-                        </button>
-                        <button
-                            type="button"
-                            onClick={handleNext}
-                            className="bg-[#4A8180] text-white px-10 py-5 rounded-2xl font-black text-xs uppercase tracking-[0.2em] shadow-xl shadow-teal-900/10 hover:bg-[#3d6b6a] hover:translate-y-[-2px] transition-all flex items-center gap-3"
-                        >
-                            {currentStep === questions.length - 1 ? 'Finalize Phase' : 'Next Parameter'}
-                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M9 5l7 7-7 7" /></svg>
-                        </button>
-                    </div>
-                </div>
+                        {q.type === 'number' && (
+                            <input type="number" required min={q.min} max={q.max} className="block w-full border-2 border-gray-200 rounded-2xl p-5 text-xl focus:ring-brand-primary focus:border-brand-primary outline-none transition-all" placeholder="Enter number..." onChange={(e) => handleChange(q.id, e.target.value)} value={answers[q.id] || ''} />
+                        )}
 
-                <div className="text-center">
-                    <p className="text-[9px] font-bold text-slate-300 uppercase tracking-[0.5em]">System integrity verified • Encrypted health data protocol</p>
+                        <div className="mt-12 flex justify-between items-center">
+                            <button type="button" disabled={currentStep === 0} onClick={() => setCurrentStep(prev => prev - 1)} className="text-gray-500 font-semibold hover:text-gray-800 disabled:opacity-30 transition-colors px-4 py-2">Back</button>
+                            <button type="submit" className="bg-brand-primary text-white px-10 py-4 rounded-xl font-bold hover:bg-brand-primary-hover shadow-lg transition-all transform hover:-translate-y-1">
+                                {currentStep === questions.length - 1 ? 'Next Round →' : 'Continue'}
+                            </button>
+                        </div>
+                    </form>
                 </div>
             </div>
         </DashboardLayout>
