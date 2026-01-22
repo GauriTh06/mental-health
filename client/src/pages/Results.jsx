@@ -4,7 +4,7 @@ import DashboardLayout from '../components/DashboardLayout';
 import {
     Radar, RadarChart, PolarGrid, PolarAngleAxis,
     ResponsiveContainer, XAxis, YAxis, Tooltip,
-    Cell, PieChart, Pie, AreaChart, Area, CartesianGrid
+    Cell, PieChart, Pie, BarChart, Bar, CartesianGrid, Legend
 } from 'recharts';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -28,32 +28,48 @@ const Results = () => {
 
     const containerVariants = {
         hidden: { opacity: 0 },
-        visible: { opacity: 1, transition: { staggerChildren: 0.15 } }
+        visible: { opacity: 1, transition: { staggerChildren: 0.1 } }
     };
 
     const itemVariants = {
-        hidden: { y: 30, opacity: 0 },
+        hidden: { y: 20, opacity: 0 },
         visible: { y: 0, opacity: 1, transition: { type: "spring", stiffness: 100 } }
     };
 
-    // Prepare Aggregated Data for the Summary Chart
-    const getSummaryData = () => {
-        if (history.length === 0) return [];
-        return [...history].reverse().map((record, i) => {
+    // Prepare Aggregated Data for the Charts
+    const getChartData = () => {
+        if (history.length === 0) return { bar: [], pie: [] };
+
+        // Bar Chart: Timeline of total distress
+        const barData = [...history].reverse().map((record, i) => {
             let data;
             try { data = typeof record.analysis === 'string' ? JSON.parse(record.analysis) : record.analysis; }
-            catch (e) { data = { metrics: { total: 50 } }; }
+            catch (e) { data = { metrics: { total: 0 } }; }
             return {
-                name: `Report ${i + 1}`,
+                name: `R${i + 1}`,
                 score: data?.metrics?.total || 0,
-                depression: data?.metrics?.depression || 0,
-                anxiety: data?.metrics?.anxiety || 0,
-                stress: data?.metrics?.stress || 0,
+                fill: i % 2 === 0 ? '#4A8180' : '#81B2B1' // Colorful alternation
             };
         });
+
+        // Pie Chart: Current breakdown of latest report
+        const latest = history[0];
+        let latestData;
+        try { latestData = typeof latest.analysis === 'string' ? JSON.parse(latest.analysis) : latest.analysis; }
+        catch (e) { latestData = { metrics: { depression: 25, anxiety: 25, stress: 25, wellness: 25 } }; }
+
+        const m = latestData.metrics || {};
+        const pieData = [
+            { name: 'Depression', value: m.depression, fill: '#FF6B6B' },
+            { name: 'Anxiety', value: m.anxiety, fill: '#4ECDC4' },
+            { name: 'Stress', value: m.stress, fill: '#FFE66D' },
+            { name: 'Lifestyle', value: m.wellness, fill: '#45B7D1' }
+        ];
+
+        return { bar: barData, pie: pieData };
     };
 
-    const summaryData = getSummaryData();
+    const { bar: barData, pie: pieData } = getChartData();
     const latestRecord = history[0];
     let latestAnalysis = {};
     if (latestRecord) {
@@ -77,58 +93,57 @@ const Results = () => {
                             <svg className="w-12 h-12 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
                         </div>
                         <h3 className="text-2xl font-bold text-gray-800 mb-2">No Reports Yet</h3>
-                        <p className="text-gray-500 max-w-sm mx-auto">Complete your assessment to unlock technical insights and tracking.</p>
+                        <p className="text-gray-500 max-w-sm mx-auto">Complete your assessment to unlock insights and graphical visualizations of your health.</p>
                         <a href="/round1" className="mt-8 inline-flex items-center px-8 py-3 bg-[#4A8180] text-white font-bold rounded-2xl transition-all shadow-lg">
                             Start Assessment
                         </a>
                     </motion.div>
                 ) : (
                     <div className="space-y-12">
-                        {/* TOP SUMMARY GRAPHICAL VISUALIZATION */}
-                        <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                            <div className="lg:col-span-2 bg-white/80 backdrop-blur-xl rounded-[2.5rem] p-8 shadow-xl border border-white/40">
-                                <div className="flex justify-between items-center mb-6">
-                                    <div>
-                                        <h3 className="text-xl font-bold text-gray-800">Wellness Progression</h3>
-                                        <p className="text-sm text-gray-500 font-medium">Graphical insights tracking your health journey</p>
-                                    </div>
-                                    <div className="flex gap-4">
-                                        <div className="flex items-center gap-2"><div className="w-3 h-3 bg-[#4A8180] rounded-full"></div><span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Distress Score</span></div>
-                                    </div>
-                                </div>
+                        {/* TOP SUMMARY DASHBOARD */}
+                        <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                            {/* Colorful Bar Chart */}
+                            <div className="bg-white/80 backdrop-blur-xl rounded-[2.5rem] p-8 shadow-xl border border-white/40">
+                                <h3 className="text-xl font-bold text-gray-800 mb-2">Wellness Timeline</h3>
+                                <p className="text-sm text-gray-500 font-medium mb-6">Historical progression of your health markers</p>
                                 <div className="h-64">
                                     <ResponsiveContainer width="100%" height="100%">
-                                        <AreaChart data={summaryData}>
-                                            <defs>
-                                                <linearGradient id="colorScore" x1="0" y1="0" x2="0" y2="1">
-                                                    <stop offset="5%" stopColor="#4A8180" stopOpacity={0.2} />
-                                                    <stop offset="95%" stopColor="#4A8180" stopOpacity={0} />
-                                                </linearGradient>
-                                            </defs>
+                                        <BarChart data={barData}>
                                             <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
-                                            <XAxis dataKey="name" hide />
-                                            <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 10, fontWeight: 700, fill: '#94a3b8' }} domain={[0, 100]} />
-                                            <Tooltip contentStyle={{ borderRadius: '16px', border: 'none', boxShadow: '0 10px 15px -3px rgba(0,0,0,0.1)' }} />
-                                            <Area type="monotone" dataKey="score" stroke="#4A8180" strokeWidth={4} fillOpacity={1} fill="url(#colorScore)" />
-                                        </AreaChart>
+                                            <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fontSize: 10, fontWeight: 700 }} />
+                                            <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 10, fontWeight: 700 }} domain={[0, 100]} />
+                                            <Tooltip cursor={{ fill: '#f8fafc' }} contentStyle={{ borderRadius: '16px', border: 'none', boxShadow: '0 10px 15px -3px rgba(0,0,0,0.1)' }} />
+                                            <Bar dataKey="score" radius={[6, 6, 0, 0]} barSize={30} />
+                                        </BarChart>
                                     </ResponsiveContainer>
                                 </div>
                             </div>
 
-                            <div className="bg-[#4A8180] rounded-[2.5rem] p-8 text-white shadow-2xl flex flex-col justify-between relative overflow-hidden">
-                                <div className="absolute -top-10 -right-10 w-40 h-40 bg-white/10 rounded-full blur-3xl"></div>
-                                <div>
-                                    <h4 className="text-[10px] font-black uppercase tracking-[0.2em] opacity-60 mb-2">Current Insight</h4>
-                                    <h3 className="text-3xl font-bold leading-tight mb-4">
-                                        {latestAnalysis?.metrics?.total >= 80 ? "Priority Support Advised" :
-                                            latestAnalysis?.metrics?.total >= 50 ? "Consistent Check-in Needed" : "Maintaining Equilibrium"}
-                                    </h3>
-                                    <p className="text-sm text-white/80 font-medium">Your latest data shows a {latestAnalysis?.metrics?.total}% distress marker. Focus on resilience strategies.</p>
+                            {/* Colorful Pie Chart */}
+                            <div className="bg-white/80 backdrop-blur-xl rounded-[2.5rem] p-8 shadow-xl border border-white/40 flex flex-col items-center">
+                                <div className="w-full">
+                                    <h3 className="text-xl font-bold text-gray-800 mb-2">Current Health Mix</h3>
+                                    <p className="text-sm text-gray-500 font-medium mb-2">Distribution of your latest clinical markers</p>
                                 </div>
-                                <div className="mt-8">
-                                    <button onClick={() => window.location.href = '/round1'} className="w-full py-4 bg-white text-[#4A8180] font-bold rounded-2xl shadow-lg border-2 border-transparent hover:border-white hover:bg-transparent hover:text-white transition-all">
-                                        Retake Assessment
-                                    </button>
+                                <div className="h-64 w-full">
+                                    <ResponsiveContainer width="100%" height="100%">
+                                        <PieChart>
+                                            <Pie
+                                                data={pieData}
+                                                cx="50%" cy="50%"
+                                                innerRadius={60}
+                                                outerRadius={80}
+                                                paddingAngle={5}
+                                                dataKey="value"
+                                            >
+                                                {pieData.map((entry, index) => (
+                                                    <Cell key={`cell-${index}`} fill={entry.fill} />
+                                                ))}
+                                            </Pie>
+                                            <Tooltip />
+                                            <Legend verticalAlign="bottom" height={36} />
+                                        </PieChart>
+                                    </ResponsiveContainer>
                                 </div>
                             </div>
                         </motion.div>
@@ -144,22 +159,15 @@ const Results = () => {
                                     catch (e) {
                                         analysisData = {
                                             summary: record.analysis,
-                                            perspective: "Report record summary.",
-                                            details: [],
+                                            insights: ["Standard summary generated."],
+                                            suggestions: ["Maintain consistent wellness check-ins."],
                                             metrics: { total: 50, depression: 0, anxiety: 0, stress: 0, wellness: 0 }
                                         };
                                     }
                                 }
 
-                                const { metrics = {}, summary, perspective, details = [] } = analysisData;
+                                const { metrics = {}, summary, insights = [], suggestions = [] } = analysisData;
                                 const distressIndex = metrics.total || 0;
-
-                                const chartData = [
-                                    { subject: 'Depression', A: metrics.depression, fullMark: 100 },
-                                    { subject: 'Anxiety', A: metrics.anxiety, fullMark: 100 },
-                                    { subject: 'Stress', A: metrics.stress, fullMark: 100 },
-                                    { subject: 'Wellness', A: metrics.wellness, fullMark: 100 },
-                                ];
 
                                 return (
                                     <motion.div variants={itemVariants} key={record.id} className="group relative bg-white/70 backdrop-blur-xl rounded-[3rem] overflow-hidden border border-white/40 shadow-2xl transition-all duration-500">
@@ -167,7 +175,7 @@ const Results = () => {
 
                                         <div className="p-8 sm:p-12">
                                             <div className="flex flex-col lg:flex-row gap-12">
-                                                {/* Left Column: Visuals */}
+                                                {/* Score Visualization */}
                                                 <div className="lg:w-1/3 flex flex-col items-center">
                                                     <div className="mb-6 w-full">
                                                         <div className="flex items-center gap-3 mb-1">
@@ -176,7 +184,7 @@ const Results = () => {
                                                             </span>
                                                             <span className="text-gray-400 text-xs font-medium">{new Date(record.created_at).toLocaleDateString()}</span>
                                                         </div>
-                                                        <h3 className="text-2xl font-bold text-gray-800 tracking-tight">Diagnostic Overview</h3>
+                                                        <h3 className="text-2xl font-bold text-gray-800 tracking-tight italic uppercase">Diagnostic Result</h3>
                                                     </div>
 
                                                     <div className="relative mb-8 p-6 bg-white/50 rounded-[2.5rem] w-full max-w-[240px] aspect-square flex flex-col items-center justify-center border border-white shadow-inner">
@@ -202,52 +210,55 @@ const Results = () => {
                                                         </div>
                                                     </div>
 
-                                                    <div className={`w-full py-3 rounded-2xl text-xs font-black uppercase tracking-[0.2em] text-center text-white ${distressIndex >= 80 ? 'bg-rose-500' : distressIndex >= 50 ? 'bg-amber-400' : 'bg-emerald-500'}`}>
-                                                        {distressIndex >= 80 ? 'Critical Marker' : distressIndex >= 50 ? 'Moderate Analysis' : 'Stable Profile'}
+                                                    <div className={`w-full py-3 rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] text-center text-white shadow-lg ${distressIndex >= 80 ? 'bg-rose-500 shadow-rose-100' : distressIndex >= 50 ? 'bg-amber-400 shadow-amber-100' : 'bg-emerald-500 shadow-emerald-100'}`}>
+                                                        {distressIndex >= 80 ? 'Critical intervention' : distressIndex >= 50 ? 'Moderate Analysis' : 'Stable Profile'}
                                                     </div>
                                                 </div>
 
-                                                {/* Right Column: Text Insights */}
+                                                {/* Detailed Insights & Suggestions */}
                                                 <div className="lg:w-2/3 flex flex-col">
-                                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
-                                                        <div className="bg-[#F8FAFC] rounded-[2rem] p-8 border border-white shadow-sm">
-                                                            <h4 className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-4">Summary Conclusion</h4>
-                                                            <p className="text-xl font-bold text-gray-800 leading-tight mb-6">{summary}</p>
-                                                            <div className="h-44 w-full">
-                                                                <ResponsiveContainer width="100%" height="100%">
-                                                                    <RadarChart data={chartData}>
-                                                                        <PolarGrid stroke="#e2e8f0" />
-                                                                        <PolarAngleAxis dataKey="subject" tick={{ fontSize: 9, fontWeight: 700, fill: '#94a3b8' }} />
-                                                                        <Radar name="Metrics" dataKey="A" stroke="#4A8180" fill="#4A8180" fillOpacity={0.3} dot />
-                                                                    </RadarChart>
-                                                                </ResponsiveContainer>
+                                                    <div className="mb-8">
+                                                        <h4 className="text-[10px] font-black text-[#4A8180] uppercase tracking-widest mb-2">Primary Conclusion</h4>
+                                                        <p className="text-2xl font-bold text-gray-800 leading-tight">{summary}</p>
+                                                    </div>
+
+                                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                                                        {/* In-depth Insights */}
+                                                        <div className="space-y-4">
+                                                            <h5 className="text-[10px] font-black uppercase tracking-widest text-[#4A6072] border-b-2 border-[#4A6072]/10 pb-2">Technical Health Insights</h5>
+                                                            <div className="space-y-3">
+                                                                {insights.map((insight, i) => (
+                                                                    <div key={i} className="flex gap-3 p-4 bg-white/50 backdrop-blur rounded-2xl border border-white shadow-sm transition-transform hover:-translate-y-1">
+                                                                        <div className="w-1.5 h-1.5 rounded-full bg-[#4A8180] mt-1.5 shrink-0"></div>
+                                                                        <p className="text-xs font-bold text-gray-600 leading-relaxed">{insight}</p>
+                                                                    </div>
+                                                                ))}
                                                             </div>
                                                         </div>
 
-                                                        <div className="space-y-6">
-                                                            <div className="p-8 bg-gradient-to-br from-gray-800 to-gray-900 rounded-[2rem] text-white shadow-xl">
-                                                                <h4 className="text-[10px] font-black text-[#4A8180] uppercase tracking-widest mb-3">Clinical Perspective</h4>
-                                                                <p className="text-sm font-medium leading-relaxed italic opacity-90">"{perspective}"</p>
-                                                            </div>
-                                                            <div className="p-8 bg-white border border-gray-100 rounded-[2rem] shadow-sm">
-                                                                <h4 className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-4">Key Metrics Observed</h4>
-                                                                <ul className="space-y-4">
-                                                                    {details.slice(0, 4).map((d, i) => (
-                                                                        <li key={i} className="flex gap-4 text-xs font-bold text-gray-600">
-                                                                            <div className="w-1.5 h-1.5 rounded-full bg-[#4A8180] mt-1 shrink-0"></div>
-                                                                            {d}
-                                                                        </li>
-                                                                    ))}
-                                                                </ul>
+                                                        {/* Actionable Suggestions */}
+                                                        <div className="space-y-4">
+                                                            <h5 className="text-[10px] font-black uppercase tracking-widest text-[#4A8180] border-b-2 border-[#4A8180]/10 pb-2">Actionable Suggestions</h5>
+                                                            <div className="space-y-3">
+                                                                {suggestions.map((sug, i) => (
+                                                                    <div key={i} className="flex gap-3 p-4 bg-[#F3F7FA] rounded-2xl border border-blue-50 shadow-sm transition-transform hover:-translate-y-1">
+                                                                        <div className="w-2 h-2 rounded-full bg-blue-400 mt-1 shrink-0"></div>
+                                                                        <p className="text-xs font-medium text-gray-700 leading-relaxed italic">{sug}</p>
+                                                                    </div>
+                                                                ))}
                                                             </div>
                                                         </div>
                                                     </div>
 
-                                                    <div className="mt-auto flex justify-end gap-5 pt-8 border-t border-gray-100">
-                                                        <button onClick={() => window.location.href = '/doctors'} className="px-8 py-3 bg-gray-900 text-white font-bold text-[10px] uppercase tracking-widest rounded-2xl hover:bg-black transition-all">
-                                                            Speak with Specialist
-                                                        </button>
-                                                    </div>
+                                                    {/* Conditional Action Button */}
+                                                    {distressIndex >= 80 && (
+                                                        <div className="mt-10 pt-8 border-t border-gray-100 flex justify-end">
+                                                            <button onClick={() => window.location.href = '/doctors'} className="px-10 py-4 bg-gray-900 text-white font-black text-xs uppercase tracking-[0.2em] rounded-2xl hover:bg-black transition-all shadow-xl hover:shadow-black/20 flex items-center gap-3">
+                                                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
+                                                                Immediate Consultation Required
+                                                            </button>
+                                                        </div>
+                                                    )}
                                                 </div>
                                             </div>
                                         </div>

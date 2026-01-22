@@ -82,6 +82,7 @@ const generateAnalysis = (r1, r2, answers) => {
 
     let strSum = 0;
     strSum += mapDistress(a1.q6, 3, true);   // Overwhelm (R1)
+    anxSum += mapDistress(a1.q2, 3, true);   // Sleep (R1) - shared marker
     strSum += mapDistress(a2.q1, 3, true);   // Deadline pressure (R2)
     const stressScore = Math.round(strSum / 2);
 
@@ -97,37 +98,43 @@ const generateAnalysis = (r1, r2, answers) => {
 
     // Enhanced Insights
     let summary = "";
-    let perspective = "";
     let recommendations = [];
+    let technicalInsights = [];
 
     if (a2.q6 && a2.q6 !== 'Never') {
         summary = "CRITICAL ALERT: immediate Clinical Attention Advised.";
-        perspective = "Indicators of severe psychological distress and risk markers detected. The current psychological state requires urgent professional oversight to ensure emotional safety and stabilization.";
-        recommendations.push("Seek immediate help from a certified mental health professional or crisis helpline.");
+        recommendations.push("EMERGENCY: Contact a crisis helpline or mental health emergency service immediately.", "Do not stay alone; reach out to a trusted individual.", "Consult with a psychiatrist within the next 24 hours.");
+        technicalInsights.push("Acute suicidal ideation detected: High-risk neurocognitive markers identified.", "Immediate crisis intervention protocol activated based on safety markers.");
     } else if (totalDistress >= 80) {
         summary = "Clinical Impression: Severe Adjustment & Distress Syndrome.";
-        perspective = "The data reflects a state of acute emotional exhaustion. High scores in mood-affect and somatic anxiety suggest that the nervous system is in a 'high-threat' state, impacting daily cognitive and social functioning.";
-        recommendations.push("Consult with a therapist to develop a stabilization plan.");
+        recommendations.push("Schedule a consultation with a clinical psychologist this week.", "Begin a daily mood-tracking journal for diagnostic clarity.", "Implement an 'emergency rest' protocol—minimize all non-essential professional commitments.");
+        technicalInsights.push("High Sympathetic Nervous System (SNS) arousal: Your body is in a persistent 'fight or flight' state.", "Cognitive load exceeds current emotional buffering capacity.");
     } else if (totalDistress > 50) {
-        summary = "Clinical Impression: Moderate Emotional Strain with Somatic Underpinnings.";
-        perspective = "Biological and psychological symptoms show a consistent pattern of burnout. While basic functioning remains, there is a clear erosion of coping reserves, particularly in stress management and social engagement.";
-        recommendations.push("Implement stress-reduction techniques and consider a wellness check-in with a therapist.");
+        summary = "Clinical Impression: Moderate Emotional Strain & Burnout Risk.";
+        recommendations.push("Practice 15 minutes of structured mindfulness or deep breathing daily.", "Limit screen time and caffeine intake to stabilize the nervous system.", "Consider a session with a wellness coach to discuss work-life boundaries.");
+        technicalInsights.push("Cumulative stress load is impacting somatic health (sleep/appetite).", "Incipient burnout markers detected in interest and energy levels.");
     } else {
-        summary = "Impressive Presentation: Healthy Psychosocial Profile.";
-        perspective = "Your responses indicate a robust emotional ecosystem. You possess strong resilience markers and active coping mechanisms that are currently keeping you in a state of psychological flow.";
-        recommendations.push("Continue your proactive wellness practices to maintain this equilibrium.");
+        summary = "Healthy Psychosocial Profile: Resilient Engagement.";
+        recommendations.push("Continue your current self-care and exercise routines.", "Build on your strengths by mentoring others or starting a new hobby.", "Perform a monthly 'wellness check' assessment to maintain this state.");
+        technicalInsights.push("High psychological resilience markers observed.", "Strong emotional regulation and proactive coping mechanisms are evident.");
     }
 
-    const details = [];
-    if (a2.q4 === 'Often') details.push("Sense of Hopelessness: Indicates an narrowing of future perspective, requiring cognitive reframing.");
-    if (a2.q3 === 'Often') details.push("Hyperarousal (Somatic): High physical stress markers (sweating/tachycardia) detected.");
-    if (a2.q1 === 'Severe') details.push("Professional Overload: Career-related stressors are significantly impacting emotional stability.");
-    if (a2.q5 === 'Often') details.push("Social Withdrawal: Increased isolation detected, which may exacerbate existing mood fluctuations.");
+    // Specific Actionable Insights
+    if (a2.q4 === 'Often') technicalInsights.push("Pessimistic Attribution Bias: Tendency to view challenges as permanent and pervasive.");
+    if (a2.q3 === 'Often') technicalInsights.push("Somatic Manifestation: Emotional stress is converting into physical symptoms (heart rate, sweating).");
+    if (a1.q2 === 'Restless') technicalInsights.push("Sleep Architecture Disruption: Restless sleep is preventing full cognitive recovery.");
+    if (a2.q5 === 'Often') technicalInsights.push("Social Withdrawal Pattern: Isolation is significantly reducing your emotional support network.");
+
+    // Additional Suggestions
+    const suggestions = [...recommendations];
+    if (a1.q9 === 'Never') suggestions.push("Bio-Suggestion: Start with 10 minutes of light walking to boost endorphin production.");
+    if (a1.q8 === 'Often') suggestions.push("Energy Audit: Your fatigue markers suggest you need a comprehensive 'de-load' week.");
+    if (a2.q7 === 'Never') suggestions.push("Mindfulness: Use apps like Calm or Headspace to build foundational relaxation skills.");
 
     return JSON.stringify({
         summary,
-        perspective,
-        details: [...details, ...recommendations],
+        insights: technicalInsights,
+        suggestions: suggestions,
         metrics: {
             depression: depressionScore,
             anxiety: anxietyScore,
