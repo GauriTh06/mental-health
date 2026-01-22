@@ -8,7 +8,7 @@ const doctors = [
         specialty: "Clinical Psychologist",
         experience: "12 years experience",
         rating: 4.9,
-        image: "https://t3.ftcdn.net/jpg/06/58/01/29/360_F_658012929_iBfI4d732c58972986429.jpg", // Indian Female Doctor
+        image: "https://r.jina.ai/i/C:/Users/HP/.gemini/antigravity/brain/4b788915-66a9-4012-b484-b353ac41feb2/female_doctor_indian_1_1769105055483.png",
         bio: "Specializes in anxiety disorders and cognitive behavioral therapy (CBT) for young adults and students."
     },
     {
@@ -26,7 +26,7 @@ const doctors = [
         specialty: "Therapist, LMFT",
         experience: "8 years experience",
         rating: 5.0,
-        image: "https://img.freepik.com/free-photo/portrait-expressive-young-woman-with-glasses_176474-121652.jpg", // Indian Female Therapist
+        image: "https://r.jina.ai/i/C:/Users/HP/.gemini/antigravity/brain/4b788915-66a9-4012-b484-b353ac41feb2/female_doctor_indian_2_1769105074194.png",
         bio: "Dedicated to couples counselling and family therapy. compassionate and listener-focused."
     },
     {

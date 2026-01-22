@@ -67,64 +67,66 @@ const generateAnalysis = (r1, r2, answers) => {
     };
 
     // Calculate Category Distress
-
-    // Depression (4 items)
     let depSum = 0;
     depSum += mapDistress(a1.q1, 3, true);   // Mood (R1)
     depSum += mapDistress(a1.q3, 3, true);   // Interest (R1)
-    depSum += mapDistress(a2.q4, 2, true);   // Hopelessness (R2, maps Often to 2, so maxVal=2)
-    depSum += mapDistress(a2.q6, 3, true);   // Self-harm (R2, maxVal=3)
+    depSum += mapDistress(a2.q4, 2, true);   // Hopelessness (R2)
+    depSum += mapDistress(a2.q6, 3, true);   // Self-harm (R2)
     const depressionScore = Math.round(depSum / 4);
 
-    // Anxiety (3 items)
     let anxSum = 0;
-    anxSum += mapDistress(a2.q3, 2, true);   // Phys symptoms (R2, maps Often to 2, so maxVal=2)
-    anxSum += mapDistress(a1.q8, 3, true);   // Fatigue (R1)
-    anxSum += (a1.q7 === 'Normal' ? 0 : 100); // Appetite penalty (Maxed to 100)
+    anxSum += mapDistress(a2.q3, 2, true);   // Phys symptoms
+    anxSum += mapDistress(a1.q8, 3, true);   // Fatigue
+    anxSum += (a1.q7 === 'Normal' ? 0 : 100);
     const anxietyScore = Math.round(anxSum / 3);
 
-    // Stress (2 items)
     let strSum = 0;
     strSum += mapDistress(a1.q6, 3, true);   // Overwhelm (R1)
     strSum += mapDistress(a2.q1, 3, true);   // Deadline pressure (R2)
     const stressScore = Math.round(strSum / 2);
 
-    // Wellness Risk (5 items)
     let welRiskSum = 0;
-    welRiskSum += mapDistress(a2.q2, 4, false);  // Meals (R2, 1-5 scale becomes 0-4, maxVal=4)
-    welRiskSum += mapDistress(a2.q5, 2, true);   // Isolation (R2, maxVal=2)
-    welRiskSum += mapDistress(a2.q7, 3, false);  // Mindfulness (R2, maxVal=3)
+    welRiskSum += mapDistress(a2.q2, 4, false);  // Meals
+    welRiskSum += mapDistress(a2.q5, 2, true);   // Isolation
+    welRiskSum += mapDistress(a2.q7, 3, false);  // Mindfulness (R2)
     welRiskSum += mapDistress(a1.q5, 3, false);  // Support (R1)
     welRiskSum += mapDistress(a1.q9, 3, false);  // Exercise (R1)
     const wellnessRiskScore = Math.round(welRiskSum / 5);
 
     const totalDistress = Math.round((depressionScore + anxietyScore + stressScore + wellnessRiskScore) / 4);
 
-    // Generate Report Text
+    // Enhanced Insights
     let summary = "";
+    let perspective = "";
     let recommendations = [];
 
     if (a2.q6 && a2.q6 !== 'Never') {
-        summary = "URGENT SAFETY ALERT: Markers for intervention detected.";
-        recommendations.push("PRO ACTION: Please reach out to specialized support immediately.");
+        summary = "CRITICAL ALERT: immediate Clinical Attention Advised.";
+        perspective = "Indicators of severe psychological distress and risk markers detected. The current psychological state requires urgent professional oversight to ensure emotional safety and stabilization.";
+        recommendations.push("Seek immediate help from a certified mental health professional or crisis helpline.");
     } else if (totalDistress >= 80) {
-        summary = "CRITICAL DISTRESS: Your results indicate severe psychological strain.";
-        recommendations.push("URGENT: Professional consultation is highly recommended immediately.");
+        summary = "Clinical Impression: Severe Adjustment & Distress Syndrome.";
+        perspective = "The data reflects a state of acute emotional exhaustion. High scores in mood-affect and somatic anxiety suggest that the nervous system is in a 'high-threat' state, impacting daily cognitive and social functioning.";
+        recommendations.push("Consult with a therapist to develop a stabilization plan.");
     } else if (totalDistress > 50) {
-        summary = "MODERATE STRAIN: You are experiencing significant mental fatigue.";
-        recommendations.push("Consider professional counseling to prevent burnout.");
+        summary = "Clinical Impression: Moderate Emotional Strain with Somatic Underpinnings.";
+        perspective = "Biological and psychological symptoms show a consistent pattern of burnout. While basic functioning remains, there is a clear erosion of coping reserves, particularly in stress management and social engagement.";
+        recommendations.push("Implement stress-reduction techniques and consider a wellness check-in with a therapist.");
     } else {
-        summary = "STABLE: Your wellness markers are within a healthy range.";
-        recommendations.push("Continue your positive habits.");
+        summary = "Impressive Presentation: Healthy Psychosocial Profile.";
+        perspective = "Your responses indicate a robust emotional ecosystem. You possess strong resilience markers and active coping mechanisms that are currently keeping you in a state of psychological flow.";
+        recommendations.push("Continue your proactive wellness practices to maintain this equilibrium.");
     }
 
     const details = [];
-    if (a2.q4 === 'Often') details.push("High Hopelessness: Feeling stuck is a critical marker for depression.");
-    if (a2.q3 === 'Often') details.push("Acute Physical Stress: High heartbeat/sweating detected.");
-    if (a2.q1 === 'Severe') details.push("Deadline Crisis: Workplace pressure is at critical levels.");
+    if (a2.q4 === 'Often') details.push("Sense of Hopelessness: Indicates an narrowing of future perspective, requiring cognitive reframing.");
+    if (a2.q3 === 'Often') details.push("Hyperarousal (Somatic): High physical stress markers (sweating/tachycardia) detected.");
+    if (a2.q1 === 'Severe') details.push("Professional Overload: Career-related stressors are significantly impacting emotional stability.");
+    if (a2.q5 === 'Often') details.push("Social Withdrawal: Increased isolation detected, which may exacerbate existing mood fluctuations.");
 
     return JSON.stringify({
         summary,
+        perspective,
         details: [...details, ...recommendations],
         metrics: {
             depression: depressionScore,
