@@ -34,14 +34,33 @@ const Dashboard = () => {
             <div className="max-w-7xl mx-auto space-y-8">
 
                 {/* WELCOME BANNER */}
-                <div className="flex flex-col md:flex-row justify-between items-center bg-white p-8 rounded-[2rem] border border-slate-100 shadow-sm">
-                    <div>
+                <div className="bg-white rounded-[2rem] p-8 border border-slate-100 shadow-sm flex flex-col md:flex-row items-center justify-between relative overflow-hidden">
+                    <div className="relative z-10">
                         <h2 className="text-3xl font-bold text-slate-800 tracking-tight mb-2">{getGreeting()}, {user?.name?.split(' ')[0]} ☀️</h2>
-                        <p className="text-slate-500 font-medium">Ready for your daily check-in? Tracking consistency is key to growth.</p>
+                        <p className="text-slate-500 font-medium mb-6">
+                            Ready for your <span className="font-bold text-[#4A8180]">{history.length + 1 > 1 ? (history.length + 1 === 2 ? '2nd' : history.length + 1 === 3 ? '3rd' : `${history.length + 1}th`) : '1st'}</span> mental health analysis?
+                            Regular check-ins help you track your progress.
+                        </p>
+                        <div className="flex gap-4">
+                            <Link to="/round1" className="bg-[#4A8180] text-white px-8 py-3.5 rounded-2xl font-bold hover:bg-[#3d6b6a] transition-all shadow-lg shadow-[#4A8180]/20">
+                                Initiate Assessment
+                            </Link>
+                            <Link to="/results" className="bg-slate-50 text-slate-600 px-6 py-3.5 rounded-2xl font-bold hover:bg-slate-100 transition-all">
+                                View History
+                            </Link>
+                        </div>
                     </div>
-                    <Link to="/round1" className="mt-4 md:mt-0 bg-[#4A8180] text-white px-8 py-3.5 rounded-2xl font-bold hover:bg-[#3d6b6a] transition-all shadow-lg shadow-[#4A8180]/20">
-                        Initiate Assessment
-                    </Link>
+
+                    <div className="hidden lg:block relative mr-8">
+                        <div className="w-40 h-40 bg-[#4A8180]/5 rounded-full flex items-center justify-center relative overflow-hidden border-4 border-white shadow-xl">
+                            <div className="text-center">
+                                <svg className="w-16 h-16 text-[#4A8180] mx-auto mb-1" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                                </svg>
+                                <p className="text-[10px] font-black text-[#4A8180] uppercase tracking-widest">{history.length} Reports Logged</p>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">

@@ -27,7 +27,7 @@ const DashboardLayout = ({ children, title }) => {
                 </h1>
             </div>
 
-            <nav className="flex-1 px-4 space-y-1.5">
+            <nav className="flex-1 px-5 space-y-4 py-6">
                 {menuItems.map((item) => {
                     const active = location.pathname === item.path;
                     return (
@@ -35,15 +35,15 @@ const DashboardLayout = ({ children, title }) => {
                             key={item.path}
                             to={item.path}
                             onClick={() => setIsMobileMenuOpen(false)}
-                            className={`flex items-center px-4 py-3 rounded-2xl transition-all group ${active
+                            className={`flex items-center px-5 py-3.5 rounded-2xl transition-all group ${active
                                 ? 'bg-[#4A8180] text-white shadow-lg shadow-[#4A8180]/20'
                                 : 'text-slate-600 hover:bg-white hover:text-[#4A8180] shadow-sm hover:shadow-slate-200/50'
                                 }`}
                         >
-                            <svg className={`w-5 h-5 mr-3.5 ${active ? 'text-white' : 'text-slate-400 group-hover:text-[#4A8180]'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg className={`w-5 h-5 mr-4 ${active ? 'text-white' : 'text-slate-400 group-hover:text-[#4A8180]'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d={item.icon} />
                             </svg>
-                            <span className="font-semibold text-[15px]">{item.label}</span>
+                            <span className="font-bold text-[15px] tracking-tight">{item.label}</span>
                         </Link>
                     )
                 })}
