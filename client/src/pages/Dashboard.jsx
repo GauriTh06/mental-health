@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import DashboardLayout from '../components/DashboardLayout';
+import api from '../services/api';
 
 const Dashboard = () => {
     const { user } = useAuth();
@@ -25,7 +26,7 @@ const Dashboard = () => {
             {/* Welcome Hero */}
             <div className="bg-white rounded-3xl p-8 shadow-sm border border-gray-100 mb-8 flex items-center justify-between relative overflow-hidden">
                 <div className="relative z-10 max-w-2xl">
-                    <h2 className="text-3xl font-bold text-gray-800 mb-2">{getGreeting()}, {user?.name.split(' ')[0]}!</h2>
+                    <h2 className="text-3xl font-bold text-gray-800 mb-2">{getGreeting()}, {user?.name ? user.name.split(' ')[0] : 'User'}!</h2>
                     <p className="text-gray-500 max-w-lg mb-6 leading-relaxed">
                         Ready for your <span className="font-bold text-brand-primary">{stats.count > 0 ? (stats.count === 1 ? '1st' : stats.count === 2 ? '2nd' : stats.count === 3 ? '3rd' : `${stats.count}th`) : 'next'}</span> mental health analysis?
                         Regular check-ins help you track your progress and maintain balance.
