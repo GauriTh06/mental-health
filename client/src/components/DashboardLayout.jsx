@@ -25,10 +25,10 @@ const DashboardLayout = ({ children, title }) => {
                 <div className="w-10 h-10 bg-[#4A8180] rounded-xl flex items-center justify-center text-white text-lg font-black shadow-md">
                     MW
                 </div>
-                <span className="text-2xl font-black text-[#1F2937] tracking-tighter" style={{ fontFamily: 'Montserrat, sans-serif' }}>MindWell</span>
+                <span className="text-2xl font-black text-[#1F2937] tracking-tighter">MindWell</span>
             </div>
 
-            <nav className="flex-1 px-4 space-y-4 py-8 overflow-y-auto" style={{ fontFamily: 'Montserrat, sans-serif' }}>
+            <nav className="flex-1 px-4 space-y-4 py-8 overflow-y-auto">
                 {menuItems.map((item) => {
                     const active = location.pathname === item.path;
                     return (
@@ -44,7 +44,7 @@ const DashboardLayout = ({ children, title }) => {
                             <svg className={`w-6 h-6 mr-6 ${active ? 'text-white' : 'text-[#6B7280] group-hover:text-[#4A8180]'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d={item.icon} />
                             </svg>
-                            <span className={`text-[17px] tracking-tight ${active ? 'font-black' : 'font-bold text-slate-600'}`} style={{ fontFamily: 'Montserrat, sans-serif' }}>{item.label}</span>
+                            <span className={`text-[17px] tracking-tight ${active ? 'font-black' : 'font-bold text-slate-600'}`}>{item.label}</span>
                         </Link>
                     )
                 })}
@@ -58,7 +58,7 @@ const DashboardLayout = ({ children, title }) => {
                     <div className="w-10 h-10 rounded-xl bg-white/40 flex items-center justify-center group-hover:bg-rose-50 transition-colors">
                         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" /></svg>
                     </div>
-                    <span className="font-bold text-[#4B5563] group-hover:text-rose-600 text-[17px]" style={{ fontFamily: 'Montserrat, sans-serif' }}>Sign Out</span>
+                    <span className="font-bold text-[#4B5563] group-hover:text-rose-600 text-[17px]">Sign Out</span>
                 </button>
             </div>
         </div>
@@ -116,7 +116,7 @@ const DashboardLayout = ({ children, title }) => {
                     </div>
                 </header>
 
-                <div className="flex-1 overflow-y-auto px-6 lg:px-10 py-10 space-y-12 relative z-10" style={{ fontFamily: 'Montserrat, sans-serif' }}>
+                <div className="flex-1 overflow-y-auto px-6 lg:px-10 py-10 space-y-12 relative z-10">
                     {children}
                 </div>
             </main>
