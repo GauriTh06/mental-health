@@ -23,13 +23,13 @@ const DashboardLayout = ({ children, title }) => {
     const SidebarContent = () => (
         <>
             <div className="p-8">
-                <h1 className="text-3xl font-black text-[#1A202C] tracking-tighter flex items-center gap-3">
-                    <div className="w-10 h-10 bg-[#4A8180] rounded-xl"></div>
+                <h1 className="text-2xl font-bold text-[#1A202C] tracking-tight flex items-center gap-3">
+                    <div className="w-10 h-10 bg-[#4A8180] rounded-xl shadow-sm"></div>
                     MindWell
                 </h1>
             </div>
 
-            <nav className="flex-1 px-4 space-y-3 mt-6">
+            <nav className="flex-1 px-4 space-y-2 mt-4">
                 {menuItems.map((item) => {
                     const active = location.pathname === item.path;
                     return (
@@ -37,26 +37,26 @@ const DashboardLayout = ({ children, title }) => {
                             key={item.path}
                             to={item.path}
                             onClick={() => setIsMobileMenuOpen(false)}
-                            className={`flex items-center px-5 py-4 rounded-2xl transition-all group ${active
+                            className={`flex items-center px-4 py-3 rounded-2xl transition-all group ${active
                                 ? 'bg-[#4A8180] text-white shadow-lg'
-                                : 'text-gray-700 hover:bg-white/60 hover:text-[#4A8180]'
+                                : 'text-slate-600 hover:bg-white hover:text-[#4A8180]'
                                 }`}
                         >
-                            <svg className={`w-5 h-5 mr-3 ${active ? 'text-white' : 'text-gray-400 group-hover:text-[#4A8180]'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg className={`w-5 h-5 mr-3 ${active ? 'text-white' : 'text-slate-400 group-hover:text-[#4A8180]'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d={item.icon} />
                             </svg>
-                            <span className="font-medium text-sm">{item.label}</span>
+                            <span className="font-semibold text-base">{item.label}</span>
                         </Link>
                     )
                 })}
             </nav>
 
-            <div className="p-6 border-t border-gray-100">
+            <div className="p-6 border-t border-slate-100">
                 <button
                     onClick={() => { logout(); navigate('/login'); }}
-                    className="flex items-center gap-4 text-gray-700 hover:text-red-600 w-full px-5 py-3 transition-colors font-bold text-base"
+                    className="flex items-center gap-3 text-slate-500 hover:text-red-600 w-full px-4 py-2 transition-colors font-semibold text-base"
                 >
-                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" /></svg>
+                    <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" /></svg>
                     Sign Out
                 </button>
             </div>
