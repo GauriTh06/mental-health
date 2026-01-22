@@ -1,24 +1,55 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import DashboardLayout from '../components/DashboardLayout';
+import api from '../services/api';
 
-const questions = [
-    { id: 'q1', text: 'How often have you been bothered by feeling down, depressed, or hopeless?', type: 'scale' },
-    { id: 'q2', text: 'On average, how many hours do you sleep per night?', type: 'number', min: 0, max: 12 },
-    { id: 'q3', text: 'How often do you have little interest or pleasure in doing things?', type: 'scale' },
-    { id: 'q4', text: 'How would you rate your ability to focus during the day?', type: 'scale' },
-    { id: 'q5', text: 'Do you feel you have a support system you can rely on?', type: 'select', options: ['Yes, definitely', 'Somewhat', 'No, not really'] },
-    { id: 'q6', text: 'How often do you feel overwhelmed by your daily tasks?', type: 'scale' },
-    { id: 'q7', text: 'How would you describe your appetite recently?', type: 'select', options: ['Normal', 'Poor', 'Overeating'] },
-    { id: 'q8', text: 'Do you often feel fatigued or low energy?', type: 'select', options: ['Rarely', 'Sometimes', 'Often', 'Constantly'] },
-    { id: 'q9', text: 'How often do you engage in physical activity?', type: 'select', options: ['Daily', '3-4 times/week', '1-2 times/week', 'Rarely'] },
-    { id: 'q10', text: 'Overall, how would you rate your mental health today?', type: 'scale' },
+const questionSets = [
+    [ // Set A (Default)
+        { id: 'q1', text: 'How often have you been bothered by feeling down, depressed, or hopeless?', type: 'scale' },
+        { id: 'q2', text: 'On average, how many hours do you sleep per night?', type: 'number', min: 0, max: 12 },
+        { id: 'q3', text: 'How often do you have little interest or pleasure in doing things?', type: 'scale' },
+        { id: 'q4', text: 'How would you rate your ability to focus during the day?', type: 'scale' },
+        { id: 'q5', text: 'Do you feel you have a support system you can rely on?', type: 'select', options: ['Yes, definitely', 'Somewhat', 'No, not really'] },
+        { id: 'q6', text: 'How often do you feel overwhelmed by your daily tasks?', type: 'scale' },
+        { id: 'q7', text: 'How would you describe your appetite recently?', type: 'select', options: ['Normal', 'Poor', 'Overeating'] },
+        { id: 'q8', text: 'Do you often feel fatigued or low energy?', type: 'select', options: ['Rarely', 'Sometimes', 'Often', 'Constantly'] },
+        { id: 'q9', text: 'How often do you engage in physical activity?', type: 'select', options: ['Daily', '3-4 times/week', '1-2 times/week', 'Rarely'] },
+        { id: 'q10', text: 'Overall, how would you rate your mental health today?', type: 'scale' },
+    ],
+    [ // Set B (Variation)
+        { id: 'q1', text: 'In the last 2 weeks, how often have you felt failure or let yourself down?', type: 'scale' },
+        { id: 'q2', text: 'How many meals are you skipping per day on average?', type: 'number', min: 0, max: 5 },
+        { id: 'q3', text: 'Do you find it hard to get started on tasks you need to do?', type: 'scale' },
+        { id: 'q4', text: 'How clear is your thinking process right now?', type: 'scale' },
+        { id: 'q5', text: 'Do you feel isolated from others even when not alone?', type: 'select', options: ['Never', 'Sometimes', 'Often'] },
+        { id: 'q6', text: 'How often do you feel nervous, anxious, or on edge?', type: 'scale' },
+        { id: 'q7', text: 'Have you noticed significant weight changes recently?', type: 'select', options: ['No', 'Yes, gained', 'Yes, lost'] },
+        { id: 'q8', text: 'Do you wake up feeling rested?', type: 'select', options: ['Always', 'Sometimes', 'Rarely'] },
+        { id: 'q9', text: 'Do you engage in any hobbies currently?', type: 'select', options: ['Regularly', 'Occasionally', 'Never'] },
+        { id: 'q10', text: 'How optmistic do you feel about the future?', type: 'scale' },
+    ]
 ];
 
 const Round1 = () => {
     const navigate = useNavigate();
+    const [questions, setQuestions] = useState([]);
     const [answers, setAnswers] = useState({});
     const [currentStep, setCurrentStep] = useState(0);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        // Fetch history to determine set
+        api.get('/history').then(res => {
+            const count = res.data.length;
+            const setIndex = count % questionSets.length;
+            setQuestions(questionSets[setIndex]);
+            setLoading(false);
+        }).catch(err => {
+            console.error(err);
+            setQuestions(questionSets[0]); // Fallback
+            setLoading(false);
+        });
+    }, []);
 
     const handleChange = (id, value) => {
         setAnswers({ ...answers, [id]: value });
@@ -37,51 +68,22 @@ const Round1 = () => {
 
     const calculateScore = (ans) => {
         let score = 0;
-        // Mapping for specific select questions
-        const optionScores = {
-            'Yes, definitely': 5, 'Somewhat': 3, 'No, not really': 1,
-            'Normal': 5, 'Poor': 2, 'Overeating': 2,
-            'Rarely': 1, 'Sometimes': 2, 'Often': 3, 'Constantly': 4,
-            'Daily': 5, '3-4 times/week': 4, '1-2 times/week': 3
-        };
-
+        // Generic scoring heuristic for the MVP
         Object.entries(ans).forEach(([key, value]) => {
             if (!value) return;
-
-            // Handle numeric/scale inputs (which might be strings)
             if (!isNaN(value)) {
                 let val = parseInt(value);
-                // Invert logic for negative questions if needed? 
-                // For now, assuming 1=Low/Bad, 5=High/Good? 
-                // Wait, typically 1=Never(Good for depression), 5=Always(Bad for depression)
-                // Let's standardise: Higher score = Better Mental Health
-
-                // Q1 (Depressed): 1(Never)=Good, 5(Always)=Bad -> Invert
-                // Q2 (Sleep): Number. 7-9 is good. >9 or <6 bad. 
-                // Q3 (Interest): 1(Never)=Good, 5(Always)=Bad -> Invert
-                // Q4 (Focus): 1(Bad) to 5(Good)? Scale usually 1=Poor, 5=Great -> Keep
-                // Q6 (Overwhelmed): 1(Never)=Good, 5(Always)=Bad -> Invert
-                // Q10 (Overall): 1(Poor) to 5(Great) -> Keep
-
-                const inverted = ['q1', 'q3', 'q6'];
-
-                if (key === 'q2') {
-                    // Sleep logic: 7-9 = 5pts, 6 or 10 = 3pts, <6 or >10 = 1pt
-                    if (val >= 7 && val <= 9) score += 5;
-                    else if (val === 6 || val === 10) score += 3;
-                    else score += 1;
-                } else if (inverted.includes(key)) {
-                    score += (6 - val); // 1->5, 5->1
-                } else {
-                    score += val;
-                }
-            } else if (optionScores[value]) {
-                score += optionScores[value];
+                score += val;
+            } else {
+                if (['Yes, definitely', 'Normal', 'Always', 'Daily', 'Regularly'].includes(value)) score += 5;
+                if (['Rarely', 'Somewhat', 'Sometimes', '3-4 times/week'].includes(value)) score += 3;
+                if (['Often', 'Poor', 'Overeating', 'No, not really', 'Never'].includes(value)) score += 1;
             }
         });
-
         return score;
     };
+
+    if (loading) return <DashboardLayout title="Round 1 Assessment"><div className="p-12 text-center text-gray-400">Loading Assessment...</div></DashboardLayout>;
 
     const q = questions[currentStep];
     const progress = ((currentStep + 1) / questions.length) * 100;

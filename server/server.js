@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const db = require('./database');
@@ -6,7 +7,7 @@ const jwt = require('jsonwebtoken');
 
 const app = express();
 const PORT = 5000;
-const SECRET_KEY = 'super_secret_key_change_this';
+const SECRET_KEY = process.env.JWT_SECRET || 'super_secret_key_change_this';
 
 app.use(cors());
 app.use(express.json());
@@ -277,59 +278,36 @@ app.get('/api/history', authenticateToken, (req, res) => {
     });
 });
 
-app.post('/api/chat', authenticateToken, (req, res) => {
+const { OpenAI } = require('openai');
+
+// Initialize OpenAI (Make sure to set OPENAI_API_KEY in .env)
+const openai = new OpenAI({
+    apiKey: process.env.OPENAI_API_KEY || 'mock-key', // Fallback for safety, but user needs to set it
+});
+
+app.post('/api/chat', authenticateToken, async (req, res) => {
     const { message } = req.body;
     const userId = req.user.id;
 
-    // Logic for smarter responses
-    const lowerMsg = message.toLowerCase();
-    let botResponse = "I'm listening. Please go on.";
+    let botResponse = "";
 
-    // Predefined logic for solutions
-    if (lowerMsg.includes('suicide') || lowerMsg.includes('kill myself')) {
-        botResponse = "CRITICAL: I am an AI and cannot provide crisis support. If you are in danger, please call 988 (Suicide & Crisis Lifeline) or your local emergency services immediately.";
-    } else if (lowerMsg.includes('manage stress') || lowerMsg.includes('pressure')) {
-        botResponse = "Stress Management: 1. Try Box Breathing (Inhale 4s, Hold 4s, Exhale 4s, Hold 4s). 2. Practice 'Progressive Muscle Relaxation'. 3. Break large tasks into small, manageable steps.";
-    } else if (lowerMsg.includes('anxious') || lowerMsg.includes('anxiety')) {
-        botResponse = "Anxiety Support: Use the 5-4-3-2-1 Grounding Technique. Name 5 things you see, 4 you can touch, 3 you hear, 2 you can smell, and 1 you can taste. This pulls your mind back to the present.";
-    } else if (lowerMsg.includes('assessment results') || lowerMsg.includes('explain my score')) {
-        botResponse = "Your Assessment Results: A high 'Distress Index' (80+) suggests you should see a doctor. A score of 50-80 indicates moderate strain where self-care and counseling are recommended.";
-    } else if (lowerMsg.includes('breathing exercises')) {
-        botResponse = "Breathing Exercise: Try '4-7-8' breathing. Inhale quietly through your nose for 4 seconds, hold for 7, and exhale forcefully through your mouth for 8 seconds. It's a natural tranquilizer for the nervous system.";
-    } else if (lowerMsg.includes('improve my sleep') || lowerMsg.includes('insomnia')) {
-        botResponse = "Sleep Hygiene: 1. Keep a consistent sleep schedule. 2. Limit blue light (screens) 1 hour before bed. 3. Keep your room cool and dark. 4. Avoid caffeine after 2 PM.";
-    } else if (lowerMsg.includes('focus') || lowerMsg.includes('concentration')) {
-        botResponse = "Better Focus: Use the Pomodoro Technique (25 mins work, 5 mins break). Clear your physical workspace and minimize digital distractions like notifications.";
-    } else if (lowerMsg.includes('loneliness') || lowerMsg.includes('lonely')) {
-        botResponse = "Coping with Loneliness: 1. Schedule a short call with a loved one. 2. Join a local or online community based on your hobbies. 3. Volunteer—helping others often helps us feel connected.";
-    } else if (lowerMsg.includes('work-life balance')) {
-        botResponse = "Work-Life Balance: Set a strict 'log-off' time. Define a dedicated workspace if working from home. Learn to say 'no' to non-essential tasks that overwhelm your schedule.";
-    } else if (lowerMsg.includes('self-care for depression')) {
-        botResponse = "Self-care for Depression: Start with 'Behavioral Activation'. Even if you don't feel like it, try to do one small positive thing (like a 5-minute walk). Movement often precedes motivation.";
-    } else if (lowerMsg.includes('panic attack')) {
-        botResponse = "Panic Attack Support: Remind yourself 'This feeling is temporary and I am safe.' Focus on your breath. Splash cold water on your face—this triggers the 'Dive Reflex' which slows your heart rate.";
-    } else if (lowerMsg.includes('journaling')) {
-        botResponse = "Journaling: Try 'Gratitude Journaling' (write 3 things you're thankful for) or 'Brain Dumping' (write everything that's worrying you to get it out of your head).";
-    } else if (lowerMsg.includes('social confidence') || lowerMsg.includes('social anxiety')) {
-        botResponse = "Social Confidence: Start small. Practice making brief eye contact or saying 'hello' to a shopkeeper. Focus on the other person rather than your own anxiety.";
-    } else if (lowerMsg.includes('negative thoughts') || lowerMsg.includes('overthinking')) {
-        botResponse = "Negative Thoughts: Use 'Thought Challenging'. Ask yourself: 'Is there evidence this thought is true?' and 'What would I tell a friend in this situation?'";
-    } else if (lowerMsg.includes('physical activity') || lowerMsg.includes('exercise')) {
-        botResponse = "Physical Activity: Just 20 minutes of brisk walking can release endorphins that boost mood for hours. You don't need intense workouts; consistency is key.";
-    } else if (lowerMsg.includes('diet') || lowerMsg.includes('nutrition')) {
-        botResponse = "Nutrition for Mind: Focus on 'Brain Foods' like Omega-3s (walnuts, salmon), leafy greens, and complex carbs. Avoid sugar spikes which can lead to energy and mood crashes.";
-    } else if (lowerMsg.includes('mindfulness')) {
-        botResponse = "Mindfulness: Try a 'Sense Scan'. Spend 1 minute just noticing your breath, the feeling of your feet on the floor, and the weight of your body. It grounds your nervous system instantly.";
-    } else if (lowerMsg.includes('grief')) {
-        botResponse = "Coping with Grief: Be patient with yourself. Grief isn't linear. Allow yourself to feel the emotions without judgment. Talking to a professional or a support group can help process the loss.";
-    } else if (lowerMsg.includes('self-esteem')) {
-        botResponse = "Self-Esteem: Practice 'Positive Self-Talk'. Replace 'I am a failure' with 'I am learning and doing my best.' Keep a 'Win Journal' where you write one small success every day.";
-    } else if (lowerMsg.includes('anger')) {
-        botResponse = "Anger Management: Try the 'Cool Down' rule. Before reacting, take 10 deep breaths or walk away for 5 minutes. Identify the underlying emotion (often it's hurt or fear).";
-    } else if (lowerMsg.includes('social media')) {
-        botResponse = "Social Media Impact: Limit your screen time and unfollow accounts that make you feel 'less than'. Remember that social media is a highlight reel, not real life.";
-    } else if (lowerMsg.includes('thanks') || lowerMsg.includes('thank you')) {
-        botResponse = "You're very welcome! I'm here for you 24/7 if you need to talk or find solutions.";
+    try {
+        if (!process.env.OPENAI_API_KEY) {
+            // Fallback mock if no key provided
+            botResponse = "I'm currently in offline mode. Please configure my API key to unlock my full potential! (Dev Note: Set OPENAI_API_KEY)";
+        } else {
+            const completion = await openai.chat.completions.create({
+                messages: [
+                    { role: "system", content: "You are MindWell, a compassionate and professional mental health AI assistant. Your goal is to provide supportive, non-judgmental, and evidence-based advice. You are NOT a replacement for a doctor. If a user expresses severe distress or self-harm intent, provide crisis resources immediately. Keep responses concise, empathetic, and actionable." },
+                    { role: "user", content: message }
+                ],
+                model: "gpt-3.5-turbo",
+            });
+            botResponse = completion.choices[0].message.content;
+        }
+    } catch (err) {
+        console.error("AI Error:", err);
+        botResponse = "I'm having trouble connecting to my thought process right now. Please try again in a moment.";
     }
 
     db.run(`INSERT INTO messages (user_id, content, sender) VALUES (?, ?, ?)`, [userId, message, 'user']);

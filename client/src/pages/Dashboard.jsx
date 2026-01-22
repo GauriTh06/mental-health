@@ -5,6 +5,13 @@ import DashboardLayout from '../components/DashboardLayout';
 
 const Dashboard = () => {
     const { user } = useAuth();
+    const [stats, setStats] = React.useState({ count: 0 });
+
+    React.useEffect(() => {
+        api.get('/history').then(res => {
+            setStats({ count: res.data.length + 1 }); // +1 for the next one
+        }).catch(() => { });
+    }, []);
 
     const getGreeting = () => {
         const h = new Date().getHours();
@@ -16,15 +23,16 @@ const Dashboard = () => {
     return (
         <DashboardLayout title="Dashboard">
             {/* Welcome Hero */}
-            <div className="bg-white rounded-3xl p-8 shadow-sm border border-gray-100 mb-8 flex items-center justify-between">
-                <div>
+            <div className="bg-white rounded-3xl p-8 shadow-sm border border-gray-100 mb-8 flex items-center justify-between relative overflow-hidden">
+                <div className="relative z-10 max-w-2xl">
                     <h2 className="text-3xl font-bold text-gray-800 mb-2">{getGreeting()}, {user?.name.split(' ')[0]}!</h2>
-                    <p className="text-gray-500 max-w-lg">
-                        Welcome to your personal mental wellness space. Track your progress, get insights, and find your balance.
+                    <p className="text-gray-500 max-w-lg mb-6 leading-relaxed">
+                        Ready for your <span className="font-bold text-brand-primary">{stats.count > 0 ? (stats.count === 1 ? '1st' : stats.count === 2 ? '2nd' : stats.count === 3 ? '3rd' : `${stats.count}th`) : 'next'}</span> mental health analysis?
+                        Regular check-ins help you track your progress and maintain balance.
                     </p>
-                    <div className="mt-6 flex gap-3">
-                        <Link to="/round1" className="bg-brand-primary text-white px-6 py-3 rounded-xl font-bold hover:bg-brand-primary-hover shadow-md transition-all transform hover:-translate-y-1">
-                            Start Assessment
+                    <div className="flex gap-3">
+                        <Link to="/round1" className="bg-brand-primary text-white px-8 py-3 rounded-xl font-bold hover:bg-brand-primary-hover shadow-lg hover:shadow-xl transition-all transform hover:-translate-y-1">
+                            Start Assessment {stats.count > 0 ? `#${stats.count}` : ''}
                         </Link>
                         <Link to="/results" className="bg-brand-bg text-brand-primary px-6 py-3 rounded-xl font-bold hover:bg-blue-100 transition-colors">
                             View Reports

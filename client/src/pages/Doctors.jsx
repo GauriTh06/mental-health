@@ -4,25 +4,25 @@ import DashboardLayout from '../components/DashboardLayout';
 const doctors = [
     {
         id: 1,
-        name: "Dr. Sarah Mitchell",
+        name: "Dr. Ananya Sharma",
         specialty: "Clinical Psychologist",
         experience: "12 years experience",
         rating: 4.9,
         image: "https://t3.ftcdn.net/jpg/02/60/04/08/360_F_260040863_IYfpDy5ebrfcfXV9l15rXbc573390f7q.jpg",
-        bio: "Specializes in anxiety disorders and cognitive behavioral therapy (CBT) for young adults."
+        bio: "Specializes in anxiety disorders and cognitive behavioral therapy (CBT) for young adults and students."
     },
     {
         id: 2,
-        name: "Dr. James Wilson",
+        name: "Dr. Rajesh Verma",
         specialty: "Psychiatrist",
         experience: "15 years experience",
         rating: 4.8,
-        image: "https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=400&h=400&fit=crop",
-        bio: "Expert in mood disorders and medication management. Focuses on holistic recovery plans."
+        image: "https://t4.ftcdn.net/jpg/03/20/52/31/360_F_320523164_tx7Rdd7I2XDTvvKfz2oRuRpKOPE5z0ni.jpg",
+        bio: "Expert in mood disorders and medication management. Focuses on holistic recovery plans for depression."
     },
     {
         id: 3,
-        name: "Dr. Emily Chen",
+        name: "Dr. Priya Desai",
         specialty: "Therapist, LMFT",
         experience: "8 years experience",
         rating: 5.0,
@@ -31,12 +31,12 @@ const doctors = [
     },
     {
         id: 4,
-        name: "Dr. Michael Ross",
+        name: "Dr. Vikram Singh",
         specialty: "Neurologist",
         experience: "20 years experience",
         rating: 4.7,
-        image: "https://t4.ftcdn.net/jpg/03/20/52/31/360_F_320523164_tx7Rdd7I2XDTvvKfz2oRuRpKOPE5z0ni.jpg",
-        bio: "Specializing in the neurological aspects of mental health and sleep disorders."
+        image: "https://img.freepik.com/free-photo/portrait-smiling-handsome-male-doctor-man_171337-5055.jpg",
+        bio: "Specializing in the neurological aspects of mental health, sleep disorders, and migraine management."
     }
 ];
 

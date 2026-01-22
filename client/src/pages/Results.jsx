@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import api from '../services/api';
 import DashboardLayout from '../components/DashboardLayout';
+import { Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip, Cell } from 'recharts';
+import { motion } from 'framer-motion';
 
 const Results = () => {
     const [history, setHistory] = useState([]);
@@ -20,18 +22,30 @@ const Results = () => {
         fetchHistory();
     }, []);
 
+    const containerVariants = {
+        hidden: { opacity: 0 },
+        visible: { opacity: 1, transition: { staggerChildren: 0.1 } }
+    };
+
+    const itemVariants = {
+        hidden: { y: 20, opacity: 0 },
+        visible: { y: 0, opacity: 1 }
+    };
+
     return (
         <DashboardLayout title="Assessment History">
             <div className="max-w-7xl mx-auto">
                 {loading ? (
-                    <div className="flex h-96 items-center justify-center text-gray-400">Loading analysis...</div>
-                ) : history.length === 0 ? (
-                    <div className="text-center py-20 bg-white rounded-3xl border border-gray-100 shadow-sm">
-                        <svg className="w-16 h-16 text-gray-200 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" /></svg>
-                        <p className="text-gray-500 font-medium">No results found.</p>
+                    <div className="flex h-96 items-center justify-center text-gray-400">
+                        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-brand-primary"></div>
                     </div>
+                ) : history.length === 0 ? (
+                    <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="text-center py-20 bg-white rounded-3xl border border-gray-100 shadow-sm">
+                        <svg className="w-16 h-16 text-gray-200 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" /></svg>
+                        <p className="text-gray-500 font-medium">No particular analysis found needed to be started.</p>
+                    </motion.div>
                 ) : (
-                    <div className="space-y-8">
+                    <motion.div variants={containerVariants} initial="hidden" animate="visible" className="space-y-12">
                         {history.map((record, idx) => {
                             let analysisData;
                             if (typeof record.analysis === 'object' && record.analysis !== null) {
@@ -40,111 +54,104 @@ const Results = () => {
                                 try {
                                     analysisData = JSON.parse(record.analysis);
                                 } catch (e) {
-                                    // Fallback for old string records
-                                    analysisData = {
-                                        summary: record.analysis,
-                                        details: [],
-                                        metrics: { total: Math.min(100, Math.round(((record.round1_score + record.round2_score) / 100) * 100)) }
-                                    };
+                                    analysisData = { summary: record.analysis, details: [], metrics: { total: 50, depression: 0, anxiety: 0, stress: 0, wellness: 0 } };
                                 }
                             }
 
-                            const distressIndex = analysisData.metrics.total || 0;
-                            const depressionDistress = analysisData.metrics.depression || 0;
-                            const anxietyDistress = analysisData.metrics.anxiety || 0;
-                            const stressDistress = analysisData.metrics.stress || 0;
+                            const { metrics = {}, summary, details } = analysisData;
+                            const distressIndex = metrics.total || 0;
 
-                            const { metrics, summary, details } = analysisData;
+                            // Data for Charts
+                            const chartData = [
+                                { subject: 'Depression', A: metrics.depression || 0, fullMark: 100 },
+                                { subject: 'Anxiety', A: metrics.anxiety || 0, fullMark: 100 },
+                                { subject: 'Stress', A: metrics.stress || 0, fullMark: 100 },
+                                { subject: 'Wellness Risk', A: metrics.wellness || 0, fullMark: 100 },
+                            ];
 
                             return (
-                                <div key={record.id} className="bg-white shadow-sm rounded-3xl overflow-hidden border border-gray-100 transition-all hover:shadow-md mb-12">
-                                    <div className={`px-8 py-5 flex justify-between items-center border-b border-gray-100 ${distressIndex >= 80 ? 'bg-red-50' : distressIndex >= 50 ? 'bg-yellow-50' : 'bg-green-50'}`}>
-                                        <h3 className="font-bold text-gray-800 text-lg">Assessment Run #{history.length - idx}</h3>
-                                        <div className="flex items-center gap-4">
-                                            <span className={`px-4 py-1 rounded-full text-xs font-bold uppercase tracking-wider ${distressIndex >= 80 ? 'bg-red-100 text-red-700' : distressIndex >= 50 ? 'bg-yellow-100 text-yellow-700' : 'bg-green-100 text-green-700'}`}>
-                                                {distressIndex >= 80 ? 'High Risk' : distressIndex >= 50 ? 'Moderate Risk' : 'Normal / Stable'}
-                                            </span>
-                                            <span className="text-gray-400 text-sm font-medium">{new Date(record.created_at).toLocaleDateString()}</span>
+                                <motion.div variants={itemVariants} key={record.id} className="bg-white shadow-xl rounded-3xl overflow-hidden border border-gray-100 transform transition-all hover:scale-[1.01]">
+                                    {/* Header */}
+                                    <div className={`px-8 py-6 flex flex-col md:flex-row justify-between items-center border-b border-gray-100 ${distressIndex >= 80 ? 'bg-gradient-to-r from-red-50 to-white' : distressIndex >= 50 ? 'bg-gradient-to-r from-yellow-50 to-white' : 'bg-gradient-to-r from-green-50 to-white'}`}>
+                                        <div>
+                                            <h3 className="font-bold text-gray-800 text-2xl">Assessment Report #{history.length - idx}</h3>
+                                            <p className="text-gray-500 text-sm mt-1">{new Date(record.created_at).toLocaleDateString(undefined, { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</p>
+                                        </div>
+                                        <div className={`mt-4 md:mt-0 px-6 py-2 rounded-full text-sm font-bold uppercase tracking-wider shadow-sm ${distressIndex >= 80 ? 'bg-red-500 text-white' : distressIndex >= 50 ? 'bg-yellow-400 text-white' : 'bg-green-500 text-white'}`}>
+                                            {distressIndex >= 80 ? 'High Risk' : distressIndex >= 50 ? 'Moderate Risk' : 'Healthy / Stable'}
                                         </div>
                                     </div>
 
-                                    <div className="p-8 grid grid-cols-1 lg:grid-cols-3 gap-12">
-                                        {/* Metrics */}
-                                        <div className="lg:col-span-1 border-b lg:border-b-0 lg:border-r border-gray-100 pb-8 lg:pb-0 lg:pr-8">
-                                            <div className="text-center mb-8">
-                                                <div className={`inline-flex items-center justify-center w-36 h-36 rounded-full border-8 bg-white text-5xl font-extrabold mb-4 shadow-sm ${distressIndex >= 80 ? 'border-red-100 text-red-600' : distressIndex >= 50 ? 'border-yellow-100 text-yellow-600' : 'border-green-100 text-green-600'}`}>
-                                                    {distressIndex}
+                                    <div className="p-8 grid grid-cols-1 xl:grid-cols-3 gap-12">
+                                        {/* Left Column: Visuals */}
+                                        <div className="xl:col-span-1 flex flex-col items-center border-b xl:border-b-0 xl:border-r border-gray-100 pb-8 xl:pb-0 xl:pr-8">
+                                            {/* Circular Score */}
+                                            <div className="relative mb-8">
+                                                <svg className="w-48 h-48 transform -rotate-90">
+                                                    <circle cx="96" cy="96" r="88" stroke="currentColor" strokeWidth="12" fill="transparent" className="text-gray-100" />
+                                                    <circle cx="96" cy="96" r="88" stroke="currentColor" strokeWidth="12" fill="transparent"
+                                                        strokeDasharray={2 * Math.PI * 88}
+                                                        strokeDashoffset={2 * Math.PI * 88 * (1 - distressIndex / 100)}
+                                                        className={`${distressIndex >= 80 ? 'text-red-500' : distressIndex >= 50 ? 'text-yellow-400' : 'text-green-500'} transition-all duration-1000 ease-out`}
+                                                    />
+                                                </svg>
+                                                <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-center">
+                                                    <span className="text-5xl font-extrabold text-gray-800">{distressIndex}</span>
+                                                    <span className="block text-xs font-bold text-gray-400 uppercase mt-1">Distress Score</span>
                                                 </div>
-                                                <p className="text-sm font-bold text-gray-400 uppercase tracking-widest">Distress Index</p>
-                                                <p className="text-xs text-gray-400 mt-1">{distressIndex >= 80 ? '(Immediate Attention Required)' : '(Lower is Better)'}</p>
                                             </div>
 
-                                            <div className="space-y-6">
-                                                <div>
-                                                    <div className="flex justify-between text-sm font-medium text-gray-600 mb-2"><span>Depression Level</span> <span>{depressionDistress}%</span></div>
-                                                    <div className="w-full bg-gray-100 h-2.5 rounded-full overflow-hidden">
-                                                        <div style={{ width: `${depressionDistress}%` }} className={`h-full ${depressionDistress > 60 ? 'bg-red-400' : depressionDistress > 30 ? 'bg-yellow-400' : 'bg-green-400'}`}></div>
-                                                    </div>
-                                                </div>
-                                                <div>
-                                                    <div className="flex justify-between text-sm font-medium text-gray-600 mb-2"><span>Anxiety Level</span> <span>{anxietyDistress}%</span></div>
-                                                    <div className="w-full bg-gray-100 h-2.5 rounded-full overflow-hidden">
-                                                        <div style={{ width: `${anxietyDistress}%` }} className={`h-full ${anxietyDistress > 60 ? 'bg-red-400' : anxietyDistress > 30 ? 'bg-yellow-400' : 'bg-green-400'}`}></div>
-                                                    </div>
-                                                </div>
-                                                <div>
-                                                    <div className="flex justify-between text-sm font-medium text-gray-600 mb-2"><span>Stress Level</span> <span>{stressDistress}%</span></div>
-                                                    <div className="w-full bg-gray-100 h-2.5 rounded-full overflow-hidden">
-                                                        <div style={{ width: `${stressDistress}%` }} className={`h-full ${stressDistress > 60 ? 'bg-red-400' : stressDistress > 30 ? 'bg-yellow-400' : 'bg-green-400'}`}></div>
-                                                    </div>
-                                                </div>
+                                            {/* Radar Chart */}
+                                            <div className="w-full h-64">
+                                                <ResponsiveContainer width="100%" height="100%">
+                                                    <RadarChart cx="50%" cy="50%" outerRadius="80%" data={chartData}>
+                                                        <PolarGrid />
+                                                        <PolarAngleAxis dataKey="subject" tick={{ fill: '#9CA3AF', fontSize: 12 }} />
+                                                        <PolarRadiusAxis angle={30} domain={[0, 100]} tick={false} />
+                                                        <Radar name="Metrics" dataKey="A" stroke="#8884d8" fill="#8884d8" fillOpacity={0.6} />
+                                                        <Tooltip />
+                                                    </RadarChart>
+                                                </ResponsiveContainer>
                                             </div>
                                         </div>
 
-                                        {/* Clinical Report */}
-                                        <div className="lg:col-span-2 flex flex-col justify-between">
-                                            <div>
-                                                <h3 className="text-xl font-bold text-gray-900 mb-6 flex items-center">
-                                                    <svg className="w-6 h-6 text-brand-primary mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
-                                                    Clinical Analysis & Solutions
-                                                </h3>
-                                                <div className="mb-6">
-                                                    <p className={`text-lg font-bold leading-relaxed italic ${distressIndex >= 80 ? 'text-red-600' : 'text-gray-700'}`}>
-                                                        "{summary}"
-                                                    </p>
-                                                </div>
-                                                <div className="space-y-4 mb-8">
-                                                    {details.map((para, i) => (
-                                                        <div key={i} className="flex items-start">
-                                                            <div className={`flex-shrink-0 w-6 h-6 rounded-full flex items-center justify-center mt-1 mr-3 ${distressIndex >= 80 ? 'bg-red-100 text-red-600' : 'bg-brand-sidebar text-brand-primary'}`}>
-                                                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" /></svg>
-                                                            </div>
-                                                            <p className="text-gray-600 leading-relaxed text-base">{para}</p>
+                                        {/* Right Column: Text & Insights */}
+                                        <div className="xl:col-span-2 flex flex-col justify-center">
+                                            <div className="mb-8 p-6 bg-brand-bg/50 rounded-2xl border border-brand-primary/10">
+                                                <h4 className="text-brand-primary font-bold uppercase tracking-widest text-xs mb-3">Clinical Summary</h4>
+                                                <p className="text-xl md:text-2xl font-bold text-gray-800 leading-relaxed">
+                                                    "{summary}"
+                                                </p>
+                                            </div>
+
+                                            <div className="space-y-4">
+                                                {details.map((para, i) => (
+                                                    <motion.div initial={{ x: 20, opacity: 0 }} animate={{ x: 0, opacity: 1 }} transition={{ delay: i * 0.1 }} key={i} className="flex items-start">
+                                                        <div className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center mt-0.5 mr-4 shadow-sm ${distressIndex >= 80 ? 'bg-red-100 text-red-600' : 'bg-white border border-gray-200 text-brand-primary'}`}>
+                                                            <span className="font-bold text-sm">{i + 1}</span>
                                                         </div>
-                                                    ))}
-                                                </div>
+                                                        <p className="text-gray-600 leading-relaxed text-lg">{para}</p>
+                                                    </motion.div>
+                                                ))}
                                             </div>
 
                                             {distressIndex >= 80 && (
-                                                <div className="bg-red-50 border-2 border-red-100 rounded-2xl p-6 mt-4">
-                                                    <div className="flex items-center gap-4 mb-4">
-                                                        <div className="bg-red-600 text-white p-2 rounded-lg">
-                                                            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
-                                                        </div>
-                                                        <h4 className="text-red-900 font-bold text-lg">Action Required</h4>
+                                                <div className="mt-8 bg-red-600 rounded-2xl p-6 shadow-lg text-white flex flex-col md:flex-row items-center justify-between gap-6">
+                                                    <div>
+                                                        <h4 className="font-bold text-xl mb-1">Professional Help Recommended</h4>
+                                                        <p className="text-red-100">Your markers indicate high distress levels.</p>
                                                     </div>
-                                                    <p className="text-red-800 mb-6 font-medium">Your score suggests you may benefit from professional guidance. Our specialists are available for immediate consultation.</p>
-                                                    <a href="/doctors" className="inline-flex items-center justify-center w-full bg-red-600 text-white font-bold py-4 rounded-xl hover:bg-red-700 transition-all shadow-lg hover:-translate-y-1">
-                                                        Talk to a Doctor Now →
+                                                    <a href="/doctors" className="bg-white text-red-600 px-8 py-3 rounded-xl font-bold hover:bg-red-50 transition-colors shadow-md whitespace-nowrap">
+                                                        Find a Doctor
                                                     </a>
                                                 </div>
                                             )}
                                         </div>
                                     </div>
-                                </div>
-                            )
+                                </motion.div>
+                            );
                         })}
-                    </div>
+                    </motion.div>
                 )}
             </div>
         </DashboardLayout>

@@ -16,28 +16,7 @@ const Chat = () => {
 
     useEffect(scrollToBottom, [messages, loading]);
 
-    const predefinedQuestions = [
-        "How can I manage daily stress?",
-        "I'm feeling very anxious today",
-        "Explain my assessment results",
-        "Suggest deep breathing exercises",
-        "How do I improve my sleep quality?",
-        "Quick tips for better focus",
-        "How to handle deep loneliness?",
-        "Improve my work-life balance",
-        "Self-care tips for depression",
-        "How to stop a panic attack?",
-        "Benefits of mental health journaling",
-        "Building social confidence",
-        "Stop negative overthinking",
-        "Does exercise help my mood?",
-        "The best diet for mental health",
-        "How to practice mindfulness?",
-        "Coping with sudden grief",
-        "Ways to build self-esteem",
-        "Healthy ways to manage anger",
-        "Social media & mental health"
-    ];
+
 
     const sendMessage = async (e, customMsg = null) => {
         if (e) e.preventDefault();
@@ -110,37 +89,26 @@ const Chat = () => {
                     <div ref={messagesEndRef} />
                 </div>
 
-                {/* Predefined Questions & Input */}
-                <div className="bg-white p-4 border-t border-gray-100">
-                    <div className="flex flex-wrap gap-2 mb-4">
-                        {predefinedQuestions.map((q, i) => (
-                            <button
-                                key={i}
-                                onClick={() => sendMessage(null, q)}
-                                disabled={loading}
-                                className="bg-brand-sidebar text-brand-primary text-xs font-bold px-4 py-2 rounded-full border border-brand-primary/10 hover:bg-brand-primary hover:text-white transition-all disabled:opacity-50"
-                            >
-                                {q}
-                            </button>
-                        ))}
-                    </div>
-                    <form onSubmit={(e) => sendMessage(e)} className="relative">
+                {/* Input Area */}
+                <div className="bg-white p-6 border-t border-gray-100">
+                    <form onSubmit={(e) => sendMessage(e)} className="relative flex items-center gap-4">
                         <input
                             type="text"
                             value={input}
                             onChange={(e) => setInput(e.target.value)}
                             placeholder="Type your message here..."
-                            className="w-full bg-brand-bg border-none rounded-2xl pl-6 pr-14 py-4 focus:ring-2 focus:ring-brand-primary/20 outline-none text-gray-700 placeholder-gray-400"
+                            className="flex-1 bg-brand-bg border-none rounded-2xl px-6 py-4 focus:ring-2 focus:ring-brand-primary/20 outline-none text-gray-700 placeholder-gray-400 transition-all font-medium"
                             disabled={loading}
                         />
                         <button
                             type="submit"
                             disabled={loading || !input.trim()}
-                            className="absolute right-3 top-3 p-2 bg-brand-primary text-white rounded-xl hover:bg-brand-primary-hover shadow-md transition-all disabled:opacity-50 disabled:shadow-none"
+                            className="p-4 bg-brand-primary text-white rounded-2xl hover:bg-brand-primary-hover shadow-lg hover:shadow-xl transition-all disabled:opacity-50 disabled:shadow-none hover:-translate-y-1"
                         >
-                            <svg className="w-5 h-5 transform rotate-90" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" /></svg>
+                            <svg className="w-6 h-6 transform rotate-90" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" /></svg>
                         </button>
                     </form>
+                    <p className="text-center text-xs text-gray-400 mt-3">MindWell AI is an assistive tool and not a substitute for professional medical advice.</p>
                 </div>
             </div>
         </DashboardLayout>
