@@ -303,14 +303,28 @@ app.post('/api/chat', authenticateToken, async (req, res) => {
     let botResponse = "";
 
     try {
-        const currentKey = process.env.OPENAI_API_KEY;
-        if (!currentKey || currentKey.trim() === '' || currentKey === 'mock-key') {
-            console.error("Chat Error: OPENAI_API_KEY is missing or invalid.");
-            botResponse = "I'm currently in offline mode. Please configure my API key in Vercel settings to unlock my full potential!";
-        } else {
-            // Re-initialize with CURRENT key to be safe
-            const activeOpenai = new OpenAI({ apiKey: currentKey });
+        const openaiKey = process.env.OPENAI_API_KEY;
+        const groqKey = process.env.GROQ_API_KEY;
 
+        if (groqKey && (groqKey.startsWith('gsk_'))) {
+            // --- USE FREE GROQ ---
+            const groqOpenai = new OpenAI({
+                apiKey: groqKey,
+                baseURL: "https://api.groq.com/openai/v1"
+            });
+
+            const completion = await groqOpenai.chat.completions.create({
+                messages: [
+                    { role: "system", content: "You are MindWell, a compassionate mental health AI. Provide supportive, non-judgmental advice. You are NOT a doctor. If the user is in danger, provide crisis resources. Keep responses concise and empathetic." },
+                    { role: "user", content: message }
+                ],
+                model: "llama-3.3-70b-specdec",
+            });
+            botResponse = completion.choices[0].message.content;
+
+        } else if (openaiKey && !openaiKey.includes('mock-key')) {
+            // --- USE OPENAI ---
+            const activeOpenai = new OpenAI({ apiKey: openaiKey });
             const completion = await activeOpenai.chat.completions.create({
                 messages: [
                     { role: "system", content: "You are MindWell, a compassionate and professional mental health AI assistant. Your goal is to provide supportive, non-judgmental, and evidence-based advice. You are NOT a replacement for a doctor. If a user expresses severe distress or self-harm intent, provide crisis resources immediately. Keep responses concise, empathetic, and actionable." },
@@ -319,6 +333,8 @@ app.post('/api/chat', authenticateToken, async (req, res) => {
                 model: "gpt-3.5-turbo",
             });
             botResponse = completion.choices[0].message.content;
+        } else {
+            botResponse = "I'm currently in offline mode. Please configure a GROQ_API_KEY (Free) or OPENAI_API_KEY in Vercel settings to unlock my full potential!";
         }
     } catch (err) {
         console.error("AI Service Error:", err.message);
