@@ -1,4 +1,5 @@
-require('dotenv').config();
+const path = require('path');
+require('dotenv').config({ path: path.join(__dirname, '.env') });
 const express = require('express');
 const cors = require('cors');
 const db = require('./database');
@@ -8,6 +9,13 @@ const jwt = require('jsonwebtoken');
 const app = express();
 const PORT = 5000;
 const SECRET_KEY = process.env.JWT_SECRET || 'super_secret_key_change_this';
+
+console.log("------------------------------------------");
+console.log("Server Starting...");
+console.log("Config Path:", path.join(__dirname, '.env'));
+console.log("API Key Present:", !!process.env.OPENAI_API_KEY);
+console.log("------------------------------------------");
+
 
 app.use(cors());
 app.use(express.json());
