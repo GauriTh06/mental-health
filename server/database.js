@@ -70,52 +70,63 @@ const all = (query, params, callback) => {
     }
 };
 
-// Initialize Tables
+// Initialize Tables with Extended Profile Fields
+const userTableQuery = `
+    CREATE TABLE IF NOT EXISTS users (
+        id ${isPostgres ? 'SERIAL' : 'INTEGER'} PRIMARY KEY ${isPostgres ? '' : 'AUTOINCREMENT'},
+        name TEXT NOT NULL,
+        email TEXT UNIQUE NOT NULL,
+        password TEXT NOT NULL,
+        age INTEGER,
+        gender TEXT,
+        occupation TEXT,
+        bio TEXT,
+        wellness_goals TEXT,
+        emergency_contact TEXT,
+        language TEXT,
+        location TEXT,
+        blood_group TEXT,
+        created_at ${isPostgres ? 'TIMESTAMP' : 'DATETIME'} DEFAULT CURRENT_TIMESTAMP
+    );
+`;
+
+const migrationQueries = [
+    `ALTER TABLE users ADD COLUMN IF NOT EXISTS bio TEXT;`,
+    `ALTER TABLE users ADD COLUMN IF NOT EXISTS wellness_goals TEXT;`,
+    `ALTER TABLE users ADD COLUMN IF NOT EXISTS emergency_contact TEXT;`,
+    `ALTER TABLE users ADD COLUMN IF NOT EXISTS language TEXT;`,
+    `ALTER TABLE users ADD COLUMN IF NOT EXISTS location TEXT;`,
+    `ALTER TABLE users ADD COLUMN IF NOT EXISTS blood_group TEXT;`
+];
+
 if (isPostgres) {
-    // Postgres Init
-    const queries = [
-        `CREATE TABLE IF NOT EXISTS users (
-            id SERIAL PRIMARY KEY,
-            name TEXT NOT NULL,
-            email TEXT UNIQUE NOT NULL,
-            password TEXT NOT NULL,
-            age INTEGER,
-            gender TEXT,
-            occupation TEXT,
-            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-        );`,
-        `CREATE TABLE IF NOT EXISTS assessments (
-            id SERIAL PRIMARY KEY,
-            user_id INTEGER NOT NULL REFERENCES users(id),
-            round1_score INTEGER,
-            round2_score INTEGER,
-            answers TEXT,
-            analysis TEXT,
-            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-        );`,
-        `CREATE TABLE IF NOT EXISTS messages (
-            id SERIAL PRIMARY KEY,
-            user_id INTEGER NOT NULL REFERENCES users(id),
-            content TEXT NOT NULL,
-            sender TEXT NOT NULL,
-            context TEXT,
-            timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-        );`
-    ];
-    queries.forEach(q => db.query(q));
+    db.query(userTableQuery);
+    // Postgres migration (ignoring errors if columns exist)
+    migrationQueries.forEach(q => db.query(q).catch(() => { }));
+
+    db.query(`CREATE TABLE IF NOT EXISTS assessments (
+        id SERIAL PRIMARY KEY,
+        user_id INTEGER NOT NULL REFERENCES users(id),
+        round1_score INTEGER,
+        round2_score INTEGER,
+        answers TEXT,
+        analysis TEXT,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    );`);
+    db.query(`CREATE TABLE IF NOT EXISTS messages (
+        id SERIAL PRIMARY KEY,
+        user_id INTEGER NOT NULL REFERENCES users(id),
+        content TEXT NOT NULL,
+        sender TEXT NOT NULL,
+        context TEXT,
+        timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    );`);
 } else {
-    // SQLite Init
     db.serialize(() => {
-        db.run(`CREATE TABLE IF NOT EXISTS users (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            name TEXT NOT NULL,
-            email TEXT UNIQUE NOT NULL,
-            password TEXT NOT NULL,
-            age INTEGER,
-            gender TEXT,
-            occupation TEXT,
-            created_at DATETIME DEFAULT CURRENT_TIMESTAMP
-        )`);
+        db.run(userTableQuery);
+        // SQLite migration (ignoring errors if columns exist)
+        migrationQueries.forEach(q => db.run(q, [], () => { }));
+
         db.run(`CREATE TABLE IF NOT EXISTS assessments (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             user_id INTEGER NOT NULL,

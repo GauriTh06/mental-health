@@ -193,17 +193,30 @@ app.post('/api/auth/login', (req, res) => {
 });
 
 app.put('/api/auth/profile', authenticateToken, (req, res) => {
-    const { name, age, gender, occupation } = req.body;
+    const {
+        name, age, gender, occupation,
+        bio, wellness_goals, emergency_contact,
+        language, location, blood_group
+    } = req.body;
     const userId = req.user.id;
 
     db.run(
-        `UPDATE users SET name = ?, age = ?, gender = ?, occupation = ? WHERE id = ?`,
-        [name, age, gender, occupation, userId],
+        `UPDATE users SET 
+            name = ?, age = ?, gender = ?, occupation = ?, 
+            bio = ?, wellness_goals = ?, emergency_contact = ?, 
+            language = ?, location = ?, blood_group = ? 
+         WHERE id = ?`,
+        [
+            name, age, gender, occupation,
+            bio, wellness_goals, emergency_contact,
+            language, location, blood_group,
+            userId
+        ],
         function (err) {
             if (err) return res.status(500).json({ error: err.message });
 
             // Return updated user object
-            db.get(`SELECT id, name, email, age, gender, occupation FROM users WHERE id = ?`, [userId], (err, row) => {
+            db.get(`SELECT id, name, email, age, gender, occupation, bio, wellness_goals, emergency_contact, language, location, blood_group FROM users WHERE id = ?`, [userId], (err, row) => {
                 if (err) return res.status(500).json({ error: err.message });
                 res.json({ user: row, message: "Profile updated successfully" });
             });
