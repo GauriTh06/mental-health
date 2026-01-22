@@ -303,14 +303,15 @@ app.post('/api/chat', authenticateToken, async (req, res) => {
     let botResponse = "";
 
     try {
-        if (!process.env.OPENAI_API_KEY || process.env.OPENAI_API_KEY.trim() === '') {
-            console.error("Chat Error: OPENAI_API_KEY is missing or empty.");
-            // Fallback mock if no key provided
-            botResponse = "I'm currently in offline mode. Please configure my API key to unlock my full potential! (Dev Note: Set OPENAI_API_KEY in server/.env)";
+        const currentKey = process.env.OPENAI_API_KEY;
+        if (!currentKey || currentKey.trim() === '' || currentKey === 'mock-key') {
+            console.error("Chat Error: OPENAI_API_KEY is missing or invalid.");
+            botResponse = "I'm currently in offline mode. Please configure my API key in Vercel settings to unlock my full potential!";
         } else {
-            // ... existing completion logic
+            // Re-initialize with CURRENT key to be safe
+            const activeOpenai = new OpenAI({ apiKey: currentKey });
 
-            const completion = await openai.chat.completions.create({
+            const completion = await activeOpenai.chat.completions.create({
                 messages: [
                     { role: "system", content: "You are MindWell, a compassionate and professional mental health AI assistant. Your goal is to provide supportive, non-judgmental, and evidence-based advice. You are NOT a replacement for a doctor. If a user expresses severe distress or self-harm intent, provide crisis resources immediately. Keep responses concise, empathetic, and actionable." },
                     { role: "user", content: message }
@@ -320,8 +321,8 @@ app.post('/api/chat', authenticateToken, async (req, res) => {
             botResponse = completion.choices[0].message.content;
         }
     } catch (err) {
-        console.error("AI Error:", err);
-        botResponse = "I'm having trouble connecting to my thought process right now. Please try again in a moment.";
+        console.error("AI Service Error:", err.message);
+        botResponse = `AI Connection Error: ${err.message}. Please check if your OpenAI key is valid and has credits.`;
     }
 
     db.run(`INSERT INTO messages (user_id, content, sender) VALUES (?, ?, ?)`, [userId, message, 'user']);
