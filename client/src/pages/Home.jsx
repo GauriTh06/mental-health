@@ -60,9 +60,9 @@ const Home = () => {
                         <span className="inline-block px-6 py-2 mb-8 text-base font-black tracking-widest text-brand-primary uppercase bg-white/70 glass rounded-full shadow-sm border border-brand-primary/20">
                             Mental Health Intelligence
                         </span>
-                        <h1 className="text-7xl lg:text-9xl font-black text-gray-900 leading-[1] mb-10 tracking-tight">
+                        <h1 className="text-7xl lg:text-9xl font-black text-gray-900 leading-[0.9] mb-10 tracking-tighter">
                             Predict & <br />
-                            <span className="text-[#4A8180]">Heal Together</span>
+                            <span className="text-[#4A8180]">Heal <br />Together</span>
                         </h1>
                         <p className="text-2xl text-gray-700 mb-12 max-w-2xl leading-relaxed font-medium">
                             Empowering mental wellness through scientifically validated AI assessments and a supportive clinical network. Your journey to clarity starts here.
