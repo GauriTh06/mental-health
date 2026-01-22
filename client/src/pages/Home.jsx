@@ -62,7 +62,7 @@ const Home = () => {
                         </span>
                         <h1 className="text-7xl lg:text-9xl font-black text-gray-900 leading-[0.9] mb-10 tracking-tighter">
                             Predict & <br />
-                            <span className="text-[#4A8180]">Heal <br />Together</span>
+                            <span className="text-[#2D4F4E]">Heal <br />Together</span>
                         </h1>
                         <p className="text-2xl text-gray-700 mb-12 max-w-2xl leading-relaxed font-medium">
                             Empowering mental wellness through scientifically validated AI assessments and a supportive clinical network. Your journey to clarity starts here.

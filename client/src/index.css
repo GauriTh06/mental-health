@@ -85,3 +85,24 @@ body {
 ::-webkit-scrollbar-thumb:hover {
   background: #CBD5E1;
 }
+
+.font-premium-serif {
+  font-family: 'Cormorant Garamond', serif;
+}
+
+.dashboard-bg-container {
+  position: relative;
+  background-color: #F8FAFC;
+}
+
+.dashboard-bg-image {
+  position: absolute;
+  inset: 0;
+  background-image: url('./assets/redesign/dashboard_bg.png');
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  opacity: 0.15;
+  pointer-events: none;
+  z-index: 0;
+}

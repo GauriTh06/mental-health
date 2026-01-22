@@ -41,10 +41,10 @@ const DashboardLayout = ({ children, title }) => {
                                 : 'text-slate-500 hover:bg-slate-50 hover:text-[#4A8180]'
                                 }`}
                         >
-                            <svg className={`w-6 h-6 mr-6 ${active ? 'text-white' : 'text-slate-400 group-hover:text-[#4A8180]'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg className={`w-7 h-7 mr-6 ${active ? 'text-white' : 'text-slate-300 group-hover:text-[#4A8180]'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d={item.icon} />
                             </svg>
-                            <span className={`text-[15px] tracking-tight ${active ? 'font-black' : 'font-bold'}`}>{item.label}</span>
+                            <span className={`text-[19px] tracking-tight font-premium-serif italic ${active ? 'font-black' : 'font-medium opacity-90'}`}>{item.label}</span>
                         </Link>
                     )
                 })}
@@ -58,7 +58,7 @@ const DashboardLayout = ({ children, title }) => {
                     <div className="w-10 h-10 rounded-xl bg-slate-50 flex items-center justify-center group-hover:bg-rose-50 group-hover:text-rose-500 transition-colors">
                         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" /></svg>
                     </div>
-                    Sign Out
+                    <span className="font-premium-serif italic text-lg">Sign Out</span>
                 </button>
             </div>
         </div>
@@ -95,8 +95,9 @@ const DashboardLayout = ({ children, title }) => {
             </AnimatePresence>
 
             {/* Main Content Area */}
-            <main className="flex-1 flex flex-col min-w-0 overflow-hidden">
-                <header className="h-20 flex items-center justify-between px-8 md:px-12 bg-white border-b border-slate-100 flex-shrink-0">
+            <main className="flex-1 flex flex-col min-w-0 overflow-hidden dashboard-bg-container">
+                <div className="dashboard-bg-image"></div>
+                <header className="h-20 flex items-center justify-between px-8 md:px-12 bg-white/80 backdrop-blur-md border-b border-slate-100 flex-shrink-0 relative z-10">
                     <div className="flex items-center gap-4">
                         <button className="md:hidden text-slate-600 p-2 hover:bg-slate-50 rounded-lg transition-colors" onClick={() => setIsMobileMenuOpen(true)}>
                             <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16" /></svg>
@@ -115,7 +116,7 @@ const DashboardLayout = ({ children, title }) => {
                     </div>
                 </header>
 
-                <div className="flex-1 overflow-y-auto px-8 md:px-12 py-10 space-y-12">
+                <div className="flex-1 overflow-y-auto px-8 md:px-12 py-10 space-y-12 relative z-10">
                     {children}
                 </div>
             </main>
