@@ -71,65 +71,65 @@ const Results = () => {
         <DashboardLayout title="Analysis Results">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-20 font-sans antialiased text-slate-800">
                 {loading ? (
-                    <div className="flex h-96 items-center justify-center">
-                        <div className="relative w-16 h-16">
-                            <div className="absolute inset-0 rounded-full border-2 border-slate-100 border-t-brand-primary animate-spin"></div>
-                            <div className="absolute inset-3 rounded-full border-2 border-slate-50 border-b-blue-300 animate-spin-slow"></div>
+                    <div className="flex h-[60vh] items-center justify-center">
+                        <div className="relative w-20 h-20">
+                            <div className="absolute inset-0 rounded-full border-4 border-slate-100 border-t-brand-primary animate-spin"></div>
+                            <div className="absolute inset-4 rounded-full border-4 border-slate-50 border-b-blue-300 animate-spin-slow"></div>
                         </div>
                     </div>
                 ) : history.length === 0 ? (
-                    <motion.div initial={{ opacity: 0, scale: 0.98 }} animate={{ opacity: 1, scale: 1 }} className="text-center py-20 bg-white rounded-[2rem] border border-slate-100 shadow-xl">
-                        <div className="w-20 h-20 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-6">
-                            <svg className="w-10 h-10 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
+                    <motion.div initial={{ opacity: 0, scale: 0.98 }} animate={{ opacity: 1, scale: 1 }} className="text-center py-24 bg-white rounded-[3rem] border border-slate-100 shadow-2xl">
+                        <div className="w-24 h-24 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-8 shadow-inner">
+                            <svg className="w-12 h-12 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
                         </div>
-                        <h3 className="text-xl font-bold text-slate-900 mb-2">No Reports Available</h3>
-                        <p className="text-slate-500 max-w-sm mx-auto text-sm leading-relaxed">Complete your clinical assessment to generate your first technical health report.</p>
-                        <a href="/round1" className="mt-8 inline-flex items-center px-8 py-3 bg-[#4A8180] text-white text-sm font-bold rounded-xl transition-all shadow-lg hover:bg-[#3A6665]">
-                            Begin Assessment
+                        <h3 className="text-3xl font-black text-slate-900 mb-4">Assessment History Empty</h3>
+                        <p className="text-slate-500 max-w-md mx-auto text-lg leading-relaxed">Please complete a clinical mental health assessment to view your diagnostic trajectory and wellness markers.</p>
+                        <a href="/round1" className="mt-10 inline-flex items-center px-10 py-5 bg-[#4A8180] text-white text-lg font-black rounded-2xl transition-all shadow-xl hover:bg-[#3A6665] hover:-translate-y-1">
+                            Begin Initial Scaling
                         </a>
                     </motion.div>
                 ) : (
-                    <div className="space-y-10">
+                    <div className="space-y-16">
                         {/* GLOBAL DASHBOARD */}
-                        <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                            <div className="bg-white rounded-[2rem] p-8 shadow-sm border border-slate-100">
-                                <h3 className="text-lg font-bold text-slate-900 mb-1">Wellness Progression</h3>
-                                <p className="text-[11px] font-bold text-slate-400 mb-8 uppercase tracking-widest">Historical Distress Index</p>
-                                <div className="h-64">
+                        <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="grid grid-cols-1 lg:grid-cols-2 gap-10">
+                            <div className="bg-white rounded-[3rem] p-10 shadow-xl border border-slate-50">
+                                <h3 className="text-2xl font-black text-slate-900 mb-2">Wellness Timeline</h3>
+                                <p className="text-sm font-bold text-slate-400 mb-10 uppercase tracking-widest">Historical Distress Progression</p>
+                                <div className="h-72">
                                     <ResponsiveContainer width="100%" height="100%">
                                         <BarChart data={globalBarData}>
                                             <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
-                                            <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fontSize: 10, fontWeight: 600, fill: '#64748b' }} />
-                                            <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 10, fontWeight: 600, fill: '#64748b' }} />
-                                            <Tooltip cursor={{ fill: '#f8fafc' }} contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 10px 15px -3px rgba(0,0,0,0.1)', fontSize: '12px' }} />
-                                            <Bar dataKey="score" radius={[4, 4, 0, 0]} barSize={28} />
+                                            <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fontSize: 12, fontWeight: 800, fill: '#64748b' }} />
+                                            <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 12, fontWeight: 800, fill: '#64748b' }} domain={[0, 100]} />
+                                            <Tooltip cursor={{ fill: '#f8fafc' }} contentStyle={{ borderRadius: '20px', border: 'none', boxShadow: '0 20px 25px -5px rgba(0,0,0,0.1)', fontSize: '14px', fontWeight: 700 }} />
+                                            <Bar dataKey="score" radius={[8, 8, 0, 0]} barSize={40} />
                                         </BarChart>
                                     </ResponsiveContainer>
                                 </div>
                             </div>
 
-                            <div className="bg-white rounded-[2rem] p-8 shadow-sm border border-slate-100 flex flex-col items-center">
+                            <div className="bg-white rounded-[3rem] p-10 shadow-xl border border-slate-50 flex flex-col items-center">
                                 <div className="w-full text-left">
-                                    <h3 className="text-lg font-bold text-slate-900 mb-1">Current Risk Distribution</h3>
-                                    <p className="text-[11px] font-bold text-slate-400 mb-4 uppercase tracking-widest">latest clinical metrics</p>
+                                    <h3 className="text-2xl font-black text-slate-900 mb-2">Risk Mix Analysis</h3>
+                                    <p className="text-sm font-bold text-slate-400 mb-6 uppercase tracking-widest">latest clinical breakdown</p>
                                 </div>
-                                <div className="h-64 w-full">
+                                <div className="h-72 w-full">
                                     <ResponsiveContainer width="100%" height="100%">
                                         <PieChart>
                                             <Pie
                                                 data={globalPieData}
                                                 cx="50%" cy="50%"
-                                                innerRadius={65}
-                                                outerRadius={85}
-                                                paddingAngle={4}
+                                                innerRadius={75}
+                                                outerRadius={100}
+                                                paddingAngle={6}
                                                 dataKey="value"
                                             >
                                                 {globalPieData.map((entry, index) => (
                                                     <Cell key={`cell-${index}`} fill={entry.fill} />
                                                 ))}
                                             </Pie>
-                                            <Tooltip contentStyle={{ borderRadius: '12px', fontSize: '12px' }} />
-                                            <Legend iconType="circle" wrapperStyle={{ paddingTop: '20px', fontSize: '11px', fontWeight: 'bold', color: '#64748b' }} />
+                                            <Tooltip contentStyle={{ borderRadius: '16px', fontSize: '14px', fontWeight: 700 }} />
+                                            <Legend iconType="circle" wrapperStyle={{ paddingTop: '30px', fontSize: '13px', fontWeight: '800', color: '#1A202C' }} />
                                         </PieChart>
                                     </ResponsiveContainer>
                                 </div>
@@ -137,128 +137,111 @@ const Results = () => {
                         </motion.div>
 
                         {/* LIST OF DETAILED REPORTS */}
-                        <motion.div variants={containerVariants} initial="hidden" animate="visible" className="space-y-12">
+                        <motion.div variants={containerVariants} initial="hidden" animate="visible" className="space-y-20">
                             {history.map((record, idx) => {
                                 let analysis;
                                 try { analysis = typeof record.analysis === 'string' ? JSON.parse(record.analysis) : record.analysis; }
-                                catch (e) { analysis = { summary: record.analysis || "General Report" }; }
+                                catch (e) { analysis = { summary: record.analysis || "Report logged." }; }
 
                                 const metrics = analysis.metrics || { depression: 0, anxiety: 0, stress: 0, wellness: 0, total: 50 };
                                 const summary = analysis.summary || "No specific conclusion provided.";
                                 const technicalInsights = analysis.insights || analysis.details || ["General health metrics logged successfully."];
-                                const actionableSuggestions = analysis.suggestions || ["Continue with regular wellness practices."];
                                 const distressIndex = metrics.total || 0;
 
                                 const reportPieData = [
-                                    { name: 'Dep', value: metrics.depression || 5, fill: '#FF6B6B' },
-                                    { name: 'Anx', value: metrics.anxiety || 5, fill: '#4ECDC4' },
-                                    { name: 'Str', value: metrics.stress || 5, fill: '#FFE66D' },
-                                    { name: 'Life', value: metrics.wellness || 5, fill: '#45B7D1' }
+                                    { name: 'Depression', value: metrics.depression || 5, fill: '#FF6B6B' },
+                                    { name: 'Anxiety', value: metrics.anxiety || 5, fill: '#4ECDC4' },
+                                    { name: 'Stress', value: metrics.stress || 5, fill: '#FFE66D' },
+                                    { name: 'Lifestyle', value: metrics.wellness || 5, fill: '#45B7D1' }
                                 ];
 
                                 return (
-                                    <motion.div variants={itemVariants} key={record.id} className="bg-white rounded-[2.5rem] overflow-hidden border border-slate-100 shadow-xl transition-all duration-500">
-                                        <div className={`h-2.5 w-full ${distressIndex >= 80 ? 'bg-rose-500' : distressIndex >= 50 ? 'bg-amber-400' : 'bg-emerald-500'}`}></div>
+                                    <motion.div variants={itemVariants} key={record.id} className="group relative bg-white rounded-[4rem] overflow-hidden border border-slate-50 shadow-2xl transition-all duration-700 hover:shadow-cyan-900/5">
+                                        <div className={`h-4 w-full ${distressIndex >= 80 ? 'bg-rose-500' : distressIndex >= 50 ? 'bg-amber-400' : 'bg-emerald-500'}`}></div>
 
-                                        <div className="p-8 sm:p-10 lg:p-12">
-                                            <div className="flex flex-col lg:flex-row gap-12">
-                                                {/* Left Column: Result Overview */}
-                                                <div className="lg:w-1/4 flex flex-col items-center lg:border-r lg:border-slate-50 lg:pr-10">
-                                                    <div className="mb-10 w-full">
-                                                        <div className="flex items-center gap-2 mb-3">
-                                                            <span className="px-2.5 py-1 bg-slate-100 text-slate-500 text-[10px] font-bold uppercase tracking-widest rounded-md">
+                                        <div className="p-10 sm:p-12 lg:p-16">
+                                            <div className="flex flex-col lg:flex-row gap-16">
+                                                {/* Score Visualization Column */}
+                                                <div className="lg:w-1/3 flex flex-col items-center lg:border-r lg:border-slate-100 lg:pr-16">
+                                                    <div className="mb-12 w-full">
+                                                        <div className="flex items-center gap-3 mb-4">
+                                                            <span className="px-4 py-1.5 bg-slate-100 text-slate-600 text-[11px] font-black uppercase tracking-[0.2em] rounded-xl">
                                                                 REPORT #{history.length - idx}
                                                             </span>
-                                                            <span className="text-slate-400 text-[11px] font-medium">{new Date(record.created_at).toLocaleDateString()}</span>
+                                                            <span className="text-slate-400 text-sm font-black">{new Date(record.created_at).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}</span>
                                                         </div>
-                                                        <h3 className="text-2xl font-black text-slate-800 tracking-tight leading-7 uppercase">DIAGNOSTIC<br />RESULT</h3>
+                                                        <h3 className="text-4xl font-black text-slate-900 tracking-tighter leading-none italic uppercase">DIAGNOSTIC<br />SUMMARY</h3>
                                                     </div>
 
-                                                    <div className="relative mb-10 p-5 bg-slate-50 rounded-full w-full max-w-[190px] aspect-square flex flex-col items-center justify-center border border-white">
+                                                    <div className="relative mb-12 p-8 bg-slate-50 rounded-full w-full max-w-[280px] aspect-square flex flex-col items-center justify-center border-4 border-white shadow-2xl">
                                                         <ResponsiveContainer width="100%" height="100%">
                                                             <PieChart>
                                                                 <Pie
                                                                     data={[{ value: distressIndex }, { value: 100 - distressIndex }]}
                                                                     cx="50%" cy="50%"
-                                                                    innerRadius={65} outerRadius={80}
+                                                                    innerRadius={80} outerRadius={110}
+                                                                    startAngle={90} endAngle={450}
                                                                     dataKey="value"
                                                                     stroke="none"
                                                                 >
                                                                     <Cell fill={distressIndex >= 80 ? '#f43f5e' : distressIndex >= 50 ? '#fbbf24' : '#10b981'} />
-                                                                    <Cell fill="#f1f5f9" />
+                                                                    <Cell fill="#dee9f2" />
                                                                 </Pie>
                                                             </PieChart>
                                                         </ResponsiveContainer>
                                                         <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-                                                            <span className={`text-4xl font-extrabold ${distressIndex >= 80 ? 'text-rose-600' : distressIndex >= 50 ? 'text-amber-500' : 'text-emerald-600'}`}>
+                                                            <span className={`text-6xl font-black ${distressIndex >= 80 ? 'text-rose-600' : distressIndex >= 50 ? 'text-amber-500' : 'text-emerald-600'}`}>
                                                                 {distressIndex}%
                                                             </span>
-                                                            <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Distress</p>
+                                                            <p className="text-xs font-black text-slate-400 uppercase tracking-widest mt-1">Distress Level</p>
                                                         </div>
                                                     </div>
 
-                                                    <div className={`w-full py-3.5 rounded-xl text-[10px] font-black uppercase tracking-[0.15em] text-center text-white shadow-md ${distressIndex >= 80 ? 'bg-rose-500' : distressIndex >= 50 ? 'bg-amber-400' : 'bg-emerald-500'}`}>
-                                                        {distressIndex >= 80 ? 'CRITICAL MARKER' : distressIndex >= 50 ? 'MODERATE ANALYSIS' : 'STABLE PROFILE'}
+                                                    <div className={`w-full py-5 rounded-[2rem] text-sm font-black uppercase tracking-[0.25em] text-center text-white shadow-2xl ${distressIndex >= 80 ? 'bg-rose-500 shadow-rose-200' : distressIndex >= 50 ? 'bg-amber-400 shadow-amber-200' : 'bg-emerald-500 shadow-emerald-200'}`}>
+                                                        {distressIndex >= 80 ? 'Critical intervention' : distressIndex >= 50 ? 'Moderate Analysis' : 'Stable Profile'}
                                                     </div>
                                                 </div>
 
-                                                {/* Right Column: Key Details */}
-                                                <div className="lg:w-3/4 flex flex-col">
+                                                {/* Technical Insights Column (Full Width since suggestions removed) */}
+                                                <div className="lg:w-2/3 flex flex-col justify-center">
                                                     <div className="mb-12">
-                                                        <h4 className="text-[11px] font-bold text-[#4A8180] uppercase tracking-[0.2em] mb-3">Primary Diagnosis Conclusion</h4>
-                                                        <p className="text-2xl font-bold text-slate-900 leading-tight">{summary}</p>
+                                                        <h4 className="text-xs font-black text-[#4A8180] uppercase tracking-[0.3em] mb-4">Core Clinical Detection</h4>
+                                                        <p className="text-4xl font-black text-slate-900 leading-[1.1] tracking-tight">{summary}</p>
                                                     </div>
 
-                                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
-                                                        {/* Technical Insights Section */}
-                                                        <div>
-                                                            <h5 className="text-[11px] font-bold uppercase tracking-[0.2em] text-slate-400 mb-8 pb-2 border-b border-slate-100 flex items-center justify-between">
-                                                                Technical Insights
-                                                                <span className="text-[9px] lowercase italic font-normal text-slate-300">risk breakdown</span>
-                                                            </h5>
-                                                            <div className="space-y-6">
-                                                                <div className="h-32 w-full bg-slate-50/50 rounded-2xl flex items-center justify-center">
-                                                                    <ResponsiveContainer width="100%" height="100%">
-                                                                        <PieChart>
-                                                                            <Pie
-                                                                                data={reportPieData}
-                                                                                cx="50%" cy="50%"
-                                                                                innerRadius={30}
-                                                                                outerRadius={45}
-                                                                                dataKey="value"
-                                                                            >
-                                                                                {reportPieData.map((entry, index) => (
-                                                                                    <Cell key={`cell-${index}`} fill={entry.fill} />
-                                                                                ))}
-                                                                            </Pie>
-                                                                            <Tooltip contentStyle={{ fontSize: '10px', borderRadius: '8px' }} />
-                                                                        </PieChart>
-                                                                    </ResponsiveContainer>
-                                                                </div>
-                                                                <div className="space-y-4">
-                                                                    {technicalInsights.map((insight, i) => (
-                                                                        <div key={i} className="flex gap-4 group">
-                                                                            <div className="w-1.5 h-1.5 rounded-full bg-[#4A8180] mt-1.5 shrink-0 opacity-40 group-hover:opacity-100 transition-opacity"></div>
-                                                                            <p className="text-[13px] font-medium text-slate-600 leading-relaxed">{insight}</p>
-                                                                        </div>
-                                                                    ))}
-                                                                </div>
-                                                            </div>
-                                                        </div>
+                                                    <div className="space-y-10">
+                                                        <h5 className="text-xs font-black uppercase tracking-[0.3em] text-slate-300 flex items-center gap-4">
+                                                            TECHNICAL HEALTH INSIGHTS <div className="h-[1px] bg-slate-100 flex-1"></div>
+                                                        </h5>
 
-                                                        {/* Point-wise Suggestions Section */}
-                                                        <div>
-                                                            <h5 className="text-[11px] font-bold uppercase tracking-[0.2em] text-[#4A8180] mb-8 pb-2 border-b border-[#4A8180]/10 flex items-center justify-between">
-                                                                Actionable Advice
-                                                                <span className="text-[9px] lowercase italic font-normal opacity-60">recovery path</span>
-                                                            </h5>
-                                                            <div className="space-y-4">
-                                                                {actionableSuggestions.map((sug, i) => (
-                                                                    <div key={i} className="flex gap-4 p-5 bg-[#F8FAFC] rounded-2xl border border-blue-50/50 hover:border-[#4A8180]/20 transition-all shadow-sm">
-                                                                        <div className="w-5 h-5 rounded-full bg-white flex items-center justify-center text-[10px] font-black text-[#4A8180] border border-[#4A8180]/10 shrink-0">
-                                                                            {i + 1}
-                                                                        </div>
-                                                                        <p className="text-[14px] font-semibold text-slate-700 leading-snug">{sug}</p>
+                                                        <div className="flex flex-col md:flex-row gap-12 items-center">
+                                                            <div className="w-full md:w-1/2 h-56 bg-white rounded-[2.5rem] p-6 shadow-xl border border-slate-50 relative overflow-hidden group">
+                                                                <div className="absolute -top-10 -right-10 w-32 h-32 bg-[#4A8180]/5 rounded-full blur-3xl transition-all group-hover:scale-150"></div>
+                                                                <ResponsiveContainer width="100%" height="100%">
+                                                                    <PieChart>
+                                                                        <Pie
+                                                                            data={reportPieData}
+                                                                            cx="50%" cy="50%"
+                                                                            innerRadius={45}
+                                                                            outerRadius={65}
+                                                                            paddingAngle={4}
+                                                                            dataKey="value"
+                                                                        >
+                                                                            {reportPieData.map((entry, index) => (
+                                                                                <Cell key={`cell-${index}`} fill={entry.fill} />
+                                                                            ))}
+                                                                        </Pie>
+                                                                        <Tooltip contentStyle={{ borderRadius: '12px', fontSize: '12px', fontWeight: 800 }} />
+                                                                        <Legend iconType="circle" wrapperStyle={{ fontSize: '10px', fontWeight: '900' }} />
+                                                                    </PieChart>
+                                                                </ResponsiveContainer>
+                                                            </div>
+
+                                                            <div className="w-full md:w-1/2 space-y-4">
+                                                                {technicalInsights.map((insight, i) => (
+                                                                    <div key={i} className="flex gap-5 p-6 bg-[#F8FAFC] rounded-[2rem] border border-blue-100/50 shadow-sm transition-transform hover:-translate-x-2">
+                                                                        <div className="w-2.5 h-2.5 rounded-full bg-[#4A8180] mt-2 shrink-0 shadow-[0_0_10px_rgba(74,129,128,0.5)]"></div>
+                                                                        <p className="text-lg font-bold text-slate-700 leading-snug">{insight}</p>
                                                                     </div>
                                                                 ))}
                                                             </div>
@@ -266,14 +249,16 @@ const Results = () => {
                                                     </div>
 
                                                     {distressIndex >= 80 && (
-                                                        <div className="mt-14 pt-10 border-t border-slate-50 flex justify-end">
-                                                            <button
+                                                        <div className="mt-16 pt-12 border-t border-slate-100 flex justify-end">
+                                                            <motion.button
+                                                                whileHover={{ scale: 1.05, x: 10 }}
+                                                                whileTap={{ scale: 0.95 }}
                                                                 onClick={() => window.location.href = '/doctors'}
-                                                                className="px-10 py-4.5 bg-slate-900 text-white font-bold text-[11px] uppercase tracking-[0.25em] rounded-xl shadow-2xl hover:bg-black transition-all flex items-center gap-4"
+                                                                className="px-12 py-6 bg-slate-950 text-white font-black text-xs uppercase tracking-[0.3em] rounded-2xl shadow-2xl flex items-center gap-5"
                                                             >
-                                                                <svg className="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
-                                                                Urgent Consultation
-                                                            </button>
+                                                                <svg className="w-6 h-6 text-blue-400 animate-pulse" fill="currentColor" viewBox="0 0 24 24"><path d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
+                                                                Priority Consultant Required
+                                                            </motion.button>
                                                         </div>
                                                     )}
                                                 </div>
