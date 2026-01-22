@@ -28,7 +28,7 @@ const DashboardLayout = ({ children, title }) => {
                 <span className="text-2xl font-black text-[#1F2937] tracking-tighter" style={{ fontFamily: 'Montserrat, sans-serif' }}>MindWell</span>
             </div>
 
-            <nav className="flex-1 px-4 space-y-3 py-6 overflow-y-auto">
+            <nav className="flex-1 px-4 space-y-4 py-8 overflow-y-auto" style={{ fontFamily: 'Montserrat, sans-serif' }}>
                 {menuItems.map((item) => {
                     const active = location.pathname === item.path;
                     return (
@@ -116,7 +116,7 @@ const DashboardLayout = ({ children, title }) => {
                     </div>
                 </header>
 
-                <div className="flex-1 overflow-y-auto px-1 lg:px-2 py-6 space-y-12 relative z-10">
+                <div className="flex-1 overflow-y-auto px-6 lg:px-10 py-10 space-y-12 relative z-10" style={{ fontFamily: 'Montserrat, sans-serif' }}>
                     {children}
                 </div>
             </main>

@@ -39,7 +39,7 @@ const Dashboard = () => {
 
     return (
         <DashboardLayout title="Performance Dashboard">
-            <div className="w-full space-y-6 pb-12">
+            <div className="w-full space-y-6 pb-12 px-[5%]" style={{ fontFamily: 'Montserrat, sans-serif' }}>
 
                 {/* PROFESSIONAL WELCOME BANNER */}
                 <div className="bg-white rounded-2xl p-8 border border-slate-200 shadow-sm flex flex-col lg:flex-row items-center justify-between gap-8 relative overflow-hidden">
