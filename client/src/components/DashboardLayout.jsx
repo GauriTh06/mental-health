@@ -42,10 +42,10 @@ const DashboardLayout = ({ children, title }) => {
                                 : 'text-gray-700 hover:bg-white/60 hover:text-[#4A8180]'
                                 }`}
                         >
-                            <svg className={`w-6 h-6 mr-4 ${active ? 'text-white' : 'text-gray-400 group-hover:text-[#4A8180]'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d={item.icon} />
+                            <svg className={`w-5 h-5 mr-3 ${active ? 'text-white' : 'text-gray-400 group-hover:text-[#4A8180]'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d={item.icon} />
                             </svg>
-                            <span className="font-bold text-base">{item.label}</span>
+                            <span className="font-medium text-sm">{item.label}</span>
                         </Link>
                     )
                 })}
