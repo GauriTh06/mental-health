@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import api from '../services/api';
 import DashboardLayout from '../components/DashboardLayout';
-import { Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip, Cell } from 'recharts';
+import { Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip, Cell, PieChart, Pie } from 'recharts';
 import { motion } from 'framer-motion';
 
 const Results = () => {
@@ -158,8 +158,9 @@ const Results = () => {
                                                             <div className="w-3 h-3 rounded-full mr-2" style={{ backgroundColor: PIE_COLORS[index] }}></div>
                                                             {entry.subject}
                                                         </div>
-                                                    </div>
-                                                ))}
+                                                    ))}
+                                                </div>
+                                            </motion.div>
                                         </div>
 
                                         {distressIndex >= 80 && (
@@ -174,13 +175,12 @@ const Results = () => {
                                             </div>
                                         )}
                                     </div>
-                                </div>
                                 </motion.div>
-                );
+                            );
                         })}
-            </motion.div>
+                    </motion.div>
                 )}
-        </div>
+            </div>
         </DashboardLayout >
     );
 };
