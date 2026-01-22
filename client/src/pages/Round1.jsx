@@ -27,6 +27,18 @@ const questionSets = [
         { id: 'q8', text: 'Do you wake up feeling rested?', type: 'select', options: ['Always', 'Sometimes', 'Rarely'] },
         { id: 'q9', text: 'Do you engage in any hobbies currently?', type: 'select', options: ['Regularly', 'Occasionally', 'Never'] },
         { id: 'q10', text: 'How optmistic do you feel about the future?', type: 'scale' },
+    ],
+    [ // Set C (New Variation)
+        { id: 'q1', text: 'How well have you been able to control your temper recently?', type: 'scale' },
+        { id: 'q2', text: 'How many glasses of water do you drink daily?', type: 'number', min: 0, max: 20 },
+        { id: 'q3', text: 'Do you feel you are learning or growing as a person?', type: 'scale' },
+        { id: 'q4', text: 'How easily do you get distracted?', type: 'scale' },
+        { id: 'q5', text: 'Do you feel comfortable asking for help when needed?', type: 'select', options: ['Yes, always', 'Only sometimes', 'No, never'] },
+        { id: 'q6', text: 'How often do you feel envious of others?', type: 'scale' },
+        { id: 'q7', text: 'Have you experienced any panic attacks recently?', type: 'select', options: ['No', 'Yes, once', 'Yes, multiple times'] },
+        { id: 'q8', text: 'Do you feel your sleep quality is adequate?', type: 'select', options: ['Yes', 'No'] },
+        { id: 'q9', text: 'How much time do you spend on social media daily?', type: 'select', options: ['< 30 mins', '1-2 hours', '> 3 hours'] },
+        { id: 'q10', text: 'Overall, how happy are you with your life direction?', type: 'scale' },
     ]
 ];
 
@@ -41,7 +53,9 @@ const Round1 = () => {
         // Fetch history to determine set
         api.get('/history').then(res => {
             const count = res.data.length;
+            // Use modulo to cycle through ALL sets (0, 1, 2, 0, 1, 2...)
             const setIndex = count % questionSets.length;
+            console.log("Assessment Count:", count, "Selected Set:", setIndex); // Debug
             setQuestions(questionSets[setIndex]);
             setLoading(false);
         }).catch(err => {

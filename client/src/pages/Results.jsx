@@ -61,13 +61,14 @@ const Results = () => {
                             const { metrics = {}, summary, details } = analysisData;
                             const distressIndex = metrics.total || 0;
 
-                            // Data for Charts
-                            const chartData = [
-                                { subject: 'Depression', A: metrics.depression || 0, fullMark: 100 },
-                                { subject: 'Anxiety', A: metrics.anxiety || 0, fullMark: 100 },
-                                { subject: 'Stress', A: metrics.stress || 0, fullMark: 100 },
-                                { subject: 'Wellness Risk', A: metrics.wellness || 0, fullMark: 100 },
+                            const data = [
+                                { subject: 'Depression', A: analysisData.metrics.depression, fullMark: 100 },
+                                { subject: 'Anxiety', A: analysisData.metrics.anxiety, fullMark: 100 },
+                                { subject: 'Stress', A: analysisData.metrics.stress, fullMark: 100 },
+                                { subject: 'Wellness Risk', A: analysisData.metrics.wellness, fullMark: 100 },
                             ];
+
+                            const PIE_COLORS = ['#8884d8', '#82ca9d', '#ffc658', '#ff8042'];
 
                             return (
                                 <motion.div variants={itemVariants} key={record.id} className="bg-white shadow-xl rounded-3xl overflow-hidden border border-gray-100 transform transition-all hover:scale-[1.01]">
@@ -82,79 +83,105 @@ const Results = () => {
                                         </div>
                                     </div>
 
-                                    <div className="p-8 grid grid-cols-1 xl:grid-cols-3 gap-12">
-                                        {/* Left Column: Visuals */}
-                                        <div className="xl:col-span-1 flex flex-col items-center border-b xl:border-b-0 xl:border-r border-gray-100 pb-8 xl:pb-0 xl:pr-8">
-                                            {/* Circular Score */}
-                                            <div className="relative mb-8">
-                                                <svg className="w-48 h-48 transform -rotate-90">
-                                                    <circle cx="96" cy="96" r="88" stroke="currentColor" strokeWidth="12" fill="transparent" className="text-gray-100" />
-                                                    <circle cx="96" cy="96" r="88" stroke="currentColor" strokeWidth="12" fill="transparent"
-                                                        strokeDasharray={2 * Math.PI * 88}
-                                                        strokeDashoffset={2 * Math.PI * 88 * (1 - distressIndex / 100)}
-                                                        className={`${distressIndex >= 80 ? 'text-red-500' : distressIndex >= 50 ? 'text-yellow-400' : 'text-green-500'} transition-all duration-1000 ease-out`}
-                                                    />
-                                                </svg>
-                                                <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-center">
-                                                    <span className="text-5xl font-extrabold text-gray-800">{distressIndex}</span>
-                                                    <span className="block text-xs font-bold text-gray-400 uppercase mt-1">Distress Score</span>
-                                                </div>
-                                            </div>
-
-                                            {/* Radar Chart */}
-                                            <div className="w-full h-64">
-                                                <ResponsiveContainer width="100%" height="100%">
-                                                    <RadarChart cx="50%" cy="50%" outerRadius="80%" data={chartData}>
-                                                        <PolarGrid />
-                                                        <PolarAngleAxis dataKey="subject" tick={{ fill: '#9CA3AF', fontSize: 12 }} />
-                                                        <PolarRadiusAxis angle={30} domain={[0, 100]} tick={false} />
-                                                        <Radar name="Metrics" dataKey="A" stroke="#8884d8" fill="#8884d8" fillOpacity={0.6} />
-                                                        <Tooltip />
-                                                    </RadarChart>
-                                                </ResponsiveContainer>
+                                    <div className="p-8">
+                                        {/* Circular Score */}
+                                        <div className="relative mb-12 flex justify-center">
+                                            <svg className="w-48 h-48 transform -rotate-90">
+                                                <circle cx="96" cy="96" r="88" stroke="currentColor" strokeWidth="12" fill="transparent" className="text-gray-100" />
+                                                <circle cx="96" cy="96" r="88" stroke="currentColor" strokeWidth="12" fill="transparent"
+                                                    strokeDasharray={2 * Math.PI * 88}
+                                                    strokeDashoffset={2 * Math.PI * 88 * (1 - distressIndex / 100)}
+                                                    className={`${distressIndex >= 80 ? 'text-red-500' : distressIndex >= 50 ? 'text-yellow-400' : 'text-green-500'} transition-all duration-1000 ease-out`}
+                                                />
+                                            </svg>
+                                            <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-center">
+                                                <span className="text-5xl font-extrabold text-gray-800">{distressIndex}</span>
+                                                <span className="block text-xs font-bold text-gray-400 uppercase mt-1">Distress Score</span>
                                             </div>
                                         </div>
 
-                                        {/* Right Column: Text & Insights */}
-                                        <div className="xl:col-span-2 flex flex-col justify-center">
-                                            <div className="mb-8 p-6 bg-brand-bg/50 rounded-2xl border border-brand-primary/10">
-                                                <h4 className="text-brand-primary font-bold uppercase tracking-widest text-xs mb-3">Clinical Summary</h4>
-                                                <p className="text-xl md:text-2xl font-bold text-gray-800 leading-relaxed">
-                                                    "{summary}"
-                                                </p>
-                                            </div>
+                                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
+                                            {/* Summary Card */}
+                                            <motion.div
+                                                initial={{ x: -20, opacity: 0 }}
+                                                animate={{ x: 0, opacity: 1 }}
+                                                className="bg-white rounded-3xl p-8 shadow-lg border border-gray-100 flex flex-col"
+                                            >
+                                                <h3 className="text-xl font-bold text-gray-800 mb-4 flex items-center">
+                                                    <span className="w-8 h-8 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center mr-3">
+                                                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
+                                                    </span>
+                                                    Clinical Summary
+                                                </h3>
+                                                <div className="flex-1 flex flex-col justify-center">
+                                                    <p className="text-gray-600 text-lg leading-relaxed italic border-l-4 border-brand-primary pl-4 py-2 bg-gray-50 rounded-r-xl">
+                                                        "{analysisData.summary}"
+                                                    </p>
+                                                </div>
+                                            </motion.div>
 
-                                            <div className="space-y-4">
-                                                {details.map((para, i) => (
-                                                    <motion.div initial={{ x: 20, opacity: 0 }} animate={{ x: 0, opacity: 1 }} transition={{ delay: i * 0.1 }} key={i} className="flex items-start">
-                                                        <div className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center mt-0.5 mr-4 shadow-sm ${distressIndex >= 80 ? 'bg-red-100 text-red-600' : 'bg-white border border-gray-200 text-brand-primary'}`}>
-                                                            <span className="font-bold text-sm">{i + 1}</span>
+                                            {/* Metrics Chart */}
+                                            <motion.div
+                                                initial={{ x: 20, opacity: 0 }}
+                                                animate={{ x: 0, opacity: 1 }}
+                                                transition={{ delay: 0.2 }}
+                                                className="bg-white rounded-3xl p-8 shadow-lg border border-gray-100"
+                                            >
+                                                <h3 className="text-xl font-bold text-gray-800 mb-6 text-center">Wellness Spectrum</h3>
+                                                <div className="h-64 w-full">
+                                                    <ResponsiveContainer width="100%" height="100%">
+                                                        <PieChart>
+                                                            <Pie
+                                                                data={data}
+                                                                cx="50%"
+                                                                cy="50%"
+                                                                innerRadius={60}
+                                                                outerRadius={80}
+                                                                paddingAngle={5}
+                                                                dataKey="A"
+                                                                nameKey="subject"
+                                                            >
+                                                                {data.map((entry, index) => (
+                                                                    <Cell key={`cell-${index}`} fill={PIE_COLORS[index % PIE_COLORS.length]} />
+                                                                ))}
+                                                            </Pie>
+                                                            <Tooltip
+                                                                contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)' }}
+                                                                formatter={(value, name) => [`${value}/100`, name]}
+                                                            />
+                                                        </PieChart>
+                                                    </ResponsiveContainer>
+                                                </div>
+                                                <div className="flex justify-center flex-wrap gap-4 mt-4">
+                                                    {data.map((entry, index) => (
+                                                        <div key={index} className="flex items-center text-sm text-gray-600">
+                                                            <div className="w-3 h-3 rounded-full mr-2" style={{ backgroundColor: PIE_COLORS[index] }}></div>
+                                                            {entry.subject}
                                                         </div>
-                                                        <p className="text-gray-600 leading-relaxed text-lg">{para}</p>
-                                                    </motion.div>
-                                                ))}
-                                            </div>
-
-                                            {distressIndex >= 80 && (
-                                                <div className="mt-8 bg-red-600 rounded-2xl p-6 shadow-lg text-white flex flex-col md:flex-row items-center justify-between gap-6">
-                                                    <div>
-                                                        <h4 className="font-bold text-xl mb-1">Professional Help Recommended</h4>
-                                                        <p className="text-red-100">Your markers indicate high distress levels.</p>
                                                     </div>
-                                                    <a href="/doctors" className="bg-white text-red-600 px-8 py-3 rounded-xl font-bold hover:bg-red-50 transition-colors shadow-md whitespace-nowrap">
-                                                        Find a Doctor
-                                                    </a>
-                                                </div>
-                                            )}
+                                                ))}
                                         </div>
+
+                                        {distressIndex >= 80 && (
+                                            <div className="mt-8 bg-red-600 rounded-2xl p-6 shadow-lg text-white flex flex-col md:flex-row items-center justify-between gap-6">
+                                                <div>
+                                                    <h4 className="font-bold text-xl mb-1">Professional Help Recommended</h4>
+                                                    <p className="text-red-100">Your markers indicate high distress levels.</p>
+                                                </div>
+                                                <a href="/doctors" className="bg-white text-red-600 px-8 py-3 rounded-xl font-bold hover:bg-red-50 transition-colors shadow-md whitespace-nowrap">
+                                                    Find a Doctor
+                                                </a>
+                                            </div>
+                                        )}
                                     </div>
+                                </div>
                                 </motion.div>
-                            );
+                );
                         })}
-                    </motion.div>
+            </motion.div>
                 )}
-            </div>
-        </DashboardLayout>
+        </div>
+        </DashboardLayout >
     );
 };
 

@@ -289,8 +289,11 @@ app.get('/api/history', authenticateToken, (req, res) => {
 const { OpenAI } = require('openai');
 
 // Initialize OpenAI (Make sure to set OPENAI_API_KEY in .env)
+const apiKey = process.env.OPENAI_API_KEY;
+console.log("Initializing OpenAI with Key:", apiKey ? `${apiKey.substring(0, 5)}...` : "MISSING");
+
 const openai = new OpenAI({
-    apiKey: process.env.OPENAI_API_KEY || 'mock-key', // Fallback for safety, but user needs to set it
+    apiKey: apiKey || 'mock-key', // Fallback for safety, but user needs to set it
 });
 
 app.post('/api/chat', authenticateToken, async (req, res) => {
@@ -300,10 +303,13 @@ app.post('/api/chat', authenticateToken, async (req, res) => {
     let botResponse = "";
 
     try {
-        if (!process.env.OPENAI_API_KEY) {
+        if (!process.env.OPENAI_API_KEY || process.env.OPENAI_API_KEY.trim() === '') {
+            console.error("Chat Error: OPENAI_API_KEY is missing or empty.");
             // Fallback mock if no key provided
-            botResponse = "I'm currently in offline mode. Please configure my API key to unlock my full potential! (Dev Note: Set OPENAI_API_KEY)";
+            botResponse = "I'm currently in offline mode. Please configure my API key to unlock my full potential! (Dev Note: Set OPENAI_API_KEY in server/.env)";
         } else {
+            // ... existing completion logic
+
             const completion = await openai.chat.completions.create({
                 messages: [
                     { role: "system", content: "You are MindWell, a compassionate and professional mental health AI assistant. Your goal is to provide supportive, non-judgmental, and evidence-based advice. You are NOT a replacement for a doctor. If a user expresses severe distress or self-harm intent, provide crisis resources immediately. Keep responses concise, empathetic, and actionable." },

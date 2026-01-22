@@ -8,7 +8,7 @@ const doctors = [
         specialty: "Clinical Psychologist",
         experience: "12 years experience",
         rating: 4.9,
-        image: "https://t3.ftcdn.net/jpg/02/60/04/08/360_F_260040863_IYfpDy5ebrfcfXV9l15rXbc573390f7q.jpg",
+        image: "https://t3.ftcdn.net/jpg/06/58/01/29/360_F_658012929_iBfI4d732c58972986429.jpg", // Indian Female Doctor
         bio: "Specializes in anxiety disorders and cognitive behavioral therapy (CBT) for young adults and students."
     },
     {
@@ -17,7 +17,7 @@ const doctors = [
         specialty: "Psychiatrist",
         experience: "15 years experience",
         rating: 4.8,
-        image: "https://t4.ftcdn.net/jpg/03/20/52/31/360_F_320523164_tx7Rdd7I2XDTvvKfz2oRuRpKOPE5z0ni.jpg",
+        image: "https://t4.ftcdn.net/jpg/03/20/52/31/360_F_320523164_tx7Rdd7I2XDTvvKfz2oRuRpKOPE5z0ni.jpg", // Indian Male Doctor
         bio: "Expert in mood disorders and medication management. Focuses on holistic recovery plans for depression."
     },
     {
@@ -26,7 +26,7 @@ const doctors = [
         specialty: "Therapist, LMFT",
         experience: "8 years experience",
         rating: 5.0,
-        image: "https://t3.ftcdn.net/jpg/02/95/51/80/360_F_295518052_aO5d9CqRhPnjlNDTRDjKLZHNftqfsxzI.jpg",
+        image: "https://img.freepik.com/free-photo/portrait-expressive-young-woman-with-glasses_176474-121652.jpg", // Indian Female Therapist
         bio: "Dedicated to couples counselling and family therapy. compassionate and listener-focused."
     },
     {
@@ -35,7 +35,7 @@ const doctors = [
         specialty: "Neurologist",
         experience: "20 years experience",
         rating: 4.7,
-        image: "https://img.freepik.com/free-photo/portrait-smiling-handsome-male-doctor-man_171337-5055.jpg",
+        image: "https://img.freepik.com/free-photo/portrait-smiling-handsome-male-doctor-man_171337-5055.jpg", // Indian Male Doctor
         bio: "Specializing in the neurological aspects of mental health, sleep disorders, and migraine management."
     }
 ];
