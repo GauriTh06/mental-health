@@ -3,21 +3,20 @@
 @theme {
   --color-brand-bg: #F3F7FA;
   --color-brand-card: #FFFFFF;
-  --color-brand-primary: #3B82F6;
-  /* Vibrant Blue for modern feel */
-  --color-brand-primary-hover: #2563EB;
-  --color-brand-sidebar: #FFFFFF;
-  --color-brand-text: #0F172A;
-  --color-brand-accent: #6366F1;
+  --color-brand-primary: #4A8180;
+  --color-brand-primary-hover: #3A6665;
+  --color-brand-sidebar: #DDEBF7;
+  --color-brand-text: #1A202C;
+  --color-brand-accent: #4A6072;
 
   --font-family-sans: "Inter", system-ui, sans-serif;
 }
 
 :root {
-  --brand-primary: #3B82F6;
-  --brand-primary-hover: #2563EB;
-  --brand-bg: #F8FAFC;
-  --brand-text: #0F172A;
+  --brand-primary: #4A8180;
+  --brand-primary-hover: #3A6665;
+  --brand-bg: #F3F7FA;
+  --brand-text: #1A202C;
 }
 
 body {

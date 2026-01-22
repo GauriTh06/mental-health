@@ -8,7 +8,7 @@ const doctors = [
         specialty: "Clinical Psychologist",
         experience: "12 years experience",
         rating: 4.9,
-        image: "https://r.jina.ai/i/C:/Users/HP/.gemini/antigravity/brain/4b788915-66a9-4012-b484-b353ac41feb2/female_doctor_indian_1_1769105055483.png",
+        image: "https://images.unsplash.com/photo-1559839734-2b71f153678e?auto=format&fit=crop&q=80&w=400",
         bio: "Specializes in anxiety disorders and cognitive behavioral therapy (CBT) for young adults and students."
     },
     {
@@ -17,7 +17,7 @@ const doctors = [
         specialty: "Psychiatrist",
         experience: "15 years experience",
         rating: 4.8,
-        image: "https://t4.ftcdn.net/jpg/03/20/52/31/360_F_320523164_tx7Rdd7I2XDTvvKfz2oRuRpKOPE5z0ni.jpg", // Indian Male Doctor
+        image: "https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?auto=format&fit=crop&q=80&w=400", // Indian Male Doctor
         bio: "Expert in mood disorders and medication management. Focuses on holistic recovery plans for depression."
     },
     {
@@ -26,7 +26,7 @@ const doctors = [
         specialty: "Therapist, LMFT",
         experience: "8 years experience",
         rating: 5.0,
-        image: "https://r.jina.ai/i/C:/Users/HP/.gemini/antigravity/brain/4b788915-66a9-4012-b484-b353ac41feb2/female_doctor_indian_2_1769105074194.png",
+        image: "https://images.unsplash.com/photo-1594824476967-48c8b964273f?auto=format&fit=crop&q=80&w=400",
         bio: "Dedicated to couples counselling and family therapy. compassionate and listener-focused."
     },
     {

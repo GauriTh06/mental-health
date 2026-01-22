@@ -1,8 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import api from '../services/api';
 import DashboardLayout from '../components/DashboardLayout';
-import { Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip, Cell, PieChart, Pie } from 'recharts';
-import { motion } from 'framer-motion';
+import {
+    Radar, RadarChart, PolarGrid, PolarAngleAxis,
+    ResponsiveContainer, XAxis, YAxis, Tooltip,
+    Cell, PieChart, Pie, AreaChart, Area, CartesianGrid
+} from 'recharts';
+import { motion, AnimatePresence } from 'framer-motion';
 
 const Results = () => {
     const [history, setHistory] = useState([]);
@@ -24,17 +28,42 @@ const Results = () => {
 
     const containerVariants = {
         hidden: { opacity: 0 },
-        visible: { opacity: 1, transition: { staggerChildren: 0.15 } }
+        visible: { opacity: 1, transition: { staggerChildren: 0.1 } }
     };
 
     const itemVariants = {
-        hidden: { y: 30, opacity: 0 },
+        hidden: { y: 20, opacity: 0 },
         visible: { y: 0, opacity: 1, transition: { type: "spring", stiffness: 100 } }
     };
 
+    // Prepare Aggregated Data for the Progression Chart
+    const getSummaryData = () => {
+        if (history.length === 0) return [];
+        return [...history].reverse().map((record, i) => {
+            let data;
+            try { data = typeof record.analysis === 'string' ? JSON.parse(record.analysis) : record.analysis; }
+            catch (e) { data = { metrics: { total: 50 } }; }
+            return {
+                name: `Report ${i + 1}`,
+                score: data?.metrics?.total || 0,
+                depression: data?.metrics?.depression || 0,
+                anxiety: data?.metrics?.anxiety || 0,
+                stress: data?.metrics?.stress || 0,
+            };
+        });
+    };
+
+    const summaryData = getSummaryData();
+    const latestRecord = history[0];
+    let latestAnalysis = {};
+    if (latestRecord) {
+        try { latestAnalysis = typeof latestRecord.analysis === 'string' ? JSON.parse(latestRecord.analysis) : latestRecord.analysis; }
+        catch (e) { latestAnalysis = {}; }
+    }
+
     return (
-        <DashboardLayout title="Wellness Insights Archive">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <DashboardLayout title="Assessment History">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-20">
                 {loading ? (
                     <div className="flex h-96 items-center justify-center">
                         <div className="relative w-24 h-24">
@@ -43,182 +72,189 @@ const Results = () => {
                         </div>
                     </div>
                 ) : history.length === 0 ? (
-                    <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="text-center py-24 bg-white/60 backdrop-blur-xl rounded-[2.5rem] border border-white/40 shadow-2xl">
+                    <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="text-center py-24 bg-white rounded-[2.5rem] border border-gray-100 shadow-xl">
                         <div className="w-24 h-24 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-6 shadow-inner">
                             <svg className="w-12 h-12 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
                         </div>
                         <h3 className="text-2xl font-bold text-gray-800 mb-2">No Reports Yet</h3>
-                        <p className="text-gray-500 max-w-sm mx-auto">Complete your first assessment to unlock detailed clinical insights and tracking.</p>
+                        <p className="text-gray-500 max-w-sm mx-auto">Complete your mental health assessment to unlock detailed clinical insights.</p>
                         <a href="/assessment" className="mt-8 inline-flex items-center px-8 py-3 bg-brand-primary text-white font-bold rounded-2xl hover:bg-brand-primary-hover transition-all shadow-lg hover:shadow-brand-primary/20">
                             Start Assessment
                         </a>
                     </motion.div>
                 ) : (
-                    <motion.div variants={containerVariants} initial="hidden" animate="visible" className="space-y-16">
-                        {history.map((record, idx) => {
-                            let analysisData;
-                            if (typeof record.analysis === 'object' && record.analysis !== null) {
-                                analysisData = record.analysis;
-                            } else {
-                                try {
-                                    analysisData = JSON.parse(record.analysis);
-                                } catch (e) {
-                                    analysisData = {
-                                        summary: record.analysis,
-                                        perspective: "Historical data point. Detailed insights were not logged for this session.",
-                                        details: [],
-                                        metrics: { total: 50, depression: 0, anxiety: 0, stress: 0, wellness: 0 }
-                                    };
+                    <div className="space-y-10">
+                        {/* TOP SUMMARY DASHBOARD */}
+                        <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                            <div className="lg:col-span-2 bg-white rounded-[2rem] p-8 shadow-lg border border-gray-50">
+                                <div className="flex justify-between items-center mb-6">
+                                    <div>
+                                        <h3 className="text-xl font-bold text-gray-800">Wellness Progression</h3>
+                                        <p className="text-sm text-gray-500 font-medium">Tracking your mental health journey</p>
+                                    </div>
+                                    <div className="flex gap-4">
+                                        <div className="flex items-center gap-2"><div className="w-3 h-3 bg-brand-primary rounded-full"></div><span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Distress</span></div>
+                                    </div>
+                                </div>
+                                <div className="h-64">
+                                    <ResponsiveContainer width="100%" height="100%">
+                                        <AreaChart data={summaryData}>
+                                            <defs>
+                                                <linearGradient id="colorScore" x1="0" y1="0" x2="0" y2="1">
+                                                    <stop offset="5%" stopColor="#4A8180" stopOpacity={0.2} />
+                                                    <stop offset="95%" stopColor="#4A8180" stopOpacity={0} />
+                                                </linearGradient>
+                                            </defs>
+                                            <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
+                                            <XAxis dataKey="name" hide />
+                                            <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 10, fontWeight: 700, fill: '#94a3b8' }} domain={[0, 100]} />
+                                            <Tooltip contentStyle={{ borderRadius: '16px', border: 'none', boxShadow: '0 10px 15px -3px rgba(0,0,0,0.1)' }} />
+                                            <Area type="monotone" dataKey="score" stroke="#4A8180" strokeWidth={4} fillOpacity={1} fill="url(#colorScore)" />
+                                        </AreaChart>
+                                    </ResponsiveContainer>
+                                </div>
+                            </div>
+
+                            <div className="bg-[#4A8180] rounded-[2rem] p-8 text-white shadow-xl flex flex-col justify-between relative overflow-hidden group">
+                                <div className="absolute -top-10 -right-10 w-40 h-40 bg-white/10 rounded-full blur-3xl group-hover:bg-white/20 transition-all"></div>
+                                <div>
+                                    <h4 className="text-[10px] font-black uppercase tracking-[0.2em] opacity-60 mb-2">Latest Status</h4>
+                                    <h3 className="text-3xl font-bold leading-tight mb-4">
+                                        {latestAnalysis?.metrics?.total >= 80 ? "Proactive Care Recommended" :
+                                            latestAnalysis?.metrics?.total >= 50 ? "Moderate Support Advised" : "Stable & Resilient"}
+                                    </h3>
+                                    <p className="text-sm text-blue-50/80 font-medium leading-relaxed">Your latest assessment indicates a {latestAnalysis?.metrics?.total || 0}% distress marker. Focus on consistent wellness practices.</p>
+                                </div>
+                                <div className="mt-8">
+                                    <button onClick={() => window.location.href = '/round1'} className="w-full py-4 bg-white/10 backdrop-blur-md text-white border border-white/20 font-bold rounded-2xl hover:bg-white/20 transition-all">
+                                        New Assessment
+                                    </button>
+                                </div>
+                            </div>
+                        </motion.div>
+
+                        {/* LIST OF DETAILED REPORTS */}
+                        <motion.div variants={containerVariants} initial="hidden" animate="visible" className="space-y-12">
+                            {history.map((record, idx) => {
+                                let analysisData;
+                                if (typeof record.analysis === 'object' && record.analysis !== null) {
+                                    analysisData = record.analysis;
+                                } else {
+                                    try { analysisData = JSON.parse(record.analysis); }
+                                    catch (e) {
+                                        analysisData = {
+                                            summary: record.analysis,
+                                            perspective: "Historical record summary.",
+                                            details: [],
+                                            metrics: { total: 50, depression: 0, anxiety: 0, stress: 0, wellness: 0 }
+                                        };
+                                    }
                                 }
-                            }
 
-                            const { metrics = {}, summary, perspective, details = [] } = analysisData;
-                            const distressIndex = metrics.total || 0;
+                                const { metrics = {}, summary, perspective, details = [] } = analysisData;
+                                const distressIndex = metrics.total || 0;
 
-                            const chartData = [
-                                { subject: 'Depression', A: metrics.depression, fullMark: 100 },
-                                { subject: 'Anxiety', A: metrics.anxiety, fullMark: 100 },
-                                { subject: 'Stress', A: metrics.stress, fullMark: 100 },
-                                { subject: 'Wellness', A: metrics.wellness, fullMark: 100 },
-                            ];
+                                const chartData = [
+                                    { subject: 'Depression', A: metrics.depression, fullMark: 100 },
+                                    { subject: 'Anxiety', A: metrics.anxiety, fullMark: 100 },
+                                    { subject: 'Stress', A: metrics.stress, fullMark: 100 },
+                                    { subject: 'Wellness', A: metrics.wellness, fullMark: 100 },
+                                ];
 
-                            const categoryColors = {
-                                depression: '#6366f1', // Indigo
-                                anxiety: '#10b981',    // Emerald
-                                stress: '#f59e0b',     // Amber
-                                wellness: '#06b6d4'    // Cyan
-                            };
-
-                            const PIE_COLORS = [categoryColors.depression, categoryColors.anxiety, categoryColors.stress, categoryColors.wellness];
-
-                            return (
-                                <motion.div variants={itemVariants} key={record.id} className="group relative bg-white/70 backdrop-blur-2xl rounded-[3rem] overflow-hidden border border-white/60 shadow-2xl transition-all duration-500 hover:shadow-blue-500/10 hover:border-blue-100">
-                                    {/* High Stakes Status Bar */}
-                                    <div className={`h-3 w-full ${distressIndex >= 80 ? 'bg-rose-500' : distressIndex >= 50 ? 'bg-amber-400' : 'bg-emerald-500'}`}></div>
-
-                                    <div className="p-8 sm:p-12">
-                                        <div className="flex flex-col lg:flex-row gap-12">
-
-                                            {/* LEFT: Identity & Radial Score */}
-                                            <div className="lg:w-1/3 flex flex-col items-center text-center">
-                                                <div className="mb-6 self-start text-left w-full">
-                                                    <div className="flex items-center gap-3 mb-1">
-                                                        <span className="px-3 py-1 bg-blue-50 text-blue-600 text-[10px] font-black uppercase tracking-widest rounded-full border border-blue-100">
-                                                            Report #{history.length - idx}
-                                                        </span>
-                                                        <span className="text-gray-400 text-xs font-medium">
-                                                            {new Date(record.created_at).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}
-                                                        </span>
-                                                    </div>
-                                                    <h3 className="text-2xl font-black text-slate-800 tracking-tight leading-none italic uppercase">
-                                                        Diagnostics
-                                                    </h3>
-                                                </div>
-
-                                                <div className="relative mb-8 p-4 bg-gray-50/50 rounded-[2.5rem] shadow-inner border border-gray-100 w-full max-w-[240px]">
-                                                    <ResponsiveContainer width="100%" height={200}>
-                                                        <PieChart>
-                                                            <Pie
-                                                                data={[{ value: distressIndex }, { value: 100 - distressIndex }]}
-                                                                cx="50%" cy="100%"
-                                                                startAngle={180} endAngle={0}
-                                                                innerRadius={70} outerRadius={90}
-                                                                dataKey="value"
-                                                                stroke="none"
-                                                            >
-                                                                <Cell key="progress" fill={distressIndex >= 80 ? '#f43f5e' : distressIndex >= 50 ? '#fbbf24' : '#10b981'} />
-                                                                <Cell key="bg" fill="#f1f5f9" />
-                                                            </Pie>
-                                                        </PieChart>
-                                                    </ResponsiveContainer>
-                                                    <div className="absolute bottom-10 left-1/2 transform -translate-x-1/2 text-center pointer-events-none">
-                                                        <span className={`text-6xl font-black ${distressIndex >= 80 ? 'text-rose-600' : distressIndex >= 50 ? 'text-amber-500' : 'text-emerald-600'}`}>
-                                                            {distressIndex}%
-                                                        </span>
-                                                        <p className="text-[10px] font-bold text-gray-400 uppercase tracking-tighter -mt-1">Active Distress</p>
-                                                    </div>
-                                                </div>
-
-                                                <div className={`w-full py-3 rounded-2xl text-xs font-black uppercase tracking-[0.2em] shadow-sm ${distressIndex >= 80 ? 'bg-rose-500 text-white shadow-rose-200' : distressIndex >= 50 ? 'bg-amber-400 text-white shadow-amber-100' : 'bg-emerald-500 text-white shadow-emerald-100'}`}>
-                                                    {distressIndex >= 80 ? 'Critical' : distressIndex >= 50 ? 'Moderate' : 'Stable'}
-                                                </div>
-                                            </div>
-
-                                            {/* RIGHT: Detailed Content */}
-                                            <div className="lg:w-2/3 flex flex-col">
-                                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
-                                                    {/* Summary */}
-                                                    <div className="bg-slate-50/80 rounded-[2rem] p-8 border border-white/40 shadow-sm relative overflow-hidden group-hover:bg-white transition-colors">
-                                                        <div className="absolute -top-4 -right-4 w-24 h-24 bg-blue-500/5 rounded-full blur-2xl"></div>
-                                                        <h4 className="flex items-center gap-2 text-xs font-black text-slate-400 uppercase tracking-widest mb-4">
-                                                            <div className="w-4 h-1 bg-brand-primary rounded-full"></div>
-                                                            Clinical Summary
-                                                        </h4>
-                                                        <p className="text-xl font-bold text-slate-800 leading-tight">
-                                                            {summary}
-                                                        </p>
+                                return (
+                                    <motion.div variants={itemVariants} key={record.id} className="bg-white rounded-[2.5rem] overflow-hidden border border-gray-100 shadow-lg hover:shadow-xl transition-all">
+                                        <div className="p-8 sm:p-10">
+                                            <div className="flex flex-col lg:flex-row gap-10">
+                                                {/* Left: Summary & Score */}
+                                                <div className="lg:w-1/3 border-r border-gray-50 pr-0 lg:pr-10">
+                                                    <div className="flex justify-between items-start mb-6">
+                                                        <div>
+                                                            <h4 className="text-[10px] font-black uppercase tracking-widest text-[#4A8180] mb-1">Assessment Report</h4>
+                                                            <p className="text-xs font-bold text-gray-400">{new Date(record.created_at).toLocaleDateString()}</p>
+                                                        </div>
+                                                        <div className={`px-4 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest ${distressIndex >= 80 ? 'bg-red-50 text-red-500' : distressIndex >= 50 ? 'bg-amber-50 text-amber-500' : 'bg-emerald-50 text-emerald-500'}`}>
+                                                            {distressIndex >= 80 ? 'Critical' : distressIndex >= 50 ? 'Moderate' : 'Stable'}
+                                                        </div>
                                                     </div>
 
-                                                    {/* Category Chart */}
-                                                    <div className="bg-slate-50/80 rounded-[2rem] p-8 border border-white/40 shadow-sm transition-all hover:bg-white">
-                                                        <h4 className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-4 text-center">Wellness Spectrum</h4>
-                                                        <div className="h-40 w-full">
-                                                            <ResponsiveContainer width="100%" height="100%">
-                                                                <RadarChart cx="50%" cy="50%" outerRadius="80%" data={chartData}>
-                                                                    <PolarGrid stroke="#e2e8f0" />
-                                                                    <PolarAngleAxis dataKey="subject" tick={{ fontSize: 10, fontWeight: 700, fill: '#64748b' }} />
-                                                                    <Radar name="Metrics" dataKey="A" stroke="#3b82f6" fill="#3b82f6" fillOpacity={0.2} dot />
-                                                                </RadarChart>
-                                                            </ResponsiveContainer>
+                                                    <div className="relative mb-8 flex justify-center">
+                                                        <ResponsiveContainer width="100%" height={200}>
+                                                            <PieChart>
+                                                                <Pie
+                                                                    data={[{ value: distressIndex }, { value: 100 - distressIndex }]}
+                                                                    cx="50%" cy="100%"
+                                                                    startAngle={180} endAngle={0}
+                                                                    innerRadius={65} outerRadius={85}
+                                                                    paddingAngle={0}
+                                                                    dataKey="value"
+                                                                    stroke="none"
+                                                                >
+                                                                    <Cell fill={distressIndex >= 80 ? '#ef4444' : distressIndex >= 50 ? '#f59e0b' : '#10b981'} />
+                                                                    <Cell fill="#f1f5f9" />
+                                                                </Pie>
+                                                            </PieChart>
+                                                        </ResponsiveContainer>
+                                                        <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2 text-center">
+                                                            <span className="text-4xl font-bold text-gray-800">{distressIndex}%</span>
+                                                            <p className="text-[10px] font-black text-gray-400 uppercase tracking-tighter">Distress</p>
                                                         </div>
                                                     </div>
                                                 </div>
 
-                                                {/* Insights & Perspective */}
-                                                <div className="space-y-6">
-                                                    <div className="p-8 bg-gradient-to-br from-slate-800 to-slate-900 rounded-[2rem] text-white shadow-xl relative overflow-hidden">
-                                                        <div className="absolute top-0 right-0 p-4 opacity-10">
-                                                            <svg className="w-32 h-32" fill="currentColor" viewBox="0 0 24 24"><path d="M14.017 21L14.017 18C14.017 16.8954 14.9124 16 16.017 16H19.017V14C19.017 11.2386 16.7784 9 14.017 9H13.017V7H14.017C17.883 7 21.017 10.134 21.017 14V21H14.017ZM3.017 21V14C3.017 10.134 6.151 7 10.017 7H11.017V9H10.017C7.25557 9 5.017 11.2386 5.017 14V16H8.017C9.12157 16 10.017 16.8954 10.017 18V21H3.017Z" /></svg>
-                                                        </div>
-                                                        <h4 className="text-[10px] font-black text-blue-400 uppercase tracking-widest mb-4">Clinical Perspective</h4>
-                                                        <p className="text-lg font-medium leading-relaxed text-blue-50/90">
-                                                            "{perspective}"
+                                                {/* Right: Insights */}
+                                                <div className="lg:w-2/3 flex flex-col">
+                                                    <div className="mb-6">
+                                                        <h3 className="text-xl font-bold text-gray-800 mb-2">{summary}</h3>
+                                                        <p className="text-sm text-gray-500 leading-relaxed italic border-l-4 border-[#4A8180]/30 pl-4 py-1">
+                                                            {perspective}
                                                         </p>
                                                     </div>
 
-                                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                                        {details.map((detail, dIdx) => (
-                                                            <div key={dIdx} className="flex gap-4 p-5 bg-white border border-slate-100 rounded-2xl shadow-sm transition-transform hover:-translate-y-1">
-                                                                <div className="mt-1 w-2 h-2 rounded-full bg-blue-500 shrink-0"></div>
-                                                                <p className="text-sm font-semibold text-slate-600 italic">
-                                                                    {detail}
-                                                                </p>
+                                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                                        <div className="bg-gray-50 rounded-3xl p-6">
+                                                            <h5 className="text-[10px] font-black uppercase tracking-widest text-gray-400 mb-4">Category Analysis</h5>
+                                                            <div className="h-40">
+                                                                <ResponsiveContainer width="100%" height="100%">
+                                                                    <RadarChart data={chartData}>
+                                                                        <PolarGrid stroke="#e2e8f0" />
+                                                                        <PolarAngleAxis dataKey="subject" tick={{ fontSize: 9, fontWeight: 700, fill: '#94a3b8' }} />
+                                                                        <Radar name="Level" dataKey="A" stroke="#4A8180" fill="#4A8180" fillOpacity={0.3} />
+                                                                    </RadarChart>
+                                                                </ResponsiveContainer>
                                                             </div>
-                                                        ))}
-                                                    </div>
-                                                </div>
-
-                                                {/* Actions */}
-                                                <div className="mt-10 flex flex-wrap gap-4 items-center justify-between border-t border-slate-100 pt-8">
-                                                    <div className="flex items-center gap-2">
-                                                        <div className="flex -space-x-3">
-                                                            {[1, 2, 3].map(i => (
-                                                                <div key={i} className="w-8 h-8 rounded-full border-2 border-white bg-slate-200"></div>
-                                                            ))}
                                                         </div>
-                                                        <span className="text-xs font-bold text-slate-500 uppercase tracking-tight">Consult with specialists available now</span>
+                                                        <div className="space-y-4">
+                                                            <h5 className="text-[10px] font-black uppercase tracking-widest text-gray-400">Clinical Markers</h5>
+                                                            <div className="space-y-3">
+                                                                {details.slice(0, 4).map((d, i) => (
+                                                                    <div key={i} className="flex items-start gap-3 bg-white p-3 rounded-2xl border border-gray-50 shadow-sm">
+                                                                        <div className="w-1.5 h-1.5 rounded-full bg-[#4A8180] mt-1.5 shrink-0"></div>
+                                                                        <p className="text-[11px] font-bold text-gray-600 leading-tight">{d}</p>
+                                                                    </div>
+                                                                ))}
+                                                                {details.length === 0 && (
+                                                                    <p className="text-xs text-gray-400 italic">No specific markers detected for this session.</p>
+                                                                )}
+                                                            </div>
+                                                        </div>
                                                     </div>
-                                                    <a href="/doctors" className="px-10 py-4 bg-slate-900 text-white font-black text-xs uppercase tracking-[0.2em] rounded-2xl hover:bg-black transition-all shadow-xl hover:shadow-black/10">
-                                                        Immediate Consultation
-                                                    </a>
+
+                                                    <div className="mt-8 flex justify-end">
+                                                        <button
+                                                            onClick={() => window.location.href = '/doctors'}
+                                                            className="px-6 py-2.5 bg-gray-900 text-white text-[10px] font-bold uppercase tracking-widest rounded-xl hover:bg-black transition-all shadow-md"
+                                                        >
+                                                            Consult Specialist
+                                                        </button>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
-                                </motion.div>
-                            );
-                        })}
-                    </motion.div>
+                                    </motion.div>
+                                );
+                            })}
+                        </motion.div>
+                    </div>
                 )}
             </div>
         </DashboardLayout>
