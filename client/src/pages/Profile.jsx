@@ -51,8 +51,8 @@ const Profile = () => {
                 {icon}
             </div>
             <div>
-                <p className="text-[10px] font-black text-slate-600 uppercase tracking-[0.2em] mb-1">{label}</p>
-                <p className="text-[15px] font-bold text-slate-950 tracking-tight">{value || 'Not Documented'}</p>
+                <p className="text-[12px] font-black text-slate-600 uppercase tracking-[0.2em] mb-1">{label}</p>
+                <p className="text-lg font-bold text-slate-950 tracking-tight">{value || 'Not Documented'}</p>
             </div>
         </div>
     );
@@ -65,24 +65,24 @@ const Profile = () => {
                 <div className="bg-white rounded-[3rem] p-10 border border-slate-100 shadow-sm relative overflow-hidden flex flex-col md:flex-row items-center gap-10">
                     <div className="absolute top-0 right-0 w-64 h-64 bg-[#4A8180]/5 rounded-full -mr-32 -mt-32 blur-3xl"></div>
                     <div className="relative">
-                        <div className="w-28 h-28 rounded-[2.5rem] bg-[#4A8180] flex items-center justify-center text-white text-5xl font-black shadow-xl shadow-[#4A8180]/20">
+                        <div className="w-28 h-28 rounded-[2.5rem] bg-[#4A8180] flex items-center justify-center text-white text-7xl font-black shadow-xl shadow-[#4A8180]/20">
                             {user?.name?.charAt(0)}
                         </div>
                         <div className="absolute -bottom-2 -right-2 w-8 h-8 rounded-full bg-emerald-500 border-4 border-white shadow-lg"></div>
                     </div>
                     <div className="flex-1 text-center md:text-left space-y-3">
-                        <h2 className="text-4xl font-bold text-slate-800 tracking-tighter italic">{user?.name}</h2>
+                        <h2 className="text-6xl font-bold text-slate-800 tracking-tighter italic">{user?.name}</h2>
                         <div className="flex flex-wrap justify-center md:justify-start gap-4">
-                            <span className="text-sm font-semibold text-slate-400">{user?.email}</span>
-                            <span className="px-3 py-1 bg-slate-50 rounded-full text-[10px] font-black text-[#4A8180] uppercase tracking-widest border border-slate-100">Authenticated Member</span>
+                            <span className="text-lg font-semibold text-slate-400">{user?.email}</span>
+                            <span className="px-3 py-1 bg-slate-50 rounded-full text-[12px] font-black text-[#4A8180] uppercase tracking-widest border border-slate-100">Authenticated Member</span>
                         </div>
                     </div>
                     <button
                         onClick={() => setIsEditing(!isEditing)}
-                        className={`px-8 py-3 rounded-2xl font-bold text-sm tracking-tight transition-all border ${isEditing ? 'border-rose-200 text-rose-500 bg-rose-50' : 'bg-slate-900 text-white hover:bg-black shadow-lg shadow-black/10'
+                        className={`px-8 py-3 rounded-2xl font-bold text-lg tracking-tight transition-all border ${isEditing ? 'border-rose-200 text-rose-500 bg-rose-50' : 'bg-slate-900 text-white hover:bg-black shadow-lg shadow-black/10'
                             }`}
                     >
-                        {isEditing ? 'Cancel Protcol' : 'Modify Integrity Settings'}
+                        {isEditing ? 'Cancel Protocol' : 'Modify Integrity Settings'}
                     </button>
                 </div>
 
@@ -98,8 +98,8 @@ const Profile = () => {
                     <form onSubmit={handleSubmit} className="bg-white rounded-[3rem] p-12 border border-slate-100 shadow-sm space-y-12">
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                             <div className="md:col-span-2 space-y-4">
-                                <label className="text-[10px] font-black text-[#4A8180] uppercase tracking-[0.4em] ml-2 italic">Comprehensive Clinical Bio</label>
-                                <textarea name="bio" value={formData.bio} onChange={handleChange} className="w-full bg-slate-50 border border-slate-100 rounded-3xl p-6 text-sm font-bold text-slate-950 outline-none focus:ring-8 ring-[#4A8180]/5 h-32 transition-all resize-none" placeholder="Establish your identity narrative..." />
+                                <label className="text-[12px] font-black text-[#4A8180] uppercase tracking-[0.4em] ml-2 italic">Comprehensive Clinical Bio</label>
+                                <textarea name="bio" value={formData.bio} onChange={handleChange} className="w-full bg-slate-50 border border-slate-100 rounded-3xl p-6 text-lg font-bold text-slate-950 outline-none focus:ring-8 ring-[#4A8180]/5 h-32 transition-all resize-none" placeholder="Establish your identity narrative..." />
                             </div>
 
                             {[
@@ -112,14 +112,14 @@ const Profile = () => {
                                 { label: 'Authorized Surrogate Contact', name: 'emergency_contact', type: 'text' }
                             ].map((field) => (
                                 <div key={field.name} className="space-y-3">
-                                    <label className="text-[10px] font-black text-slate-600 uppercase tracking-[0.3em] ml-2 italic">{field.label}</label>
-                                    <input name={field.name} type={field.type} value={formData[field.name]} onChange={handleChange} className="w-full bg-slate-50 border border-slate-100 rounded-2xl p-4 text-sm font-bold text-slate-950 outline-none focus:ring-8 ring-[#4A8180]/5 transition-all" />
+                                    <label className="text-[13px] font-black text-slate-600 uppercase tracking-[0.3em] ml-2 italic">{field.label}</label>
+                                    <input name={field.name} type={field.type} value={formData[field.name]} onChange={handleChange} className="w-full bg-slate-50 border border-slate-100 rounded-2xl p-4 text-xl font-bold text-slate-950 outline-none focus:ring-8 ring-[#4A8180]/5 transition-all" />
                                 </div>
                             ))}
 
                             <div className="space-y-3">
-                                <label className="text-[10px] font-black text-slate-600 uppercase tracking-[0.3em] ml-2 italic">Gender Alignment</label>
-                                <select name="gender" value={formData.gender} onChange={handleChange} className="w-full bg-slate-50 border border-slate-100 rounded-2xl p-4 text-sm font-bold text-slate-950 outline-none focus:ring-8 ring-[#4A8180]/5 transition-all appearance-none cursor-pointer">
+                                <label className="text-[12px] font-black text-slate-600 uppercase tracking-[0.3em] ml-2 italic">Gender Alignment</label>
+                                <select name="gender" value={formData.gender} onChange={handleChange} className="w-full bg-slate-50 border border-slate-100 rounded-2xl p-4 text-lg font-bold text-slate-950 outline-none focus:ring-8 ring-[#4A8180]/5 transition-all appearance-none cursor-pointer">
                                     <option value="">Select Integrity</option>
                                     <option>Male</option>
                                     <option>Female</option>
@@ -128,12 +128,12 @@ const Profile = () => {
                             </div>
 
                             <div className="md:col-span-2 space-y-4">
-                                <label className="text-[10px] font-black text-[#4A8180] uppercase tracking-[0.4em] ml-2 italic">Wellness Trajectory Objectives</label>
-                                <textarea name="wellness_goals" value={formData.wellness_goals} onChange={handleChange} className="w-full bg-slate-50 border border-slate-100 rounded-3xl p-6 text-sm font-bold text-slate-950 outline-none focus:ring-8 ring-[#4A8180]/5 h-32 transition-all resize-none" />
+                                <label className="text-[12px] font-black text-[#4A8180] uppercase tracking-[0.4em] ml-2 italic">Wellness Trajectory Objectives</label>
+                                <textarea name="wellness_goals" value={formData.wellness_goals} onChange={handleChange} className="w-full bg-slate-50 border border-slate-100 rounded-3xl p-6 text-lg font-bold text-slate-950 outline-none focus:ring-8 ring-[#4A8180]/5 h-32 transition-all resize-none" />
                             </div>
                         </div>
 
-                        <button type="submit" disabled={loading} className="w-full bg-[#4A8180] text-white py-5 rounded-3xl font-black text-sm uppercase tracking-[0.3em] shadow-xl shadow-[#4A8180]/20 hover:bg-[#3d6b6a] transition-all">
+                        <button type="submit" disabled={loading} className="w-full bg-[#4A8180] text-white py-5 rounded-3xl font-black text-lg uppercase tracking-[0.3em] shadow-xl shadow-[#4A8180]/20 hover:bg-[#3d6b6a] transition-all">
                             {loading ? 'Propagating Integrity Updates...' : 'COMMIT PROFILE SETTINGS'}
                         </button>
                     </form>
@@ -144,8 +144,8 @@ const Profile = () => {
                             {/* BIO PANEL */}
                             <div className="bg-white rounded-[3rem] p-10 border border-slate-100 shadow-sm relative overflow-hidden group">
                                 <div className="absolute top-0 left-0 w-32 h-32 bg-[#4A8180]/5 rounded-full blur-3xl group-hover:scale-150 transition-all duration-700"></div>
-                                <h3 className="text-[10px] font-black text-[#4A8180] uppercase tracking-[0.5em] mb-8 italic">Clinical Bio Portfolio</h3>
-                                <p className="text-2xl font-bold text-slate-950 leading-relaxed italic relative z-10">
+                                <h3 className="text-[12px] font-black text-[#4A8180] uppercase tracking-[0.5em] mb-8 italic">Clinical Bio Portfolio</h3>
+                                <p className="text-4xl font-bold text-slate-950 leading-relaxed italic relative z-10">
                                     "{user?.bio || "No clinical narrative established. Documentation is recommended for tailored AI analysis."}"
                                 </p>
                             </div>
@@ -165,22 +165,22 @@ const Profile = () => {
                             {/* GOALS PANEL */}
                             <div className="bg-[#4A8180] rounded-[3rem] p-10 text-white shadow-2xl relative overflow-hidden group">
                                 <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -mr-16 -mt-16 blur-3xl group-hover:scale-150 transition-all duration-1000"></div>
-                                <h3 className="text-[10px] font-black text-white/50 uppercase tracking-[0.4em] mb-8 italic">Trajectory Goals</h3>
-                                <p className="text-xl font-bold leading-relaxed italic relative z-10">
+                                <h3 className="text-[12px] font-black text-white/50 uppercase tracking-[0.4em] mb-8 italic">Trajectory Goals</h3>
+                                <p className="text-3xl font-bold leading-relaxed italic relative z-10">
                                     "{user?.wellness_goals || "Define your path objectives. What is your intended wellness state?"}"
                                 </p>
                             </div>
 
                             {/* EMERGENCY PANEL */}
                             <div className="bg-white rounded-[3rem] p-10 border border-slate-100 shadow-sm">
-                                <h3 className="text-[10px] font-black text-slate-600 uppercase tracking-[0.4em] mb-8 italic text-center">Safety Protocols</h3>
+                                <h3 className="text-[12px] font-black text-slate-600 uppercase tracking-[0.4em] mb-8 italic text-center">Safety Protocols</h3>
                                 <div className="flex items-center gap-5">
                                     <div className="w-12 h-12 bg-rose-50 rounded-2xl flex items-center justify-center text-rose-500 shadow-inner">
                                         <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
                                     </div>
                                     <div>
-                                        <p className="text-[9px] font-black text-slate-600 uppercase tracking-[0.3em]">Authorized Surrogate</p>
-                                        <p className="text-lg font-bold text-slate-700">{user?.emergency_contact || 'None Documented'}</p>
+                                        <p className="text-[11px] font-black text-slate-600 uppercase tracking-[0.3em]">Authorized Surrogate</p>
+                                        <p className="text-2xl font-bold text-slate-700">{user?.emergency_contact || 'None Documented'}</p>
                                     </div>
                                 </div>
                             </div>

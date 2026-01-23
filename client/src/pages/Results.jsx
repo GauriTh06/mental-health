@@ -38,8 +38,8 @@ const Results = () => {
     if (history.length === 0) return (
         <DashboardLayout title="Mental Health Dashboard">
             <div className="max-w-4xl mx-auto mt-20 text-center p-12 bg-white rounded-2xl shadow-sm border border-slate-100">
-                <h3 className="text-2xl font-semibold text-slate-800 mb-4">No Assessment Data Found</h3>
-                <p className="text-slate-500 mb-8">Please complete your initial and secondary assessments to generate your clinical dashboard.</p>
+                <h3 className="text-4xl font-semibold text-slate-800 mb-4">No Assessment Data Found</h3>
+                <p className="text-lg text-slate-500 mb-8">Please complete your initial and secondary assessments to generate your clinical dashboard.</p>
                 <a href="/round1" className="bg-[#4A8180] text-white px-8 py-3 rounded-lg font-medium hover:bg-[#3A6665] transition-colors">Start First Round</a>
             </div>
         </DashboardLayout>
@@ -82,15 +82,15 @@ const Results = () => {
                 {/* TOP HEADER / SELECTOR */}
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-[#4A6072] p-4 rounded-xl text-white shadow-md">
                     <div>
-                        <h2 className="text-lg font-bold tracking-tight uppercase">Mental Health Analytics Dashboard - {new Date(record.created_at).getFullYear()} Session</h2>
-                        <p className="text-xs opacity-80 font-medium">Session Record #{history.length - selectedIdx} | {new Date(record.created_at).toLocaleDateString()}</p>
+                        <h2 className="text-2xl font-bold tracking-tight uppercase">Mental Health Analytics Dashboard - {new Date(record.created_at).getFullYear()} Session</h2>
+                        <p className="text-base opacity-80 font-medium">Session Record #{history.length - selectedIdx} | {new Date(record.created_at).toLocaleDateString()}</p>
                     </div>
                     <div className="flex items-center gap-2">
-                        <span className="text-[10px] font-bold uppercase opacity-60">Switch Record:</span>
+                        <span className="text-[12px] font-bold uppercase opacity-60">Switch Record:</span>
                         <select
                             value={selectedIdx}
                             onChange={(e) => setSelectedIdx(parseInt(e.target.value))}
-                            className="bg-white/10 border border-white/20 rounded px-3 py-1 text-xs font-bold outline-none cursor-pointer hover:bg-white/20 transition-all"
+                            className="bg-white/10 border border-white/20 rounded px-3 py-1 text-base font-bold outline-none cursor-pointer hover:bg-white/20 transition-all"
                         >
                             {history.map((r, i) => (
                                 <option key={r.id} value={i} className="text-slate-900">Record {history.length - i} ({new Date(r.created_at).toLocaleDateString()})</option>
@@ -108,8 +108,8 @@ const Results = () => {
                         { label: 'Stress Load Factor', val: `${metrics.stress}%`, color: 'border-l-amber-500' }
                     ].map((kpi, i) => (
                         <div key={i} className={`bg-white p-5 rounded-lg shadow-sm border ${kpi.color} border-l-4 flex flex-col justify-center`}>
-                            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">{kpi.label}</p>
-                            <p className="text-2xl font-black text-slate-800 leading-none">{kpi.val}</p>
+                            <p className="text-[12px] font-bold text-slate-400 uppercase tracking-wider mb-1">{kpi.label}</p>
+                            <p className="text-4xl font-black text-slate-800 leading-none">{kpi.val}</p>
                         </div>
                     ))}
                 </div>
@@ -123,7 +123,7 @@ const Results = () => {
                         {/* CHART ROW 1 */}
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div className="bg-white p-6 rounded-xl shadow-sm border border-slate-100">
-                                <h4 className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-6 border-b pb-2">Wellness Progression Timeline</h4>
+                                <h4 className="text-base font-bold text-slate-400 uppercase tracking-widest mb-6 border-b pb-2">Wellness Progression Timeline</h4>
                                 <div className="h-48">
                                     <ResponsiveContainer width="100%" height="100%">
                                         <BarChart data={timelineData}>
@@ -137,7 +137,7 @@ const Results = () => {
                                 </div>
                             </div>
                             <div className="bg-white p-6 rounded-xl shadow-sm border border-slate-100 flex flex-col items-center">
-                                <h4 className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-2 border-b w-full pb-2">Detailed Risk Distribution</h4>
+                                <h4 className="text-base font-bold text-slate-400 uppercase tracking-widest mb-2 border-b w-full pb-2">Detailed Risk Distribution</h4>
                                 <div className="h-48 w-full">
                                     <ResponsiveContainer width="100%" height="100%">
                                         <PieChart>
@@ -155,7 +155,7 @@ const Results = () => {
                         {/* CHART ROW 2 */}
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div className="bg-white p-6 rounded-xl shadow-sm border border-slate-100">
-                                <h4 className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-6 border-b pb-2">Psychological Spectrum Radar</h4>
+                                <h4 className="text-base font-bold text-slate-400 uppercase tracking-widest mb-6 border-b pb-2">Psychological Spectrum Radar</h4>
                                 <div className="h-56">
                                     <ResponsiveContainer width="100%" height="100%">
                                         <RadarChart cx="50%" cy="50%" outerRadius="70%" data={categoryData}>
@@ -168,9 +168,9 @@ const Results = () => {
                                 </div>
                             </div>
                             <div className="bg-white p-6 rounded-xl shadow-sm border border-slate-100 flex flex-col justify-center overflow-hidden">
-                                <h4 className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-4 border-b pb-2">Diagnostic Conclusion</h4>
+                                <h4 className="text-base font-bold text-slate-400 uppercase tracking-widest mb-4 border-b pb-2">Diagnostic Conclusion</h4>
                                 <div className="p-4 bg-slate-50 rounded-lg border border-slate-100">
-                                    <p className="text-sm font-bold text-slate-800 leading-relaxed mb-2 opacity-90 italic">"{analysis.summary}"</p>
+                                    <p className="text-lg font-bold text-slate-800 leading-relaxed mb-2 opacity-90 italic">"{analysis.summary}"</p>
                                     <div className="h-1.5 w-full bg-slate-200 rounded-full mt-4 overflow-hidden">
                                         <div className={`h-full ${metrics.total >= 80 ? 'bg-red-500' : metrics.total >= 50 ? 'bg-amber-500' : 'bg-green-500'}`} style={{ width: `${metrics.total}%` }}></div>
                                     </div>
@@ -184,7 +184,7 @@ const Results = () => {
                     {/* RIGHT COLUMN: TECHNICAL INSIGHTS PANEL */}
                     <div className="space-y-6">
                         <div className="bg-[#1e293b] text-white p-8 rounded-xl shadow-lg h-full border-t-4 border-[#4A8180]">
-                            <h4 className="text-[10px] font-black uppercase tracking-[0.3em] text-[#4A8180] mb-8 flex items-center gap-3">
+                            <h4 className="text-[12px] font-black uppercase tracking-[0.3em] text-[#4A8180] mb-8 flex items-center gap-3">
                                 <span className="w-4 h-4 rounded-full border border-[#4A8180] flex items-center justify-center text-[8px]">!</span>
                                 Technical Health Insights
                             </h4>
@@ -193,13 +193,13 @@ const Results = () => {
                                     <div key={i} className="flex gap-4 group">
                                         <div className="shrink-0 w-2 h-2 rounded-full bg-[#4A8180] mt-1.5 group-hover:scale-125 transition-transform"></div>
                                         <div className="space-y-1">
-                                            <p className="text-[13px] font-medium leading-relaxed opacity-90">{insight}</p>
+                                            <p className="text-base font-medium leading-relaxed opacity-90">{insight}</p>
                                             <div className="w-0 group-hover:w-full h-[1px] bg-[#4A8180]/30 transition-all duration-300"></div>
                                         </div>
                                     </div>
                                 ))}
                                 {insights.length === 0 && (
-                                    <p className="text-xs italic opacity-50">Detailed clinical parameters are currently within normal baseline variation.</p>
+                                    <p className="text-base italic opacity-50">Detailed clinical parameters are currently within normal baseline variation.</p>
                                 )}
                             </div>
 
@@ -210,7 +210,7 @@ const Results = () => {
                                     <p className="text-xs leading-relaxed mb-6 font-medium text-slate-300">The current metric cluster indicates high-risk markers. Professional clinical oversight is recommended.</p>
                                     <button
                                         onClick={() => window.location.href = '/doctors'}
-                                        className="w-full bg-[#4A8180] text-white py-3 rounded-lg font-bold text-[10px] uppercase tracking-[0.2em] hover:bg-[#3A6665] transition-all"
+                                        className="w-full bg-[#4A8180] text-white py-3 rounded-lg font-bold text-[12px] uppercase tracking-[0.2em] hover:bg-[#3A6665] transition-all"
                                     >
                                         Consult Specialist
                                     </button>
@@ -224,12 +224,12 @@ const Results = () => {
                 {/* BOTTOM HISTORY TICKER (Table style) */}
                 <div className="bg-white rounded-xl shadow-sm border border-slate-100 overflow-hidden">
                     <div className="p-4 bg-slate-50 border-b border-slate-100 flex justify-between items-center">
-                        <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Historical Diagnostic Index</h4>
-                        <span className="text-[10px] font-bold text-slate-400 italic">Total Records: {history.length}</span>
+                        <h4 className="text-[12px] font-black uppercase tracking-[0.2em] text-slate-400">Historical Diagnostic Index</h4>
+                        <span className="text-[12px] font-bold text-slate-400 italic">Total Records: {history.length}</span>
                     </div>
                     <div className="overflow-x-auto">
                         <table className="w-full text-left">
-                            <thead className="bg-[#f8fafc] text-[10px] font-black text-slate-400 uppercase tracking-widest border-b">
+                            <thead className="bg-[#f8fafc] text-[12px] font-black text-slate-400 uppercase tracking-widest border-b">
                                 <tr>
                                     <th className="px-6 py-4">Report ID</th>
                                     <th className="px-6 py-4">Date Logged</th>
@@ -244,11 +244,11 @@ const Results = () => {
                                     try { ana = typeof r.analysis === 'string' ? JSON.parse(r.analysis) : r.analysis; }
                                     catch (e) { ana = { metrics: { total: 0 }, summary: "N/A" }; }
                                     return (
-                                        <tr key={r.id} className={`text-xs font-semibold ${selectedIdx === i ? 'bg-blue-50/50' : 'hover:bg-slate-50'} transition-colors cursor-pointer`} onClick={() => setSelectedIdx(i)}>
+                                        <tr key={r.id} className={`text-base font-semibold ${selectedIdx === i ? 'bg-blue-50/50' : 'hover:bg-slate-50'} transition-colors cursor-pointer`} onClick={() => setSelectedIdx(i)}>
                                             <td className="px-6 py-4 text-slate-900 font-bold">#{history.length - i}</td>
                                             <td className="px-6 py-4 text-slate-500">{new Date(r.created_at).toLocaleDateString()}</td>
                                             <td className="px-6 py-4">
-                                                <span className={`px-2 py-1 rounded text-[10px] font-bold ${ana.metrics?.total >= 80 ? 'bg-red-100 text-red-600' : 'bg-slate-100 text-slate-600'}`}>
+                                                <span className={`px-2 py-1 rounded text-[12px] font-bold ${ana.metrics?.total >= 80 ? 'bg-red-100 text-red-600' : 'bg-slate-100 text-slate-600'}`}>
                                                     {ana.metrics?.total}%
                                                 </span>
                                             </td>
