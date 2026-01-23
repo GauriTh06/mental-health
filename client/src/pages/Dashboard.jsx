@@ -53,11 +53,12 @@ const Dashboard = () => {
                         <p className="text-slate-500 text-[19px] font-medium max-w-2xl leading-relaxed">
                             Your comprehensive mental health report and clinical analysis are now ready. Based on <span className="text-slate-700 font-bold">{history.length} documented assessments</span> in your history, your longitudinal data suggests a sustained positive shift in emotional stability.
                         </p>
-                        <div className="flex flex-wrap gap-3 mt-6">
-                            <Link to="/round1" className="bg-[#4A8180] text-white px-6 py-2.5 rounded-xl font-semibold text-sm hover:bg-[#3d6b6a] transition-all shadow-md shadow-teal-900/10">
-                                Start Assessment
+                        <div className="flex flex-wrap gap-4 mt-8">
+                            <Link to="/round1" className="bg-[#4A8180] text-white px-10 py-4 rounded-2xl font-bold text-xl hover:bg-[#3d6b6a] transition-all shadow-xl shadow-teal-900/20 flex items-center gap-3">
+                                <span>Start Assessment</span>
+                                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M13 7l5 5m0 0l-5 5m5-5H6" /></svg>
                             </Link>
-                            <Link to="/results" className="bg-white border border-slate-200 text-slate-600 px-6 py-2.5 rounded-xl font-semibold text-lg hover:bg-slate-50 transition-all">
+                            <Link to="/results" className="bg-white border-2 border-slate-200 text-slate-600 px-10 py-4 rounded-2xl font-bold text-xl hover:bg-slate-50 transition-all shadow-sm">
                                 Analytic History
                             </Link>
                         </div>
