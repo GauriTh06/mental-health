@@ -47,8 +47,11 @@ const Dashboard = () => {
 
                     <div className="relative z-10 flex-1">
                         <span className="inline-block px-3 py-1 bg-teal-50 text-[#4A8180] text-[12px] font-bold uppercase tracking-widest rounded-md mb-4 border border-teal-100">Patient Overview</span>
-                        <h2 className="text-5xl font-bold text-slate-900 tracking-tight mb-2">
-                            {getGreeting()}, {user?.name?.split(' ')[0]}
+                        <h2 className="text-6xl font-black text-slate-900 tracking-tight mb-4 flex items-center gap-3">
+                            <span className="opacity-90">{getGreeting()},</span>
+                            <span className="text-gradient italic" style={{ fontFamily: "'Playfair Display', serif" }}>
+                                {user?.name?.split(' ')[0]}
+                            </span>
                         </h2>
                         <p className="text-slate-500 text-[19px] font-medium max-w-2xl leading-relaxed">
                             Your comprehensive mental health report and clinical analysis are now ready. Based on <span className="text-slate-700 font-bold">{history.length} documented assessments</span> in your history, your longitudinal data suggests a sustained positive shift in emotional stability.
