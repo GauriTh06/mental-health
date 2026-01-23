@@ -22,7 +22,7 @@ const DashboardLayout = ({ children, title }) => {
     const SidebarContent = () => (
         <div className="flex flex-col h-full bg-[#DDEBF7] border-r border-[#CBD5E1]">
             <div className="px-8 py-8 flex justify-center">
-                <img src="/logo.jpg" alt="MindWell Logo" className="w-32 h-auto rounded-3xl shadow-xl shadow-slate-400/20 border-2 border-white" />
+                <img src="https://ibb.co/0yX8v95B" alt="MindWell Logo" className="w-32 h-auto rounded-3xl shadow-xl shadow-slate-400/20 border-2 border-white" />
             </div>
 
             <nav className="flex-1 px-4 space-y-4 py-8 overflow-y-auto">
