@@ -116,7 +116,7 @@ const DashboardLayout = ({ children, title }) => {
                     </div>
                 </header>
 
-                <div className="flex-1 overflow-y-auto px-6 lg:px-10 py-10 space-y-12 relative z-10">
+                <div className="flex-1 overflow-y-auto px-4 lg:px-6 py-10 space-y-12 relative z-10">
                     {children}
                 </div>
             </main>

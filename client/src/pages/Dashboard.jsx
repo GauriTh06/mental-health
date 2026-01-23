@@ -39,10 +39,10 @@ const Dashboard = () => {
 
     return (
         <DashboardLayout title="Performance Dashboard">
-            <div className="w-full space-y-6 pb-12 px-[5%]">
+            <div className="w-full space-y-8 pb-12 px-2">
 
                 {/* PROFESSIONAL WELCOME BANNER */}
-                <div className="bg-white rounded-2xl p-8 border border-slate-200 shadow-sm flex flex-col lg:flex-row items-center justify-between gap-8 relative overflow-hidden">
+                <div className="bg-white rounded-3xl p-12 border border-slate-200 shadow-sm flex flex-col lg:flex-row items-center justify-between gap-10 relative overflow-hidden">
                     <div className="absolute top-0 right-0 w-64 h-64 bg-slate-50 rounded-full -mr-32 -mt-32 -z-0"></div>
 
                     <div className="relative z-10 flex-1">
@@ -84,7 +84,7 @@ const Dashboard = () => {
                     <div className="lg:col-span-8 space-y-6">
 
                         {/* MOOD SPECTRUM - CLINICAL STYLE */}
-                        <div className="bg-white rounded-2xl p-8 border border-slate-200 shadow-sm">
+                        <div className="bg-white rounded-3xl p-10 border border-slate-200 shadow-sm mb-8">
                             <div className="flex justify-between items-start mb-10">
                                 <div>
                                     <h3 className="text-2xl font-bold text-slate-900 tracking-tight">Emotional Spectrum Analysis</h3>
@@ -129,7 +129,7 @@ const Dashboard = () => {
                         </div>
 
                         {/* CLINICAL ROADMAP - GRID */}
-                        <div className="bg-white rounded-2xl p-8 border border-slate-200 shadow-sm">
+                        <div className="bg-white rounded-3xl p-10 border border-slate-200 shadow-sm mb-8">
                             <h3 className="text-2xl font-bold text-slate-900 tracking-tight mb-6 flex items-center gap-2">
                                 <svg className="w-5 h-5 text-[#4A8180]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
                                 Upcoming Specialist Consultations
@@ -155,13 +155,38 @@ const Dashboard = () => {
                                 ))}
                             </div>
                         </div>
+
+                        {/* YOGA & MINDFULNESS SECTION */}
+                        <div className="bg-white rounded-3xl p-10 border border-slate-200 shadow-sm">
+                            <h3 className="text-2xl font-bold text-slate-900 tracking-tight mb-8 flex items-center gap-3">
+                                <svg className="w-6 h-6 text-[#4A8180]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h2M4 8h16" /></svg>
+                                Mindfulness & Yoga Protocol
+                            </h3>
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                                {[
+                                    { pose: "Child's Pose", dur: "2 Min", focus: "Central Calm", img: "🧘" },
+                                    { pose: "Cat-Cow", dur: "3 Min", focus: "Spinal Flow", img: "🐈" },
+                                    { pose: "Tree Pose", dur: "4 Min", focus: "Cognitive Balance", img: "🌲" }
+                                ].map((yoga, i) => (
+                                    <div key={i} className="bg-slate-50 rounded-2xl p-6 border border-slate-100 hover:border-[#4A8180]/30 transition-all group">
+                                        <div className="text-3xl mb-4 group-hover:scale-110 transition-transform inline-block">{yoga.img}</div>
+                                        <h4 className="text-lg font-bold text-slate-900 mb-1">{yoga.pose}</h4>
+                                        <p className="text-[10px] font-black text-[#4A8180] uppercase tracking-widest mb-3">{yoga.focus}</p>
+                                        <div className="flex items-center gap-2 text-slate-500 text-sm font-semibold">
+                                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                                            {yoga.dur}
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
                     </div>
 
                     {/* RIGHT COLUMN: ANALYTICS & INSIGHTS */}
-                    <div className="lg:col-span-4 space-y-6">
+                    <div className="lg:col-span-4 space-y-8">
 
                         {/* HIGH-END RECAP PREVIEW */}
-                        <div className="bg-slate-900 rounded-2xl p-6 text-white shadow-xl relative overflow-hidden group">
+                        <div className="bg-slate-900 rounded-3xl p-8 text-white shadow-xl relative overflow-hidden group">
                             <div className="absolute inset-0 bg-gradient-to-br from-[#4A8180]/10 to-transparent"></div>
                             <h3 className="text-[10px] font-bold text-[#4A8180] uppercase tracking-[0.3em] mb-4 relative z-10">Last Session Protocol</h3>
                             <div className="aspect-video bg-slate-800 rounded-xl mb-4 relative overflow-hidden border border-white/5 shadow-inner">
@@ -178,7 +203,7 @@ const Dashboard = () => {
                         </div>
 
                         {/* PROFESSIONAL CHARTS */}
-                        <div className="bg-white rounded-2xl p-8 border border-slate-200 shadow-sm">
+                        <div className="bg-white rounded-3xl p-10 border border-slate-200 shadow-sm">
                             <h3 className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-8 text-center">Stability Analysis</h3>
                             <div className="h-48 relative">
                                 <ResponsiveContainer width="100%" height="100%">
@@ -204,7 +229,7 @@ const Dashboard = () => {
                         </div>
 
                         {/* MEDICAL QUOTES SECTION */}
-                        <div className="bg-[#4A8180] rounded-2xl p-6 text-white text-center relative overflow-hidden shadow-lg shadow-teal-900/10">
+                        <div className="bg-[#4A8180] rounded-3xl p-8 text-white text-center relative overflow-hidden shadow-lg shadow-teal-900/10">
                             <div className="absolute -left-2 -top-2 text-6xl font-serif text-white/10">“</div>
                             <p className="text-lg font-semibold italic mb-4 relative z-10 leading-relaxed">
                                 {medicalQuotes[Math.floor(Math.random() * medicalQuotes.length)].text}
