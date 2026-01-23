@@ -32,9 +32,7 @@ const Register = () => {
             {/* Left Side - Brand/Image */}
             <div className="hidden lg:flex w-1/2 bg-brand-sidebar relative items-center justify-center p-12 overflow-hidden">
                 <div className="relative z-10 text-center">
-                    <div className="w-16 h-16 bg-brand-primary rounded-2xl mx-auto mb-6 shadow-xl flex items-center justify-center text-white">
-                        <svg className="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" /></svg>
-                    </div>
+                    <img src="/logo.jpg" alt="MindWell Logo" className="w-24 h-24 rounded-3xl mx-auto mb-8 shadow-2xl border-4 border-white transform hover:scale-105 transition-transform" />
                     <h2 className="text-4xl font-extrabold text-gray-900 mb-4 tracking-tight">Join MindWell Today</h2>
                     <p className="text-lg text-gray-500 max-w-md mx-auto leading-relaxed">
                         Start your journey towards better mental health with our comprehensive assessment tools.

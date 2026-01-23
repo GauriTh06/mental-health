@@ -21,11 +21,8 @@ const DashboardLayout = ({ children, title }) => {
 
     const SidebarContent = () => (
         <div className="flex flex-col h-full bg-[#DDEBF7] border-r border-[#CBD5E1]">
-            <div className="p-8 pb-12 flex items-center gap-4">
-                <div className="w-10 h-10 bg-[#4A8180] rounded-xl flex items-center justify-center text-white text-lg font-black shadow-md">
-                    MW
-                </div>
-                <span className="text-4xl font-black text-[#1F2937] tracking-tighter">MindWell</span>
+            <div className="px-8 py-8 flex justify-center">
+                <img src="/logo.jpg" alt="MindWell Logo" className="w-32 h-auto rounded-3xl shadow-xl shadow-slate-400/20 border-2 border-white" />
             </div>
 
             <nav className="flex-1 px-4 space-y-4 py-8 overflow-y-auto">
@@ -58,7 +55,7 @@ const DashboardLayout = ({ children, title }) => {
                     <div className="w-10 h-10 rounded-xl bg-white/40 flex items-center justify-center group-hover:bg-rose-50 transition-colors">
                         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" /></svg>
                     </div>
-                    <span className="font-bold text-[#1F2937] group-hover:text-rose-600 text-[19px]">Sign Out</span>
+                    <span className="font-bold text-slate-900 group-hover:text-rose-600 text-[19px]">Sign Out</span>
                 </button>
             </div>
         </div>

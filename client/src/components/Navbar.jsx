@@ -22,9 +22,9 @@ const Navbar = () => {
                                 <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg>
                             </button>
                         )}
-                        <Link to="/" className="flex-shrink-0 flex items-center gap-2">
-                            <div className="w-8 h-8 bg-primary-600 rounded-lg flex items-center justify-center text-white font-bold">M</div>
-                            <span className="text-xl font-bold text-gray-800 tracking-tight">MindWell</span>
+                        <Link to="/" className="flex-shrink-0 flex items-center gap-3">
+                            <img src="/logo.jpg" alt="MindWell Logo" className="w-10 h-10 rounded-lg shadow-sm" />
+                            <span className="text-2xl font-black text-slate-800 tracking-tighter">MindWell</span>
                         </Link>
                     </div>
                     <div className="flex items-center space-x-4">

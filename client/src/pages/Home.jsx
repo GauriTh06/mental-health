@@ -28,8 +28,8 @@ const Home = () => {
             {/* Navbar */}
             <nav className="fixed top-0 left-0 right-0 z-50 glass border-b border-gray-200">
                 <div className="max-w-7xl mx-auto px-6 py-5 flex justify-between items-center">
-                    <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 bg-brand-primary rounded-xl shadow-lg"></div>
+                    <div className="flex items-center gap-4">
+                        <img src="/logo.jpg" alt="MindWell Logo" className="w-12 h-12 rounded-xl shadow-md border-2 border-white" />
                         <span className="text-3xl font-black tracking-tighter text-gray-900">MindWell</span>
                     </div>
                     <div className="space-x-10 hidden md:flex items-center">
@@ -211,8 +211,8 @@ const Home = () => {
             <footer className="bg-gray-50 pt-32 pb-16 border-t border-gray-200">
                 <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-4 gap-16 mb-24">
                     <div className="col-span-1 md:col-span-1">
-                        <div className="flex items-center gap-3 mb-10">
-                            <div className="w-8 h-8 bg-brand-primary rounded-lg"></div>
+                        <div className="flex items-center gap-4 mb-10">
+                            <img src="/logo.jpg" alt="MindWell Logo" className="w-10 h-10 rounded-lg shadow-sm" />
                             <span className="text-3xl font-black text-gray-900">MindWell</span>
                         </div>
                         <p className="text-xl text-gray-500 mb-10 font-medium">Making mental healthcare accessible, data-driven, and supportive for everyone.</p>

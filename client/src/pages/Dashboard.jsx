@@ -47,9 +47,9 @@ const Dashboard = () => {
 
                     <div className="relative z-10 flex-1">
                         <span className="inline-block px-3 py-1 bg-teal-50 text-[#4A8180] text-[12px] font-bold uppercase tracking-widest rounded-md mb-4 border border-teal-100">Patient Overview</span>
-                        <h2 className="text-6xl font-black text-slate-900 tracking-tight mb-4 flex items-center gap-3">
-                            <span className="opacity-90">{getGreeting()},</span>
-                            <span className="text-gradient italic" style={{ fontFamily: "'Playfair Display', serif" }}>
+                        <h2 className="text-6xl font-bold text-slate-900 tracking-tight mb-4 flex items-center gap-3">
+                            <span className="opacity-80 font-semibold">{getGreeting()},</span>
+                            <span className="italic" style={{ fontFamily: "'Playfair Display', serif" }}>
                                 {user?.name?.split(' ')[0]}
                             </span>
                         </h2>
@@ -74,8 +74,8 @@ const Dashboard = () => {
                                 <div className="absolute -top-1 -right-1 w-5 h-5 bg-emerald-500 rounded-full border-4 border-white animate-pulse"></div>
                             </div>
                             <div>
-                                <p className="text-[11px] font-black text-slate-400 uppercase tracking-[0.2em] leading-none mb-3">Current Protocol</p>
-                                <p className="text-2xl font-black text-slate-800 leading-tight">Diagnostic Tier 1</p>
+                                <p className="text-[11px] font-bold text-slate-400 uppercase tracking-[0.2em] leading-none mb-3">Current Protocol</p>
+                                <p className="text-2xl font-bold text-slate-900 leading-tight">Diagnostic Tier 1</p>
                                 <div className="mt-3 inline-flex items-center gap-2 px-3 py-1 bg-emerald-50 rounded-full">
                                     <div className="w-1.5 h-1.5 rounded-full bg-emerald-500"></div>
                                     <p className="text-[10px] text-emerald-600 font-bold uppercase tracking-wider">Status: Operational</p>
