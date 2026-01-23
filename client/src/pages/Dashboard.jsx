@@ -50,9 +50,8 @@ const Dashboard = () => {
                         <h2 className="text-5xl font-bold text-slate-900 tracking-tight mb-2">
                             {getGreeting()}, {user?.name?.split(' ')[0]}
                         </h2>
-                        <p className="text-slate-700 text-lg font-semibold max-w-xl leading-relaxed">
-                            System analysis indicates <span className="text-slate-950 font-black">{history.length} documented assessments</span> in your clinical history.
-                            Your current longitudinal trend suggests a positive shift in emotional stability.
+                        <p className="text-slate-500 text-[19px] font-medium max-w-2xl leading-relaxed">
+                            Your comprehensive mental health report and clinical analysis are now ready. Based on <span className="text-slate-700 font-bold">{history.length} documented assessments</span> in your history, your longitudinal data suggests a sustained positive shift in emotional stability.
                         </p>
                         <div className="flex flex-wrap gap-3 mt-6">
                             <Link to="/round1" className="bg-[#4A8180] text-white px-6 py-2.5 rounded-xl font-semibold text-sm hover:bg-[#3d6b6a] transition-all shadow-md shadow-teal-900/10">
