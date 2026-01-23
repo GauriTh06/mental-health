@@ -25,10 +25,10 @@ const DashboardLayout = ({ children, title }) => {
                 <div className="w-10 h-10 bg-[#4A8180] rounded-xl flex items-center justify-center text-white text-lg font-black shadow-md">
                     MW
                 </div>
-                <span className="text-2xl font-black text-[#1F2937] tracking-tighter" style={{ fontFamily: 'Outfit, sans-serif' }}>MindWell</span>
+                <span className="text-2xl font-black text-[#1F2937] tracking-tighter">MindWell</span>
             </div>
 
-            <nav className="flex-1 px-4 space-y-4 py-8 overflow-y-auto" style={{ fontFamily: 'Outfit, sans-serif' }}>
+            <nav className="flex-1 px-4 space-y-4 py-8 overflow-y-auto">
                 {menuItems.map((item) => {
                     const active = location.pathname === item.path;
                     return (
@@ -58,7 +58,7 @@ const DashboardLayout = ({ children, title }) => {
                     <div className="w-10 h-10 rounded-xl bg-white/40 flex items-center justify-center group-hover:bg-rose-50 transition-colors">
                         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" /></svg>
                     </div>
-                    <span className="font-bold text-[#1F2937] group-hover:text-rose-600 text-[17px]" style={{ fontFamily: 'Outfit, sans-serif' }}>Sign Out</span>
+                    <span className="font-bold text-[#1F2937] group-hover:text-rose-600 text-[17px]">Sign Out</span>
                 </button>
             </div>
         </div>

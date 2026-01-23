@@ -51,7 +51,7 @@ const Profile = () => {
                 {icon}
             </div>
             <div>
-                <p className="text-[10px] font-black text-slate-300 uppercase tracking-[0.2em] mb-1">{label}</p>
+                <p className="text-[10px] font-black text-slate-600 uppercase tracking-[0.2em] mb-1">{label}</p>
                 <p className="text-[15px] font-bold text-slate-950 tracking-tight">{value || 'Not Documented'}</p>
             </div>
         </div>
@@ -112,14 +112,14 @@ const Profile = () => {
                                 { label: 'Authorized Surrogate Contact', name: 'emergency_contact', type: 'text' }
                             ].map((field) => (
                                 <div key={field.name} className="space-y-3">
-                                    <label className="text-[10px] font-black text-slate-300 uppercase tracking-[0.3em] ml-2 italic">{field.label}</label>
-                                    <input name={field.name} type={field.type} value={formData[field.name]} onChange={handleChange} className="w-full bg-slate-50 border border-slate-100 rounded-2xl p-4 text-sm font-bold text-slate-950 outline-none focus:ring-8 ring-[#4A8180]/5 transition-all" style={{ fontFamily: 'Inter, sans-serif' }} />
+                                    <label className="text-[10px] font-black text-slate-600 uppercase tracking-[0.3em] ml-2 italic">{field.label}</label>
+                                    <input name={field.name} type={field.type} value={formData[field.name]} onChange={handleChange} className="w-full bg-slate-50 border border-slate-100 rounded-2xl p-4 text-sm font-bold text-slate-950 outline-none focus:ring-8 ring-[#4A8180]/5 transition-all" />
                                 </div>
                             ))}
 
                             <div className="space-y-3">
-                                <label className="text-[10px] font-black text-slate-300 uppercase tracking-[0.3em] ml-2 italic">Gender Alignment</label>
-                                <select name="gender" value={formData.gender} onChange={handleChange} className="w-full bg-slate-50 border border-slate-100 rounded-2xl p-4 text-sm font-bold text-slate-950 outline-none focus:ring-8 ring-[#4A8180]/5 transition-all appearance-none cursor-pointer" style={{ fontFamily: 'Inter, sans-serif' }}>
+                                <label className="text-[10px] font-black text-slate-600 uppercase tracking-[0.3em] ml-2 italic">Gender Alignment</label>
+                                <select name="gender" value={formData.gender} onChange={handleChange} className="w-full bg-slate-50 border border-slate-100 rounded-2xl p-4 text-sm font-bold text-slate-950 outline-none focus:ring-8 ring-[#4A8180]/5 transition-all appearance-none cursor-pointer">
                                     <option value="">Select Integrity</option>
                                     <option>Male</option>
                                     <option>Female</option>
@@ -129,7 +129,7 @@ const Profile = () => {
 
                             <div className="md:col-span-2 space-y-4">
                                 <label className="text-[10px] font-black text-[#4A8180] uppercase tracking-[0.4em] ml-2 italic">Wellness Trajectory Objectives</label>
-                                <textarea name="wellness_goals" value={formData.wellness_goals} onChange={handleChange} className="w-full bg-slate-50 border border-slate-100 rounded-3xl p-6 text-sm font-bold text-slate-950 outline-none focus:ring-8 ring-[#4A8180]/5 h-32 transition-all resize-none" style={{ fontFamily: 'Inter, sans-serif' }} />
+                                <textarea name="wellness_goals" value={formData.wellness_goals} onChange={handleChange} className="w-full bg-slate-50 border border-slate-100 rounded-3xl p-6 text-sm font-bold text-slate-950 outline-none focus:ring-8 ring-[#4A8180]/5 h-32 transition-all resize-none" />
                             </div>
                         </div>
 
@@ -145,7 +145,7 @@ const Profile = () => {
                             <div className="bg-white rounded-[3rem] p-10 border border-slate-100 shadow-sm relative overflow-hidden group">
                                 <div className="absolute top-0 left-0 w-32 h-32 bg-[#4A8180]/5 rounded-full blur-3xl group-hover:scale-150 transition-all duration-700"></div>
                                 <h3 className="text-[10px] font-black text-[#4A8180] uppercase tracking-[0.5em] mb-8 italic">Clinical Bio Portfolio</h3>
-                                <p className="text-2xl font-bold text-slate-950 leading-relaxed italic relative z-10" style={{ fontFamily: 'Inter, sans-serif' }}>
+                                <p className="text-2xl font-bold text-slate-950 leading-relaxed italic relative z-10">
                                     "{user?.bio || "No clinical narrative established. Documentation is recommended for tailored AI analysis."}"
                                 </p>
                             </div>
@@ -173,13 +173,13 @@ const Profile = () => {
 
                             {/* EMERGENCY PANEL */}
                             <div className="bg-white rounded-[3rem] p-10 border border-slate-100 shadow-sm">
-                                <h3 className="text-[10px] font-black text-slate-300 uppercase tracking-[0.4em] mb-8 italic text-center">Safety Protocols</h3>
+                                <h3 className="text-[10px] font-black text-slate-600 uppercase tracking-[0.4em] mb-8 italic text-center">Safety Protocols</h3>
                                 <div className="flex items-center gap-5">
                                     <div className="w-12 h-12 bg-rose-50 rounded-2xl flex items-center justify-center text-rose-500 shadow-inner">
                                         <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
                                     </div>
                                     <div>
-                                        <p className="text-[9px] font-black text-slate-300 uppercase tracking-[0.3em]">Authorized Surrogate</p>
+                                        <p className="text-[9px] font-black text-slate-600 uppercase tracking-[0.3em]">Authorized Surrogate</p>
                                         <p className="text-lg font-bold text-slate-700">{user?.emergency_contact || 'None Documented'}</p>
                                     </div>
                                 </div>

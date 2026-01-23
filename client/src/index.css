@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap');
 @import "tailwindcss";
 
 @theme {
@@ -9,7 +10,7 @@
   --color-brand-text: #1A202C;
   --color-brand-accent: #4A6072;
 
-  --font-family-sans: "Inter", "Outfit", "Montserrat", system-ui, sans-serif;
+  --font-family-sans: "Outfit", "Inter", "Plus Jakarta Sans", system-ui, sans-serif;
 }
 
 :root {
@@ -22,7 +23,7 @@
 body {
   background-color: var(--brand-bg);
   color: var(--brand-text);
-  font-family: "Inter", sans-serif;
+  font-family: "Outfit", sans-serif;
   margin: 0;
   -webkit-font-smoothing: antialiased;
   scroll-behavior: smooth;
