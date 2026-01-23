@@ -29,7 +29,7 @@ const Home = () => {
             <nav className="fixed top-0 left-0 right-0 z-50 glass border-b border-gray-200">
                 <div className="max-w-7xl mx-auto px-6 py-5 flex justify-between items-center">
                     <div className="flex items-center gap-4">
-                        <img src="https://ibb.co/0yX8v95B" alt="MindWell Logo" className="w-12 h-12 rounded-xl shadow-md border-2 border-white" />
+                        <img src="https://res.cloudinary.com/dxen0alt5/image/upload/v1769139755/logomindwell_oo6uaw.jpg" alt="MindWell Logo" className="w-12 h-12 rounded-xl shadow-md border-2 border-white" />
                         <span className="text-3xl font-black tracking-tighter text-gray-900">MindWell</span>
                     </div>
                     <div className="space-x-10 hidden md:flex items-center">
