@@ -1,7 +1,8 @@
 // Enhanced PDF Export Function with Charts and Tables
-if (typeof window === 'undefined') return;
+
 
 export const exportComprehensivePDF = async (record, user, pieChartRef, barChartRef, radarChartRef) => {
+    if (typeof window === 'undefined') return;
     const jsPDF = (await import('jspdf')).default;
     await import('jspdf-autotable');
 
