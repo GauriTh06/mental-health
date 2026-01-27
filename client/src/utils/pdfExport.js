@@ -1,8 +1,10 @@
 // Enhanced PDF Export Function with Charts and Tables
+if (typeof window === 'undefined') return;
+
 export const exportComprehensivePDF = async (record, user, pieChartRef, barChartRef, radarChartRef) => {
     const jsPDF = (await import('jspdf')).default;
     await import('jspdf-autotable');
-    const html2canvas = (await import('html2canvas')).default;
+
 
     let analysis;
     try {
@@ -16,21 +18,28 @@ export const exportComprehensivePDF = async (record, user, pieChartRef, barChart
     const suggestions = analysis.suggestions || [];
 
     // Capture charts as images
-    const captureChart = async (element) => {
-        if (!element) return null;
+    const captureChart = async (ref) => {
+        if (!ref) return null;
+
+        // Find actual canvas inside chart container
+        const canvasElement =
+            ref instanceof HTMLCanvasElement
+                ? ref
+                : ref.querySelector?.('canvas');
+
+        if (!canvasElement) {
+            console.warn('Chart canvas not found');
+            return null;
+        }
+
         try {
-            const canvas = await html2canvas(element, {
-                backgroundColor: '#ffffff',
-                scale: 2,
-                logging: false,
-                useCORS: true
-            });
-            return canvas.toDataURL('image/png');
+            return canvasElement.toDataURL('image/png', 1.0);
         } catch (error) {
-            console.error('Error capturing chart:', error);
+            console.error('Error capturing chart canvas:', error);
             return null;
         }
     };
+
 
     const pieChartImage = await captureChart(pieChartRef?.current);
     const barChartImage = await captureChart(barChartRef?.current);
@@ -320,6 +329,10 @@ export const exportComprehensivePDF = async (record, user, pieChartRef, barChart
         doc.text(`MindWell Mental Health Report - Page ${i} of ${pageCount}`, pageWidth / 2, pageHeight - 10, { align: 'center' });
         doc.text('Confidential Medical Document', margin, pageHeight - 10);
     }
+    if (!doc.internal.pages || doc.internal.pages.length === 0) {
+        throw new Error('PDF generation failed');
+    }
+
 
     // Save PDF
     const fileName = `MindWell_Report_${user?.name?.replace(/\s+/g, '_')}_${assessmentDate.toISOString().split('T')[0]}.pdf`;

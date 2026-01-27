@@ -39,15 +39,24 @@ const Results = () => {
     }, []);
 
     const exportToPDF = async () => {
+        if (
+            !pieChartRef?.current ||
+            !barChartRef?.current ||
+            !radarChartRef?.current
+        ) {
+            alert("Charts are still loading. Please try again.");
+            return;
+        }
+
         setExporting(true);
         try {
             const { exportComprehensivePDF } = await import('../utils/pdfExport');
             await exportComprehensivePDF(
                 history[selectedIdx],
                 user,
-                pieChartRef,
-                barChartRef,
-                radarChartRef
+                pieChartRef.current,
+                barChartRef.current,
+                radarChartRef.current
             );
         } catch (error) {
             console.error('Error exporting PDF:', error);
