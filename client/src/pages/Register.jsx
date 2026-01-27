@@ -6,15 +6,77 @@ import api from '../services/api';
 const Register = () => {
     const { login } = useAuth();
     const navigate = useNavigate();
-    const [formData, setFormData] = useState({ name: '', email: '', password: '', age: '', gender: 'Male', occupation: '' });
+    const [formData, setFormData] = useState({
+        name: '',
+        email: '',
+        password: '',
+        age: '',
+        gender: 'Male',
+        occupation: '',
+        language: '' // Native language field
+    });
     const [error, setError] = useState('');
+    const [validationErrors, setValidationErrors] = useState({});
     const [loading, setLoading] = useState(false);
 
-    const handleChange = (e) => setFormData({ ...formData, [e.target.name]: e.target.value });
+    const handleChange = (e) => {
+        setFormData({ ...formData, [e.target.name]: e.target.value });
+        // Clear validation error for this field
+        if (validationErrors[e.target.name]) {
+            setValidationErrors({ ...validationErrors, [e.target.name]: '' });
+        }
+    };
+
+    const validateEmail = (email) => {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return emailRegex.test(email);
+    };
+
+    const validatePassword = (password) => {
+        const hasMinLength = password.length >= 8;
+        const hasNumber = /\d/.test(password);
+        const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(password);
+
+        return {
+            isValid: hasMinLength && hasNumber && hasSpecialChar,
+            errors: {
+                minLength: !hasMinLength,
+                number: !hasNumber,
+                specialChar: !hasSpecialChar
+            }
+        };
+    };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError('');
+        const errors = {};
+
+        // Email validation
+        if (!validateEmail(formData.email)) {
+            errors.email = 'Please enter a valid email address';
+        }
+
+        // Password validation
+        const passwordValidation = validatePassword(formData.password);
+        if (!passwordValidation.isValid) {
+            const passwordErrors = [];
+            if (passwordValidation.errors.minLength) passwordErrors.push('at least 8 characters');
+            if (passwordValidation.errors.number) passwordErrors.push('at least 1 number');
+            if (passwordValidation.errors.specialChar) passwordErrors.push('at least 1 special character');
+            errors.password = `Password must contain ${passwordErrors.join(', ')}`;
+        }
+
+        // Native language validation
+        if (!formData.language) {
+            errors.language = 'Please select your native language';
+        }
+
+        if (Object.keys(errors).length > 0) {
+            setValidationErrors(errors);
+            return;
+        }
+
         setLoading(true);
         try {
             const response = await api.post('/auth/register', formData);
@@ -65,12 +127,34 @@ const Register = () => {
 
                             <div>
                                 <label className="block text-sm font-medium text-gray-700">Email address</label>
-                                <input name="email" type="email" required value={formData.email} onChange={handleChange} className="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-xl shadow-sm focus:ring-brand-primary focus:border-brand-primary sm:text-sm" placeholder="you@example.com" />
+                                <input
+                                    name="email"
+                                    type="email"
+                                    required
+                                    value={formData.email}
+                                    onChange={handleChange}
+                                    className={`mt-1 block w-full px-4 py-3 border rounded-xl shadow-sm focus:ring-brand-primary focus:border-brand-primary sm:text-sm ${validationErrors.email ? 'border-red-500' : 'border-gray-300'}`}
+                                    placeholder="you@example.com"
+                                />
+                                {validationErrors.email && (
+                                    <p className="mt-1 text-sm text-red-600">{validationErrors.email}</p>
+                                )}
                             </div>
 
                             <div>
                                 <label className="block text-sm font-medium text-gray-700">Password</label>
-                                <input name="password" type="password" required value={formData.password} onChange={handleChange} className="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-xl shadow-sm focus:ring-brand-primary focus:border-brand-primary sm:text-sm" placeholder="••••••••" />
+                                <input
+                                    name="password"
+                                    type="password"
+                                    required
+                                    value={formData.password}
+                                    onChange={handleChange}
+                                    className={`mt-1 block w-full px-4 py-3 border rounded-xl shadow-sm focus:ring-brand-primary focus:border-brand-primary sm:text-sm ${validationErrors.password ? 'border-red-500' : 'border-gray-300'}`}
+                                    placeholder="••••••••"
+                                />
+                                {validationErrors.password && (
+                                    <p className="mt-1 text-sm text-red-600">{validationErrors.password}</p>
+                                )}
                             </div>
 
                             <div className="grid grid-cols-2 gap-4">
@@ -86,6 +170,34 @@ const Register = () => {
                                         <option>Other</option>
                                     </select>
                                 </div>
+                            </div>
+
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700">Native Language</label>
+                                <select
+                                    name="language"
+                                    value={formData.language}
+                                    onChange={handleChange}
+                                    required
+                                    className={`mt-1 block w-full px-4 py-3 border rounded-xl shadow-sm focus:ring-brand-primary focus:border-brand-primary sm:text-sm ${validationErrors.language ? 'border-red-500' : 'border-gray-300'}`}
+                                >
+                                    <option value="">Select your native language</option>
+                                    <option value="Hindi">Hindi (हिन्दी)</option>
+                                    <option value="English">English</option>
+                                    <option value="Bengali">Bengali (বাংলা)</option>
+                                    <option value="Telugu">Telugu (తెలుగు)</option>
+                                    <option value="Marathi">Marathi (मराठी)</option>
+                                    <option value="Tamil">Tamil (தமிழ்)</option>
+                                    <option value="Gujarati">Gujarati (ગુજરાતી)</option>
+                                    <option value="Kannada">Kannada (ಕನ್ನಡ)</option>
+                                    <option value="Malayalam">Malayalam (മലയാളം)</option>
+                                    <option value="Punjabi">Punjabi (ਪੰਜਾਬੀ)</option>
+                                    <option value="Urdu">Urdu (اردو)</option>
+                                    <option value="Other">Other</option>
+                                </select>
+                                {validationErrors.language && (
+                                    <p className="mt-1 text-sm text-red-600">{validationErrors.language}</p>
+                                )}
                             </div>
 
                             <div>

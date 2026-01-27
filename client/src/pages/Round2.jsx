@@ -4,13 +4,13 @@ import api from '../services/api';
 import DashboardLayout from '../components/DashboardLayout';
 
 const questions = [
-    { id: 'q1', text: 'Do you feel pressure to meet deadlines?', type: 'select', options: ['Not at all', 'Mild', 'Moderate', 'Severe'] },
-    { id: 'q2', text: 'How regular are your meals?', type: 'scale', labels: { 1: 'Very irregular', 2: 'Somewhat irregular', 3: 'Average', 4: 'Mostly regular', 5: 'Very regular' } },
-    { id: 'q3', text: 'Do you get physical symptoms like sweating, rapid heartbeat, or trembling?', type: 'select', options: ['Never', 'Sometimes', 'Often'] },
-    { id: 'q4', text: 'Do you feel hopeless about the future?', type: 'select', options: ['Not at all', 'Sometimes', 'Often'] },
-    { id: 'q5', text: 'Do you feel socially isolated?', type: 'select', options: ['Never', 'Sometimes', 'Often'] },
-    { id: 'q6', text: 'Have you had thoughts of harming yourself?', type: 'select', options: ['Never', 'Rarely', 'Sometimes', 'Often'] },
-    { id: 'q7', text: 'Do you practice mindfulness or relaxation techniques?', type: 'select', options: ['Never', 'Occasionally', 'Regularly'] },
+    { id: 'q1', text: 'Do you feel pressure to meet deadlines?', hindi: 'क्या आप समय सीमा को पूरा करने के लिए दबाव महसूस करते हैं?', type: 'select', options: ['Not at all', 'Mild', 'Moderate', 'Severe'] },
+    { id: 'q2', text: 'How regular are your meals?', hindi: 'आपके भोजन कितने नियमित हैं?', type: 'scale', labels: { 1: 'Very irregular', 2: 'Somewhat irregular', 3: 'Average', 4: 'Mostly regular', 5: 'Very regular' } },
+    { id: 'q3', text: 'Do you get physical symptoms like sweating, rapid heartbeat, or trembling?', hindi: 'क्या आपको पसीना आना, तेज़ दिल की धड़कन या कांपना जैसे शारीरिक लक्षण मिलते हैं?', type: 'select', options: ['Never', 'Sometimes', 'Often'] },
+    { id: 'q4', text: 'Do you feel hopeless about the future?', hindi: 'क्या आप भविष्य के बारे में निराश महसूस करते हैं?', type: 'select', options: ['Not at all', 'Sometimes', 'Often'] },
+    { id: 'q5', text: 'Do you feel socially isolated?', hindi: 'क्या आप सामाजिक रूप से अलग-थलग महसूस करते हैं?', type: 'select', options: ['Never', 'Sometimes', 'Often'] },
+    { id: 'q6', text: 'Have you had thoughts of harming yourself?', hindi: 'क्या आपने खुद को नुकसान पहुंचाने के बारे में सोचा है?', type: 'select', options: ['Never', 'Rarely', 'Sometimes', 'Often'] },
+    { id: 'q7', text: 'Do you practice mindfulness or relaxation techniques?', hindi: 'क्या आप माइंडफुलनेस या विश्राम तकनीकों का अभ्यास करते हैं?', type: 'select', options: ['Never', 'Occasionally', 'Regularly'] },
 ];
 
 const Round2 = () => {
@@ -78,6 +78,9 @@ const Round2 = () => {
         <DashboardLayout title="Round 2 Assessment">
             <div className="max-w-2xl mx-auto">
                 <div className="bg-white rounded-3xl shadow-sm border border-gray-100 p-8 md:p-12">
+                    {/* Page Title */}
+                    <h1 className="text-4xl font-bold text-gray-900 mb-6 text-center">Mental Health Assessment – Round 2</h1>
+
                     <div className="flex items-center justify-between mb-8">
                         <span className="text-sm font-bold text-gray-400 uppercase tracking-widest">Question {currentStep + 1}/{questions.length}</span>
                         <div className="w-1/3 h-2 bg-gray-100 rounded-full">
@@ -85,7 +88,11 @@ const Round2 = () => {
                         </div>
                     </div>
 
-                    <h2 className="text-3xl font-bold text-gray-900 mb-10 leading-tight">{q.text}</h2>
+                    <h2 className="text-3xl font-bold text-gray-900 mb-3 leading-tight">{q.text}</h2>
+                    {/* Hindi Translation */}
+                    {q.hindi && (
+                        <p className="text-xl text-gray-600 mb-10 italic">({q.hindi})</p>
+                    )}
 
                     <form onSubmit={handleNext}>
                         {q.type === 'scale' && (

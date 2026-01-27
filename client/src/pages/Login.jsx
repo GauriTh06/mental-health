@@ -8,13 +8,36 @@ const Login = () => {
     const navigate = useNavigate();
     const [formData, setFormData] = useState({ email: '', password: '' });
     const [error, setError] = useState('');
+    const [validationErrors, setValidationErrors] = useState({});
     const [loading, setLoading] = useState(false);
 
-    const handleChange = (e) => setFormData({ ...formData, [e.target.name]: e.target.value });
+    const handleChange = (e) => {
+        setFormData({ ...formData, [e.target.name]: e.target.value });
+        if (validationErrors[e.target.name]) {
+            setValidationErrors({ ...validationErrors, [e.target.name]: '' });
+        }
+    };
+
+    const validateEmail = (email) => {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return emailRegex.test(email);
+    };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError('');
+        const errors = {};
+
+        // Email validation
+        if (!validateEmail(formData.email)) {
+            errors.email = 'Please enter a valid email address';
+        }
+
+        if (Object.keys(errors).length > 0) {
+            setValidationErrors(errors);
+            return;
+        }
+
         setLoading(true);
         try {
             const response = await api.post('/auth/login', formData);
@@ -68,9 +91,12 @@ const Login = () => {
                                         required
                                         value={formData.email}
                                         onChange={handleChange}
-                                        className="appearance-none block w-full px-4 py-3 border border-gray-300 rounded-xl shadow-sm placeholder-gray-400 focus:outline-none focus:ring-brand-primary focus:border-brand-primary sm:text-sm transition-all"
+                                        className={`appearance-none block w-full px-4 py-3 border rounded-xl shadow-sm placeholder-gray-400 focus:outline-none focus:ring-brand-primary focus:border-brand-primary sm:text-sm transition-all ${validationErrors.email ? 'border-red-500' : 'border-gray-300'}`}
                                         placeholder="you@example.com"
                                     />
+                                    {validationErrors.email && (
+                                        <p className="mt-1 text-sm text-red-600">{validationErrors.email}</p>
+                                    )}
                                 </div>
                             </div>
 

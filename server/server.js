@@ -148,16 +148,16 @@ const generateAnalysis = (r1, r2, answers) => {
 // --- AUTH ROUTES ---
 app.post('/api/auth/register', async (req, res) => {
     try {
-        const { name, email, password, age, gender, occupation } = req.body;
+        const { name, email, password, age, gender, occupation, language } = req.body;
         if (!email || !password) return res.status(400).json({ error: "Email and password required" });
 
         const hashedPassword = await bcrypt.hash(password, 10);
         // Check compatibility
         const isPostgres = !!process.env.DATABASE_URL;
-        let query = `INSERT INTO users (name, email, password, age, gender, occupation) VALUES (?, ?, ?, ?, ?, ?)`;
+        let query = `INSERT INTO users (name, email, password, age, gender, occupation, language) VALUES (?, ?, ?, ?, ?, ?, ?)`;
         if (isPostgres) query += ` RETURNING id`;
 
-        db.run(query, [name, email, hashedPassword, age, gender, occupation], function (err) {
+        db.run(query, [name, email, hashedPassword, age, gender, occupation, language], function (err) {
             if (err) {
                 // Determine constraint violation message based on DB type
                 const msg = err.message || "";
@@ -185,7 +185,23 @@ app.post('/api/auth/login', (req, res) => {
             if (!validPassword) return res.status(401).json({ error: 'Invalid credentials' });
 
             const token = jwt.sign({ id: user.id, email: user.email }, SECRET_KEY, { expiresIn: '7d' }); // 7 Days Persistence
-            res.json({ token, user: { id: user.id, name: user.name, age: user.age, gender: user.gender, occupation: user.occupation, email: user.email } });
+            res.json({
+                token,
+                user: {
+                    id: user.id,
+                    name: user.name,
+                    age: user.age,
+                    gender: user.gender,
+                    occupation: user.occupation,
+                    email: user.email,
+                    language: user.language,
+                    bio: user.bio,
+                    wellness_goals: user.wellness_goals,
+                    emergency_contact: user.emergency_contact,
+                    location: user.location,
+                    blood_group: user.blood_group
+                }
+            });
         });
     } catch (e) {
         res.status(500).json({ error: "Login failed" });

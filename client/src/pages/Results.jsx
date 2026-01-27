@@ -1,6 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import api from '../services/api';
 import DashboardLayout from '../components/DashboardLayout';
+import { useAuth } from '../context/AuthContext';
+import jsPDF from 'jspdf';
+import 'jspdf-autotable';
+import html2canvas from 'html2canvas';
 import {
     ResponsiveContainer, XAxis, YAxis, Tooltip,
     Cell, PieChart, Pie, BarChart, Bar, CartesianGrid, Legend,
@@ -9,9 +13,16 @@ import {
 import { motion, AnimatePresence } from 'framer-motion';
 
 const Results = () => {
+    const { user } = useAuth();
     const [history, setHistory] = useState([]);
     const [loading, setLoading] = useState(true);
     const [selectedIdx, setSelectedIdx] = useState(0);
+    const [exporting, setExporting] = useState(false);
+
+    // Refs for chart elements
+    const pieChartRef = useRef(null);
+    const barChartRef = useRef(null);
+    const radarChartRef = useRef(null);
 
     useEffect(() => {
         const fetchHistory = async () => {
@@ -26,6 +37,25 @@ const Results = () => {
         };
         fetchHistory();
     }, []);
+
+    const exportToPDF = async () => {
+        setExporting(true);
+        try {
+            const { exportComprehensivePDF } = await import('../utils/pdfExport');
+            await exportComprehensivePDF(
+                history[selectedIdx],
+                user,
+                pieChartRef,
+                barChartRef,
+                radarChartRef
+            );
+        } catch (error) {
+            console.error('Error exporting PDF:', error);
+            alert('Failed to export PDF. Please try again.');
+        } finally {
+            setExporting(false);
+        }
+    };
 
     if (loading) return (
         <DashboardLayout title="Loading Analytics...">
@@ -85,7 +115,29 @@ const Results = () => {
                         <h2 className="text-2xl font-bold tracking-tight uppercase">Mental Health Analytics Dashboard - {new Date(record.created_at).getFullYear()} Session</h2>
                         <p className="text-base opacity-80 font-medium">Session Record #{history.length - selectedIdx} | {new Date(record.created_at).toLocaleDateString()}</p>
                     </div>
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-3">
+                        <button
+                            onClick={exportToPDF}
+                            disabled={exporting}
+                            className="bg-white text-[#4A6072] px-6 py-2 rounded-lg font-bold text-sm hover:bg-gray-100 transition-all flex items-center gap-2 shadow-md disabled:opacity-50 disabled:cursor-not-allowed"
+                        >
+                            {exporting ? (
+                                <>
+                                    <svg className="animate-spin h-5 w-5" fill="none" viewBox="0 0 24 24">
+                                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                    </svg>
+                                    Generating PDF...
+                                </>
+                            ) : (
+                                <>
+                                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                    </svg>
+                                    Export PDF
+                                </>
+                            )}
+                        </button>
                         <span className="text-[12px] font-bold uppercase opacity-60">Switch Record:</span>
                         <select
                             value={selectedIdx}
@@ -122,7 +174,7 @@ const Results = () => {
 
                         {/* CHART ROW 1 */}
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <div className="bg-white p-6 rounded-xl shadow-sm border border-slate-100">
+                            <div ref={barChartRef} className="bg-white p-6 rounded-xl shadow-sm border border-slate-100">
                                 <h4 className="text-base font-bold text-slate-400 uppercase tracking-widest mb-6 border-b pb-2">Wellness Progression Timeline</h4>
                                 <div className="h-48">
                                     <ResponsiveContainer width="100%" height="100%">
@@ -136,7 +188,7 @@ const Results = () => {
                                     </ResponsiveContainer>
                                 </div>
                             </div>
-                            <div className="bg-white p-6 rounded-xl shadow-sm border border-slate-100 flex flex-col items-center">
+                            <div ref={pieChartRef} className="bg-white p-6 rounded-xl shadow-sm border border-slate-100 flex flex-col items-center">
                                 <h4 className="text-base font-bold text-slate-400 uppercase tracking-widest mb-2 border-b w-full pb-2">Detailed Risk Distribution</h4>
                                 <div className="h-48 w-full">
                                     <ResponsiveContainer width="100%" height="100%">
@@ -154,7 +206,7 @@ const Results = () => {
 
                         {/* CHART ROW 2 */}
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <div className="bg-white p-6 rounded-xl shadow-sm border border-slate-100">
+                            <div ref={radarChartRef} className="bg-white p-6 rounded-xl shadow-sm border border-slate-100">
                                 <h4 className="text-base font-bold text-slate-400 uppercase tracking-widest mb-6 border-b pb-2">Psychological Spectrum Radar</h4>
                                 <div className="h-56">
                                     <ResponsiveContainer width="100%" height="100%">
