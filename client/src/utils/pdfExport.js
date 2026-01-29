@@ -2,7 +2,7 @@ import { jsPDF } from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import html2canvas from 'html2canvas';
 
-export const exportComprehensivePDF = async (record, user, pieChartRef, barChartRef) => {
+export const exportComprehensivePDF = async (record, user, chartImages = {}) => {
     if (typeof window === 'undefined') return;
 
     let analysis;
@@ -16,47 +16,8 @@ export const exportComprehensivePDF = async (record, user, pieChartRef, barChart
     const insights = analysis.insights || analysis.details || [];
     const suggestions = analysis.suggestions || [];
 
-    // Capture chart container using ID (Bypasses React Ref issues)
-    const captureChart = async (elementId) => {
-        const element = document.getElementById(elementId);
-        if (!element) {
-            console.warn(`Element with ID ${elementId} not found`);
-            return null;
-        }
-
-        try {
-            document.body.style.cursor = 'wait';
-            // Wait for render
-            await new Promise(resolve => setTimeout(resolve, 500));
-
-            // Use html2canvas on the specific DOM element
-            const canvas = await html2canvas(element, {
-                scale: 2,
-                useCORS: true,
-                allowTaint: true,
-                logging: false,
-                backgroundColor: '#ffffff'
-            });
-
-            document.body.style.cursor = 'default';
-            return canvas.toDataURL('image/png', 1.0);
-        } catch (error) {
-            console.error(`Capture failed for ${elementId}:`, error);
-            document.body.style.cursor = 'default';
-            return null;
-        }
-    };
-
-    let pieChartImage = null;
-    let barChartImage = null;
-
-    try {
-        // Use IDs directly
-        pieChartImage = await captureChart('pie-chart-container');
-        barChartImage = await captureChart('bar-chart-container');
-    } catch (err) {
-        console.warn("Error capturing charts:", err);
-    }
+    // Charts are now captured in the component and passed as base64 strings
+    const { pieChart: pieChartImage, barChart: barChartImage } = chartImages;
 
     const doc = new jsPDF();
     const pageWidth = doc.internal.pageSize.getWidth();

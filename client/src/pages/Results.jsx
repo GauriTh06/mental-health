@@ -39,29 +39,55 @@ const Results = () => {
     }, []);
 
     const exportToPDF = async () => {
-        if (
-            !pieChartRef?.current ||
-            !barChartRef?.current ||
-            !radarChartRef?.current
-        ) {
+        // Use IDs that we know exist
+        const barId = 'bar-chart-container';
+        const pieId = 'pie-chart-container';
+
+        const barEl = document.getElementById(barId);
+        const pieEl = document.getElementById(pieId);
+
+        if (!barEl || !pieEl) {
             alert("Charts are still initializing. Please wait a moment.");
             return;
         }
 
-        // Scroll to charts to ensure they are rendered/visible for capture
-        pieChartRef.current.scrollIntoView({ behavior: 'instant', block: 'center' });
-        await new Promise(resolve => setTimeout(resolve, 500)); // Wait for scroll/render
-
         setExporting(true);
+
         try {
+            // Lazy load html-to-image to avoid initial bundle bloat
+            const { toPng } = await import('html-to-image');
+
+            // Scroll to charts to ensure they are rendered/visible for capture
+            barEl.scrollIntoView({ behavior: 'instant', block: 'center' });
+            // Wait specific ms for any Recharts animation to settle
+            await new Promise(resolve => setTimeout(resolve, 800));
+
+            // Helper to capture
+            const capture = async (el) => {
+                try {
+                    // toPng specifically handles SVGs better than html2canvas
+                    const dataUrl = await toPng(el, {
+                        quality: 0.95,
+                        backgroundColor: '#ffffff',
+                        cacheBust: true, // Prevent cache issues
+                    });
+                    return dataUrl;
+                } catch (e) {
+                    console.error("Capture failed", e);
+                    return null;
+                }
+            };
+
+            const barImg = await capture(barEl);
+            const pieImg = await capture(pieEl);
+
             const { exportComprehensivePDF } = await import('../utils/pdfExport');
             await exportComprehensivePDF(
                 history[selectedIdx],
                 user,
-                pieChartRef.current,
-                barChartRef.current,
-                radarChartRef.current
+                { pieChart: pieImg, barChart: barImg }
             );
+
         } catch (error) {
             console.error('Error exporting PDF:', error);
             alert(`Failed to export PDF: ${error.message || error}`);
