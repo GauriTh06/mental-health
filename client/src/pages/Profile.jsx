@@ -99,7 +99,7 @@ const Profile = () => {
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                             <div className="md:col-span-2 space-y-4">
                                 <label className="text-sm font-semibold text-[#4A8180] uppercase tracking-wide ml-2">About Me</label>
-                                <textarea name="bio" value={formData.bio} onChange={handleChange} className="w-full bg-slate-50 border border-slate-100 rounded-3xl p-6 text-lg font-medium text-slate-950 outline-none focus:ring-8 ring-[#4A8180]/5 h-32 transition-all resize-none" placeholder="Tell us about yourself..." />
+                                <textarea name="bio" value={formData.bio} onChange={handleChange} className="w-full bg-slate-100 border border-slate-200 rounded-3xl p-6 text-lg font-medium text-slate-950 outline-none focus:ring-8 ring-[#4A8180]/5 h-32 transition-all resize-none" placeholder="Tell us about yourself..." />
                             </div>
 
                             {[
@@ -113,13 +113,13 @@ const Profile = () => {
                             ].map((field) => (
                                 <div key={field.name} className="space-y-3">
                                     <label className="text-sm font-semibold text-slate-600 uppercase tracking-wide ml-2">{field.label}</label>
-                                    <input name={field.name} type={field.type} value={formData[field.name]} onChange={handleChange} className="w-full bg-slate-50 border border-slate-100 rounded-2xl p-4 text-xl font-medium text-slate-950 outline-none focus:ring-8 ring-[#4A8180]/5 transition-all" />
+                                    <input name={field.name} type={field.type} value={formData[field.name]} onChange={handleChange} className="w-full bg-slate-100 border border-slate-200 rounded-2xl p-4 text-xl font-medium text-slate-950 outline-none focus:ring-8 ring-[#4A8180]/5 transition-all" />
                                 </div>
                             ))}
 
                             <div className="space-y-3">
                                 <label className="text-sm font-semibold text-slate-600 uppercase tracking-wide ml-2">Gender</label>
-                                <select name="gender" value={formData.gender} onChange={handleChange} className="w-full bg-slate-50 border border-slate-100 rounded-2xl p-4 text-lg font-medium text-slate-950 outline-none focus:ring-8 ring-[#4A8180]/5 transition-all appearance-none cursor-pointer">
+                                <select name="gender" value={formData.gender} onChange={handleChange} className="w-full bg-slate-100 border border-slate-200 rounded-2xl p-4 text-lg font-medium text-slate-950 outline-none focus:ring-8 ring-[#4A8180]/5 transition-all appearance-none cursor-pointer">
                                     <option value="">Select Gender</option>
                                     <option>Male</option>
                                     <option>Female</option>
@@ -129,7 +129,7 @@ const Profile = () => {
 
                             <div className="md:col-span-2 space-y-4">
                                 <label className="text-sm font-semibold text-[#4A8180] uppercase tracking-wide ml-2">Wellness Goals</label>
-                                <textarea name="wellness_goals" value={formData.wellness_goals} onChange={handleChange} className="w-full bg-slate-50 border border-slate-100 rounded-3xl p-6 text-lg font-medium text-slate-950 outline-none focus:ring-8 ring-[#4A8180]/5 h-32 transition-all resize-none" />
+                                <textarea name="wellness_goals" value={formData.wellness_goals} onChange={handleChange} className="w-full bg-slate-100 border border-slate-200 rounded-3xl p-6 text-lg font-medium text-slate-950 outline-none focus:ring-8 ring-[#4A8180]/5 h-32 transition-all resize-none" />
                             </div>
                         </div>
 
