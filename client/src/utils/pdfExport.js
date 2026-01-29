@@ -1,11 +1,9 @@
-// Enhanced PDF Export Function with Charts and Tables
+import { jsPDF } from 'jspdf';
+import autoTable from 'jspdf-autotable';
+import html2canvas from 'html2canvas';
 
-
-export const exportComprehensivePDF = async (record, user, pieChartRef, barChartRef, radarChartRef) => {
+export const exportComprehensivePDF = async (record, user, pieChartRef, barChartRef) => {
     if (typeof window === 'undefined') return;
-    const jsPDF = (await import('jspdf')).default;
-    await import('jspdf-autotable');
-
 
     let analysis;
     try {
@@ -18,33 +16,47 @@ export const exportComprehensivePDF = async (record, user, pieChartRef, barChart
     const insights = analysis.insights || analysis.details || [];
     const suggestions = analysis.suggestions || [];
 
-    // Capture charts as images
-    const captureChart = async (ref) => {
-        if (!ref) return null;
-
-        // Find actual canvas inside chart container
-        const canvasElement =
-            ref instanceof HTMLCanvasElement
-                ? ref
-                : ref.querySelector?.('canvas');
-
-        if (!canvasElement) {
-            console.warn('Chart canvas not found');
+    // Capture chart container using ID (Bypasses React Ref issues)
+    const captureChart = async (elementId) => {
+        const element = document.getElementById(elementId);
+        if (!element) {
+            console.warn(`Element with ID ${elementId} not found`);
             return null;
         }
 
         try {
-            return canvasElement.toDataURL('image/png', 1.0);
+            document.body.style.cursor = 'wait';
+            // Wait for render
+            await new Promise(resolve => setTimeout(resolve, 500));
+
+            // Use html2canvas on the specific DOM element
+            const canvas = await html2canvas(element, {
+                scale: 2,
+                useCORS: true,
+                allowTaint: true,
+                logging: false,
+                backgroundColor: '#ffffff'
+            });
+
+            document.body.style.cursor = 'default';
+            return canvas.toDataURL('image/png', 1.0);
         } catch (error) {
-            console.error('Error capturing chart canvas:', error);
+            console.error(`Capture failed for ${elementId}:`, error);
+            document.body.style.cursor = 'default';
             return null;
         }
     };
 
+    let pieChartImage = null;
+    let barChartImage = null;
 
-    const pieChartImage = await captureChart(pieChartRef?.current);
-    const barChartImage = await captureChart(barChartRef?.current);
-    const radarChartImage = await captureChart(radarChartRef?.current);
+    try {
+        // Use IDs directly
+        pieChartImage = await captureChart('pie-chart-container');
+        barChartImage = await captureChart('bar-chart-container');
+    } catch (err) {
+        console.warn("Error capturing charts:", err);
+    }
 
     const doc = new jsPDF();
     const pageWidth = doc.internal.pageSize.getWidth();
@@ -112,7 +124,7 @@ export const exportComprehensivePDF = async (record, user, pieChartRef, barChart
         ['Emergency Contact', user?.emergency_contact || 'Not specified']
     ];
 
-    doc.autoTable({
+    autoTable(doc, {
         startY: yPos,
         head: [['Field', 'Value']],
         body: profileData,
@@ -148,7 +160,7 @@ export const exportComprehensivePDF = async (record, user, pieChartRef, barChart
         ['Risk Category', metrics.total >= 80 ? 'High Risk' : metrics.total >= 50 ? 'Moderate Risk' : 'Low Risk']
     ];
 
-    doc.autoTable({
+    autoTable(doc, {
         startY: yPos,
         head: [['Metric', 'Score']],
         body: scoresData,
@@ -178,13 +190,13 @@ export const exportComprehensivePDF = async (record, user, pieChartRef, barChart
     yPos += 8;
 
     const metricsTableData = [
-        ['Depression Marker', `${metrics.depression}%`, getMetricBar(metrics.depression)],
-        ['Anxiety Intensity', `${metrics.anxiety}%`, getMetricBar(metrics.anxiety)],
-        ['Stress Load Factor', `${metrics.stress}%`, getMetricBar(metrics.stress)],
-        ['Wellness Risk Score', `${metrics.wellness}%`, getMetricBar(metrics.wellness)]
+        ['Depression Marker', `${metrics.depression}%`, metrics.depression], // Pass raw value
+        ['Anxiety Intensity', `${metrics.anxiety}%`, metrics.anxiety],
+        ['Stress Load Factor', `${metrics.stress}%`, metrics.stress],
+        ['Wellness Risk Score', `${metrics.wellness}%`, metrics.wellness]
     ];
 
-    doc.autoTable({
+    autoTable(doc, {
         startY: yPos,
         head: [['Metric', 'Score', 'Visual Indicator']],
         body: metricsTableData,
@@ -197,17 +209,45 @@ export const exportComprehensivePDF = async (record, user, pieChartRef, barChart
         },
         bodyStyles: {
             fontSize: 9,
-            cellPadding: 3
+            cellPadding: 3,
+            valign: 'middle'
+        },
+        columnStyles: {
+            2: { cellWidth: 80 } // Fixed width for the bar column
         },
         alternateRowStyles: { fillColor: [245, 247, 250] },
-        margin: { left: margin, right: margin }
+        margin: { left: margin, right: margin },
+        didDrawCell: (data) => {
+            if (data.section === 'body' && data.column.index === 2) {
+                // Draw manual progress bar
+                const value = data.cell.raw; // raw value is passed now
+                const cell = data.cell;
+                const cellWidth = cell.width - 6; // padding
+                const cellHeight = cell.height - 6;
+                const barWidth = (value / 100) * cellWidth;
+
+                // Background bar
+                doc.setFillColor(230, 230, 230);
+                doc.rect(cell.x + 3, cell.y + 3, cellWidth, cellHeight, 'F');
+
+                // Foreground bar (color based on value)
+                if (value >= 80) doc.setFillColor(239, 68, 68); // Red
+                else if (value >= 50) doc.setFillColor(245, 158, 11); // Amber
+                else doc.setFillColor(34, 197, 94); // Green
+
+                doc.rect(cell.x + 3, cell.y + 3, barWidth, cellHeight, 'F');
+
+                // Clear text so raw number doesn't print
+                data.cell.text = '';
+            }
+        }
     });
 
     yPos = doc.lastAutoTable.finalY + 15;
 
     // ============ CHARTS SECTION ============
-    doc.addPage();
-    yPos = 20;
+    // Only check if we need a page break, don't force it unconditionally
+    checkPageBreak(120);
 
     doc.setFontSize(16);
     doc.setFont(undefined, 'bold');
@@ -215,42 +255,49 @@ export const exportComprehensivePDF = async (record, user, pieChartRef, barChart
     doc.text('Visual Analysis', pageWidth / 2, yPos, { align: 'center' });
     yPos += 15;
 
+    let hasAnyChart = false;
+
     // Add Pie Chart
     if (pieChartImage) {
+        hasAnyChart = true;
         doc.setFontSize(12);
         doc.setFont(undefined, 'bold');
         doc.setTextColor(0, 0, 0);
         doc.text('Risk Distribution', margin, yPos);
         yPos += 8;
-        doc.addImage(pieChartImage, 'PNG', margin, yPos, 80, 60);
+        try {
+            doc.addImage(pieChartImage, 'PNG', margin, yPos, 80, 60);
+        } catch (e) { console.error('Pie chart add failed', e); }
         yPos += 70;
     }
 
     // Add Bar Chart
     if (barChartImage) {
+        // If we added pie chart, we might need a break before bar chart
         checkPageBreak(80);
+
+        hasAnyChart = true;
         doc.setFontSize(12);
         doc.setFont(undefined, 'bold');
         doc.text('Wellness Progression Timeline', margin, yPos);
         yPos += 8;
-        doc.addImage(barChartImage, 'PNG', margin, yPos, 170, 60);
+        try {
+            doc.addImage(barChartImage, 'PNG', margin, yPos, 170, 60);
+        } catch (e) { console.error('Bar chart add failed', e); }
         yPos += 70;
     }
 
-    // Add Radar Chart
-    if (radarChartImage) {
-        checkPageBreak(80);
-        doc.setFontSize(12);
-        doc.setFont(undefined, 'bold');
-        doc.text('Psychological Spectrum Radar', margin, yPos);
-        yPos += 8;
-        doc.addImage(radarChartImage, 'PNG', margin + 30, yPos, 120, 80);
-        yPos += 90;
+    if (!hasAnyChart) {
+        doc.setFontSize(10);
+        doc.setTextColor(150, 150, 150);
+        doc.setFont(undefined, 'italic');
+        doc.text('Visual charts unavailable for this report session.', margin, yPos);
+        yPos += 10;
     }
 
     // ============ CLINICAL ASSESSMENT ============
-    doc.addPage();
-    yPos = 20;
+    // Only Force page break if necessary logic for sections
+    checkPageBreak(50);
 
     doc.setFontSize(14);
     doc.setFont(undefined, 'bold');
@@ -339,9 +386,3 @@ export const exportComprehensivePDF = async (record, user, pieChartRef, barChart
     const fileName = `MindWell_Report_${user?.name?.replace(/\s+/g, '_')}_${assessmentDate.toISOString().split('T')[0]}.pdf`;
     doc.save(fileName);
 };
-
-// Helper function to create visual metric bars
-function getMetricBar(value) {
-    const barLength = Math.floor(value / 10);
-    return '█'.repeat(barLength) + '░'.repeat(10 - barLength);
-}

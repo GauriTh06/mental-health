@@ -44,9 +44,13 @@ const Results = () => {
             !barChartRef?.current ||
             !radarChartRef?.current
         ) {
-            alert("Charts are still loading. Please try again.");
+            alert("Charts are still initializing. Please wait a moment.");
             return;
         }
+
+        // Scroll to charts to ensure they are rendered/visible for capture
+        pieChartRef.current.scrollIntoView({ behavior: 'instant', block: 'center' });
+        await new Promise(resolve => setTimeout(resolve, 500)); // Wait for scroll/render
 
         setExporting(true);
         try {
@@ -60,9 +64,11 @@ const Results = () => {
             );
         } catch (error) {
             console.error('Error exporting PDF:', error);
-            alert('Failed to export PDF. Please try again.');
+            alert(`Failed to export PDF: ${error.message || error}`);
         } finally {
             setExporting(false);
+            // Scroll back to top
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
     };
 
@@ -183,7 +189,7 @@ const Results = () => {
 
                         {/* CHART ROW 1 */}
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <div ref={barChartRef} className="bg-white p-6 rounded-xl shadow-sm border border-slate-100">
+                            <div id="bar-chart-container" ref={barChartRef} className="bg-white p-6 rounded-xl shadow-sm border border-slate-100">
                                 <h4 className="text-base font-bold text-slate-400 uppercase tracking-widest mb-6 border-b pb-2">Wellness Progression Timeline</h4>
                                 <div className="h-48">
                                     <ResponsiveContainer width="100%" height="100%">
@@ -197,7 +203,7 @@ const Results = () => {
                                     </ResponsiveContainer>
                                 </div>
                             </div>
-                            <div ref={pieChartRef} className="bg-white p-6 rounded-xl shadow-sm border border-slate-100 flex flex-col items-center">
+                            <div id="pie-chart-container" ref={pieChartRef} className="bg-white p-6 rounded-xl shadow-sm border border-slate-100 flex flex-col items-center">
                                 <h4 className="text-base font-bold text-slate-400 uppercase tracking-widest mb-2 border-b w-full pb-2">Detailed Risk Distribution</h4>
                                 <div className="h-48 w-full">
                                     <ResponsiveContainer width="100%" height="100%">

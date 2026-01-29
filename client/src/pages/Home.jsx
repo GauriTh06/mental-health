@@ -212,7 +212,7 @@ const Home = () => {
                 <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-4 gap-16 mb-24">
                     <div className="col-span-1 md:col-span-1">
                         <div className="flex items-center gap-4 mb-10">
-                            <img src="/logo.jpg" alt="MindWell Logo" className="w-10 h-10 rounded-lg shadow-sm" />
+                            <img src="https://res.cloudinary.com/dxen0alt5/image/upload/v1769139755/logomindwell_oo6uaw.jpg" alt="MindWell Logo" className="w-10 h-10 rounded-lg shadow-sm" />
                             <span className="text-3xl font-black text-gray-900">MindWell</span>
                         </div>
                         <p className="text-xl text-gray-500 mb-10 font-medium">Making mental healthcare accessible, data-driven, and supportive for everyone.</p>
