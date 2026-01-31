@@ -1,0 +1,313 @@
+<!DOCTYPE html><html lang="en"><head><script>
+
+
+const kcContext = {
+    "social": {
+        "displayInfo": true,
+        "providers": [
+            {
+                "displayName": "GitHub",
+                "providerId": "github",
+                "loginUrl": "\/realms/prod-realm/broker/github/login?client_id=neon-console&tab_id=H6MstsTcP_0&client_data=eyJydSI6Imh0dHBzOi8vY29uc29sZS5uZW9uLnRlY2gvYXV0aC9rZXljbG9hay9jYWxsYmFjayIsInJ0IjoiY29kZSIsInN0IjoiWTktRG9wYnd6Wkp5NGlHMW82UW1xQT09LCwsIn0&session_code=8JI-s2RhLDuAeqMKjvvaXrPFyG_G_qXXP9VXxfN9Ngg",
+                "iconClasses": "fa fa-github",
+                "alias": "github",
+                "guiOrder": "0",
+            },
+            {
+                "displayName": "Google",
+                "providerId": "google",
+                "loginUrl": "\/realms/prod-realm/broker/google/login?client_id=neon-console&tab_id=H6MstsTcP_0&client_data=eyJydSI6Imh0dHBzOi8vY29uc29sZS5uZW9uLnRlY2gvYXV0aC9rZXljbG9hay9jYWxsYmFjayIsInJ0IjoiY29kZSIsInN0IjoiWTktRG9wYnd6Wkp5NGlHMW82UW1xQT09LCwsIn0&session_code=8JI-s2RhLDuAeqMKjvvaXrPFyG_G_qXXP9VXxfN9Ngg",
+                "iconClasses": "fa fa-google",
+                "alias": "google",
+                "guiOrder": "1",
+            },
+            {
+                "displayName": "Hasura",
+                "providerId": "oidc",
+                "loginUrl": "\/realms/prod-realm/broker/hasura/login?client_id=neon-console&tab_id=H6MstsTcP_0&client_data=eyJydSI6Imh0dHBzOi8vY29uc29sZS5uZW9uLnRlY2gvYXV0aC9rZXljbG9hay9jYWxsYmFjayIsInJ0IjoiY29kZSIsInN0IjoiWTktRG9wYnd6Wkp5NGlHMW82UW1xQT09LCwsIn0&session_code=8JI-s2RhLDuAeqMKjvvaXrPFyG_G_qXXP9VXxfN9Ngg",
+                "iconClasses": "",
+                "alias": "hasura",
+            },
+            {
+                "displayName": "Microsoft",
+                "providerId": "neon-microsoft",
+                "loginUrl": "\/realms/prod-realm/broker/microsoftv2/login?client_id=neon-console&tab_id=H6MstsTcP_0&client_data=eyJydSI6Imh0dHBzOi8vY29uc29sZS5uZW9uLnRlY2gvYXV0aC9rZXljbG9hay9jYWxsYmFjayIsInJ0IjoiY29kZSIsInN0IjoiWTktRG9wYnd6Wkp5NGlHMW82UW1xQT09LCwsIn0&session_code=8JI-s2RhLDuAeqMKjvvaXrPFyG_G_qXXP9VXxfN9Ngg",
+                "iconClasses": "",
+                "alias": "microsoftv2",
+            },
+        ],
+    },
+    "auth": {
+        "showResetCredentials": false,
+        "authenticationSelections": [
+            {
+                "helpText": "auth-username-password-form-help-text",
+                "displayName": "auth-username-password-form-display-name",
+                "iconCssClass": "kcAuthenticatorDefaultClass",
+                "authExecId": "360a8973-26ba-48c3-b3e7-2286353e410f",
+                "authenticationExecution": {
+                    "authenticatorFlow": false,
+                    "conditional": false,
+                    "required": true,
+                    "enabled": true,
+                    "disabled": false,
+                    "id": "360a8973-26ba-48c3-b3e7-2286353e410f",
+                    "parentFlow": "0c5abd7d-5045-4429-8bb4-d553358abfc0",
+                    "authenticator": "auth-username-password-form",
+                    "alternative": false,
+                    "requirement": {
+                        "stableIndex": 0,
+                    },
+                    "priority": 10,
+                },
+            },
+        ],
+        "showUsername": false,
+        "showTryAnotherWayLink": false,
+        /*auth.attemptedUsername excluded*/
+    },
+    "login": {
+    },
+    "url": {
+        "oauthAction": "\/realms/prod-realm/login-actions/authenticate",
+        "resourcesPath": "\/resources/8fkqt/login/custom-theme-keycloakify",
+        "loginAction": "https://console.neon.tech/realms/prod-realm/login-actions/authenticate?session_code=8JI-s2RhLDuAeqMKjvvaXrPFyG_G_qXXP9VXxfN9Ngg&execution=360a8973-26ba-48c3-b3e7-2286353e410f&client_id=neon-console&tab_id=H6MstsTcP_0&client_data=eyJydSI6Imh0dHBzOi8vY29uc29sZS5uZW9uLnRlY2gvYXV0aC9rZXljbG9hay9jYWxsYmFjayIsInJ0IjoiY29kZSIsInN0IjoiWTktRG9wYnd6Wkp5NGlHMW82UW1xQT09LCwsIn0",
+        "loginUrl": "\/realms/prod-realm/login-actions/authenticate?client_id=neon-console&tab_id=H6MstsTcP_0&client_data=eyJydSI6Imh0dHBzOi8vY29uc29sZS5uZW9uLnRlY2gvYXV0aC9rZXljbG9hay9jYWxsYmFjayIsInJ0IjoiY29kZSIsInN0IjoiWTktRG9wYnd6Wkp5NGlHMW82UW1xQT09LCwsIn0",
+        "resourcesCommonPath": "\/resources/8fkqt/common/keycloak",
+
+"firstBrokerLoginUrl": "\/realms/prod-realm/login-actions/first-broker-login?client_id=neon-console&tab_id=H6MstsTcP_0&client_data=eyJydSI6Imh0dHBzOi8vY29uc29sZS5uZW9uLnRlY2gvYXV0aC9rZXljbG9hay9jYWxsYmFjayIsInJ0IjoiY29kZSIsInN0IjoiWTktRG9wYnd6Wkp5NGlHMW82UW1xQT09LCwsIn0",
+        "registrationUrl": "\/realms/prod-realm/login-actions/registration?client_id=neon-console&tab_id=H6MstsTcP_0&client_data=eyJydSI6Imh0dHBzOi8vY29uc29sZS5uZW9uLnRlY2gvYXV0aC9rZXljbG9hay9jYWxsYmFjayIsInJ0IjoiY29kZSIsInN0IjoiWTktRG9wYnd6Wkp5NGlHMW82UW1xQT09LCwsIn0",
+        "logoutConfirmAction": "\/realms/prod-realm/protocol/openid-connect/logout/logout-confirm?client_id=neon-console&tab_id=H6MstsTcP_0&client_data=eyJydSI6Imh0dHBzOi8vY29uc29sZS5uZW9uLnRlY2gvYXV0aC9rZXljbG9hay9jYWxsYmFjayIsInJ0IjoiY29kZSIsInN0IjoiWTktRG9wYnd6Wkp5NGlHMW82UW1xQT09LCwsIn0",
+        "registrationAction": "https://console.neon.tech/realms/prod-realm/login-actions/authenticate?session_code=8JI-s2RhLDuAeqMKjvvaXrPFyG_G_qXXP9VXxfN9Ngg&execution=360a8973-26ba-48c3-b3e7-2286353e410f&client_id=neon-console&tab_id=H6MstsTcP_0&client_data=eyJydSI6Imh0dHBzOi8vY29uc29sZS5uZW9uLnRlY2gvYXV0aC9rZXljbG9hay9jYWxsYmFjayIsInJ0IjoiY29kZSIsInN0IjoiWTktRG9wYnd6Wkp5NGlHMW82UW1xQT09LCwsIn0",
+        "loginResetCredentialsUrl": "\/realms/prod-realm/login-actions/reset-credentials?client_id=neon-console&tab_id=H6MstsTcP_0&client_data=eyJydSI6Imh0dHBzOi8vY29uc29sZS5uZW9uLnRlY2gvYXV0aC9rZXljbG9hay9jYWxsYmFjayIsInJ0IjoiY29kZSIsInN0IjoiWTktRG9wYnd6Wkp5NGlHMW82UW1xQT09LCwsIn0",
+        "ssoLoginInOtherTabsUrl": "\/realms/prod-realm/login-actions/restart?client_id=neon-console&tab_id=H6MstsTcP_0&client_data=eyJydSI6Imh0dHBzOi8vY29uc29sZS5uZW9uLnRlY2gvYXV0aC9rZXljbG9hay9jYWxsYmFjayIsInJ0IjoiY29kZSIsInN0IjoiWTktRG9wYnd6Wkp5NGlHMW82UW1xQT09LCwsIn0&skip_logout=true",
+        "resourcesUrl": "\/resources/8fkqt?client_id=neon-console&tab_id=H6MstsTcP_0&client_data=eyJydSI6Imh0dHBzOi8vY29uc29sZS5uZW9uLnRlY2gvYXV0aC9rZXljbG9hay9jYWxsYmFjayIsInJ0IjoiY29kZSIsInN0IjoiWTktRG9wYnd6Wkp5NGlHMW82UW1xQT09LCwsIn0/login/custom-theme-keycloakify",
+        "loginRestartFlowUrl": "\/realms/prod-realm/login-actions/restart?client_id=neon-console&tab_id=H6MstsTcP_0&client_data=eyJydSI6Imh0dHBzOi8vY29uc29sZS5uZW9uLnRlY2gvYXV0aC9rZXljbG9hay9jYWxsYmFjayIsInJ0IjoiY29kZSIsInN0IjoiWTktRG9wYnd6Wkp5NGlHMW82UW1xQT09LCwsIn0&skip_logout=false",
+        "oauth2DeviceVerificationAction": "\/realms/prod-realm/login-actions/authenticate",
+    },
+    "authenticationSession": {
+        "tabId": "H6MstsTcP_0",
+        "authSessionId": "e9a0ca88-384f-457d-b164-acf2f242c12f",
+    },
+    "messagesPerField": {
+        "get": function (fieldName) { if(fieldName === 'firstName'){ return ''; } if(fieldName === 'lastName'){ return ''; } if(fieldName === 'email'){ return ''; } if(fieldName === 'username' || fieldName === 'password' ){ return ''; } if(fieldName === 'password-confirm'){ return ''; } if(fieldName === 'global'){ return ''; } if(fieldName === 'totp'){ return ''; } if(fieldName === 'userLabel'){ return ''; } if(fieldName === 'recoveryCodeInput'){ return ''; } if(fieldName === 'termsAccepted'){ return ''; } },
+        "existsError": function (fieldName) { if(fieldName === 'firstName' ){ return false; }if(fieldName === 'lastName' ){ return false; }if(fieldName === 'email' ){ return false; }if(fieldName === 'username' || fieldName === 'password' ){ return false; } if(fieldName === 'password-confirm' ){ return false; }if(fieldName === 'global' ){ return false; }if(fieldName === 'totp' ){ return false; }if(fieldName === 'userLabel' ){ return false; }if(fieldName === 'recoveryCodeInput' ){ return false; }if(fieldName === 'termsAccepted' ){ return false; }},
+    },
+    "client": {
+        "clientId": "neon-console",
+        "description": "",
+        "baseUrl": "https://console.neon.tech",
+        "name": "",
+        "attributes": {
+            "client.introspection.response.allow.jwt.claim.enabled": "false",
+            "post.logout.redirect.uris": "+",
+            "oauth2.device.authorization.grant.enabled": "false",
+            "backchannel.logout.revoke.offline.tokens": "false",
+            "use.refresh.tokens": "true",
+            "oidc.ciba.grant.enabled": "false",
+            "client.use.lightweight.access.token.enabled": "true",
+            "backchannel.logout.session.required": "true",
+            "client_credentials.use_refresh_token": "false",
+            "tls.client.certificate.bound.access.tokens": "false",
+
+"require.pushed.authorization.requests": "false",
+            "acr.loa.map": "{}",
+            "display.on.consent.screen": "false",
+            "token.response.type.bearer.lower-case": "false",
+        },
+    },
+    "passwordPolicies": {
+        "notEmail": false,
+        "lowerCase": 1,
+        "length": 8,
+        "notUsername": false,
+        "specialChars": 1,
+        "upperCase": 1,
+        "digits": 1,
+    },
+    "realm": {
+        "displayName": "prod-realm",
+        "registrationAllowed": true,
+        "displayNameHtml": "prod-realm",
+        "resetPasswordAllowed": true,
+        "resetCredentialsActionTokenLifespanMinutes": 360,
+        "password": true,
+        "actionTokenGeneratedByUserLifespanMinutes": 360,
+        "internationalizationEnabled": false,
+        "idpVerifyAccountLinkActionTokenLifespanMinutes": 360,
+        "verifyEmailActionTokenLifespanMinutes": 360,
+        "loginWithEmailAllowed": true,
+        "duplicateEmailsAllowed": false,
+        "editUsernameAllowed": true,
+        "name": "prod-realm",
+        "rememberMe": true,
+        "registrationEmailAsUsername": true,
+        "identityFederationEnabled": true,
+    },
+    "scripts": [
+    ],
+    "properties": {
+        "parent": "keycloak",
+        "styles": "css/login.css",
+        "GTM_ID": "GTM-KGTZBTC",
+        "stylesCommon": "node_modules/@patternfly/patternfly/patternfly.min.css node_modules/patternfly/dist/css/patternfly.min.css node_modules/patternfly/dist/css/patternfly-additions.min.css lib/pficon/pficon.css",
+        "KEYCLOAKIFY_SPA_DEV_SERVER_PORT": "",
+        "SEGMENT_WRITE_KEY_WEB_UI": "mS5rYSgSPOZy9zgRVAEoeCdySi2YSAZy",
+    },
+};
+kcContext.keycloakifyVersion = "11.8.47";
+kcContext.themeVersion = "5.1.3";
+kcContext.themeType = "login";
+kcContext.themeName = "custom-theme-keycloakify";
+kcContext.pageId = "login.ftl";
+kcContext.ftlTemplateFileName = "login.ftl";
+
+
+kcContext["x-keycloakify"] = {};
+
+kcContext["x-keycloakify"].resourcesPath = "/resources/8fkqt/login/custom-theme-keycloakify";
+
+{
+    var messages = {};
+        messages["auth-username-password-form-help-text"] = decodeHtmlEntities("Sign in by entering your username and password.");
+        messages["auth-username-password-form-display-name"] = decodeHtmlEntities("Username and password");
+    kcContext["x-keycloakify"].messages = messages;
+}
+
+if( 
+    kcContext.url instanceof Object &&
+    typeof kcContext.url.resourcesPath === "string"
+){
+    kcContext.url.resourcesCommonPath = kcContext.url.resourcesPath + "/resources-common";
+}
+
+if( kcContext.messagesPerField ){
+    var existsError_singleFieldName = kcContext.messagesPerField.existsError;
+    kcContext.messagesPerField.existsError = function (){
+        for( let i = 0; i < arguments.length; i++ ){
+            if( existsError_singleFieldName(arguments[i]) ){
+                return true;
+            }
+        }
+        return false;
+    };
+    kcContext.messagesPerField.exists = function (fieldName) {
+        return kcContext.messagesPerField.get(fieldName) !== "";
+    };
+    kcContext.messagesPerField.printIfExists = function (fieldName, text) {
+        return kcContext.messagesPerField.exists(fieldName) ? text : undefined;
+    };
+    kcContext.messagesPerField.getFirstError = function () {
+        for( let i = 0; i < arguments.length; i++ ){
+            const fieldName = arguments[i];
+            if( kcContext.messagesPerField.existsError(fieldName) ){
+                return kcContext.messagesPerField.get(fieldName);
+            }
+        }
+    };
+}
+attributes_to_attributesByName: {
+    if( !kcContext.profile ){
+        break attributes_to_attributesByName;
+    }
+    if( !kcContext.profile.attributes ){
+        break attributes_to_attributesByName;
+    }
+    var attributes = kcContext.profile.attributes;
+    delete kcContext.profile.attributes;
+    kcContext.profile.attributesByName = {};
+    attributes.forEach(function(attribute){
+        kcContext.profile.attributesByName[attribute.name] = attribute;
+    });
+}
+
+redirect_to_dev_server: {
+
+    switch(kcContext.themeType){
+        case "login":
+            break redirect_to_dev_server;
+        case "account":
+            if( kcContext.pageId !== "index.ftl" ){
+                break redirect_to_dev_server;
+            }
+            break;
+        case "admin":
+            break;
+        default: 
+            break redirect_to_dev_server;
+    }
+
+    const devSeverPort = kcContext.properties.KEYCLOAKIFY_SPA_DEV_SERVER_PORT;
+
+    if( !devSeverPort ){
+
+break redirect_to_dev_server;
+    }
+
+    const redirectUrl = new URL(window.location.href);
+
+    const keycloakServerPort = redirectUrl.port;
+
+    redirectUrl.port = devSeverPort;
+
+    delete kcContext.msgJSON;
+
+    console.log(kcContext);
+
+    redirectUrl.searchParams.set("kcContext", JSON.stringify(kcContext));
+    redirectUrl.searchParams.set("keycloakServerPort", keycloakServerPort);
+
+    window.location.href = redirectUrl.toString();
+
+}
+
+
+window.kcContext = kcContext;
+
+
+    {
+        const script = document.createElement("script");
+        script.type = "importmap";
+        script.textContent = JSON.stringify({
+          imports: {
+            "rfc4648": kcContext.url.resourcesCommonPath + "/node_modules/rfc4648/lib/rfc4648.js"
+          }
+        }, null, 2); 
+
+        document.head.appendChild(script);
+    }
+
+function decodeHtmlEntities(htmlStr){
+    var element = decodeHtmlEntities.element;
+    if (!element) {
+        element = document.createElement("textarea");
+        decodeHtmlEntities.element = element;
+    }
+    element.innerHTML = htmlStr;
+    return element.value;
+}
+
+
+</script>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="icon" type="image/x-icon" sizes="32x32" href="/resources/8fkqt/login/custom-theme-keycloakify/dist/favicon.ico?new">
+
+    <title>Neon</title>
+
+
+
+
+
+    <script>if (window.opener) { window.opener = null; }</script>
+
+    <script type="module" crossorigin="" src="/resources/8fkqt/login/custom-theme-keycloakify/dist/assets/index-RIs5HiPU.js"></script>
+  </head>
+
+  <body>
+    <div id="root"></div>
+
+
+
+</body></html>
