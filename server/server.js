@@ -34,9 +34,10 @@ const authenticateToken = (req, res, next) => {
 };
 
 // Mock AI Logic Engine
-const generateAnalysis = (r1, r2, answers) => {
+const generateAnalysis = (r1, r2, answers, userProfile = {}) => {
     const a1 = answers.round1 || {};
     const a2 = answers.round2 || {};
+    const { hobbies, user_type, working_time, preferred_relief_style } = userProfile;
 
     const mapDistress = (val, maxVal = 3, inverse = true) => {
         const textMap = {
@@ -101,40 +102,99 @@ const generateAnalysis = (r1, r2, answers) => {
     let recommendations = [];
     let technicalInsights = [];
 
+    // Personalization helpers
+    const addHobbyRecommendation = () => {
+        if (!hobbies) return;
+        const lowHobby = hobbies.toLowerCase();
+        
+        // Comprehensive hobby-based mapping
+        if (lowHobby.includes('danc')) {
+            recommendations.push("Try dancing for 10–15 minutes daily to refresh your mind and reduce stress.");
+            recommendations.push("Use dance as a quick stress-relief activity during your free time.");
+        }
+        if (lowHobby.includes('draw') || lowHobby.includes('paint') || lowHobby.includes('sketch') || lowHobby.includes('art')) {
+            recommendations.push("Spend 10–15 minutes drawing or sketching daily to relax your mind.");
+        }
+        if (lowHobby.includes('sing') || lowHobby.includes('music') || lowHobby.includes('listen')) {
+            recommendations.push("Sing or listen to calming music for 10–15 minutes daily to release tension.");
+        }
+        if (lowHobby.includes('sport') || lowHobby.includes('run') || lowHobby.includes('gym') || lowHobby.includes('exercise')) {
+            recommendations.push("Do light physical activity or play a sport for a short time daily to boost your mood.");
+        }
+        if (lowHobby.includes('read')) {
+            recommendations.push("Read for 10–20 minutes daily to reduce stress and disconnect from worries.");
+        }
+        if (lowHobby.includes('talk') || lowHobby.includes('friend') || lowHobby.includes('family') || lowHobby.includes('social')) {
+            recommendations.push("Try calling or chatting with a loved one for a few minutes daily for emotional support.");
+        }
+        if (lowHobby.includes('meditat') || lowHobby.includes('yoga') || lowHobby.includes('breath')) {
+            recommendations.push("Spend 5–10 minutes in meditation or breathing exercises daily to center yourself.");
+        }
+        if (lowHobby.includes('cook')) {
+            recommendations.push("Use cooking as a calming and creative break activity to refresh your focus.");
+        }
+        if (lowHobby.includes('garden') || lowHobby.includes('plant')) {
+            recommendations.push("Spend a few minutes with plants or gardening to refresh your mood and connect with nature.");
+        }
+        if (lowHobby.includes('walk')) {
+            recommendations.push("Take a short walk daily to release stress and improve your mental clarity.");
+        }
+
+        // Catch-all for other hobbies if none of the above matched specifically
+        if (recommendations.filter(r => r.includes(hobbies)).length === 0) {
+            recommendations.push(`Take some time today to enjoy your hobby: ${hobbies}. It's a great way to disconnect and recharge.`);
+        }
+    };
+
+    const addUserTypeRecommendation = () => {
+        if (!user_type) return;
+        const lowType = user_type.toLowerCase();
+        if (lowType.includes('student')) {
+            recommendations.push("Implement the Pomodoro technique (25 min study, 5 min break) to balance your study load.");
+        } else if (lowType.includes('employee') || lowType.includes('work')) {
+            recommendations.push("Take regular short breaks from your desk to stretch and decompress from work.");
+        }
+    };
+
     if (a2.q6 && a2.q6 !== 'Never') {
-        summary = "CRITICAL ALERT: immediate Clinical Attention Advised.";
-        recommendations.push("EMERGENCY: Contact a crisis helpline or mental health emergency service immediately.", "Do not stay alone; reach out to a trusted individual.", "Consult with a psychiatrist within the next 24 hours.");
-        technicalInsights.push("Acute suicidal ideation detected: High-risk neurocognitive markers identified.", "Immediate crisis intervention protocol activated based on safety markers.");
+        summary = "CRITICAL: Immediate Support Needed.";
+        recommendations.push("Please contact a mental health professional immediately.");
+        recommendations.push("Reach out to a trusted individual—do not navigate this alone.");
+        addHobbyRecommendation(); // Still include for gentle distraction
     } else if (totalDistress >= 80) {
-        summary = "Clinical Impression: Severe Adjustment & Distress Syndrome.";
-        recommendations.push("Schedule a consultation with a clinical psychologist this week.", "Begin a daily mood-tracking journal for diagnostic clarity.", "Implement an 'emergency rest' protocol—minimize all non-essential professional commitments.");
-        technicalInsights.push("High Sympathetic Nervous System (SNS) arousal: Your body is in a persistent 'fight or flight' state.", "Cognitive load exceeds current emotional buffering capacity.");
+        summary = "High Stress & Overload Pattern.";
+        addHobbyRecommendation(); // High priority
+        recommendations.push("We strongly recommend consulting a wellness specialist to help manage this stress load.");
+        if (working_time) recommendations.push(`Evaluate your schedule (${working_time}) for immediate stress-reduction opportunities.`);
+        addUserTypeRecommendation();
     } else if (totalDistress > 50) {
-        summary = "Clinical Impression: Moderate Emotional Strain & Burnout Risk.";
-        recommendations.push("Practice 15 minutes of structured mindfulness or deep breathing daily.", "Limit screen time and caffeine intake to stabilize the nervous system.", "Consider a session with a wellness coach to discuss work-life boundaries.");
-        technicalInsights.push("Cumulative stress load is impacting somatic health (sleep/appetite).", "Incipient burnout markers detected in interest and energy levels.");
+        summary = "Moderate Stress & Lifestyle Imbalance.";
+        addHobbyRecommendation(); // High priority
+        recommendations.push("Consider a structured 15-minute relaxation or meditation routine daily.");
+        addUserTypeRecommendation();
+        if (preferred_relief_style) recommendations.push(`Focus on ${preferred_relief_style} as your primary relief method.`);
     } else {
-        summary = "Healthy Psychosocial Profile: Resilient Engagement.";
-        recommendations.push("Continue your current self-care and exercise routines.", "Build on your strengths by mentoring others or starting a new hobby.", "Perform a monthly 'wellness check' assessment to maintain this state.");
-        technicalInsights.push("High psychological resilience markers observed.", "Strong emotional regulation and proactive coping mechanisms are evident.");
+        summary = "Healthy Lifestyle Balance & Low Stress.";
+        addHobbyRecommendation(); 
+        recommendations.push("Maintain your current balanced routine and focus on consistent self-care.");
     }
 
     // Specific Actionable Insights
-    if (a2.q4 === 'Often') technicalInsights.push("Pessimistic Attribution Bias: Tendency to view challenges as permanent and pervasive.");
-    if (a2.q3 === 'Often') technicalInsights.push("Somatic Manifestation: Emotional stress is converting into physical symptoms (heart rate, sweating).");
-    if (a1.q2 === 'Restless') technicalInsights.push("Sleep Architecture Disruption: Restless sleep is preventing full cognitive recovery.");
-    if (a2.q5 === 'Often') technicalInsights.push("Social Withdrawal Pattern: Isolation is significantly reducing your emotional support network.");
+    if (a2.q4 === 'Often') technicalInsights.push("Pessimistic viewpoints may be increasing your feeling of stress.");
+    if (a2.q3 === 'Often') technicalInsights.push("Physical stress signs (e.g. tension, heart rate) are noticeably active.");
+    if (a1.q2 === 'Restless') technicalInsights.push("Restless sleep might be preventing you from fully recovering your energy.");
+    if (a2.q5 === 'Often') technicalInsights.push("You seem to be withdrawing socially; connecting with others can help alleviate pressure.");
 
-    // Additional Suggestions
     const suggestions = [...recommendations];
-    if (a1.q9 === 'Never') suggestions.push("Bio-Suggestion: Start with 10 minutes of light walking to boost endorphin production.");
-    if (a1.q8 === 'Often') suggestions.push("Energy Audit: Your fatigue markers suggest you need a comprehensive 'de-load' week.");
-    if (a2.q7 === 'Never') suggestions.push("Mindfulness: Use apps like Calm or Headspace to build foundational relaxation skills.");
+    if (a1.q9 === 'Never') suggestions.push("Bio-Suggestion: Start with 10 minutes of light walking to boost your mood.");
+    if (a1.q8 === 'Often') suggestions.push("Energy Audit: Your energy levels suggest you need a comprehensive rest weekend.");
+    if (a2.q7 === 'Never') suggestions.push("Mindfulness: Consider spending a few minutes quietly reflecting or using an app like Calm or Headspace.");
 
     return JSON.stringify({
         summary,
         insights: technicalInsights,
         suggestions: suggestions,
+        recommendations: suggestions, // Added for compatibility
         metrics: {
             depression: depressionScore,
             anxiety: anxietyScore,
@@ -148,16 +208,16 @@ const generateAnalysis = (r1, r2, answers) => {
 // --- AUTH ROUTES ---
 app.post('/api/auth/register', async (req, res) => {
     try {
-        const { name, email, password, age, gender, occupation, language } = req.body;
+        const { name, email, password, age, gender, occupation, language, working_time, week_off, hobbies, preferred_relief_style, user_type } = req.body;
         if (!email || !password) return res.status(400).json({ error: "Email and password required" });
 
         const hashedPassword = await bcrypt.hash(password, 10);
         // Check compatibility
         const isPostgres = !!process.env.DATABASE_URL;
-        let query = `INSERT INTO users (name, email, password, age, gender, occupation, language) VALUES (?, ?, ?, ?, ?, ?, ?)`;
+        let query = `INSERT INTO users (name, email, password, age, gender, occupation, language, working_time, week_off, hobbies, preferred_relief_style, user_type) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
         if (isPostgres) query += ` RETURNING id`;
 
-        db.run(query, [name, email, hashedPassword, age, gender, occupation, language], function (err) {
+        db.run(query, [name, email, hashedPassword, age, gender, occupation, language, working_time, week_off, hobbies, preferred_relief_style, user_type], function (err) {
             if (err) {
                 // Determine constraint violation message based on DB type
                 const msg = err.message || "";
@@ -199,7 +259,12 @@ app.post('/api/auth/login', (req, res) => {
                     wellness_goals: user.wellness_goals,
                     emergency_contact: user.emergency_contact,
                     location: user.location,
-                    blood_group: user.blood_group
+                    blood_group: user.blood_group,
+                    working_time: user.working_time,
+                    week_off: user.week_off,
+                    hobbies: user.hobbies,
+                    preferred_relief_style: user.preferred_relief_style,
+                    user_type: user.user_type
                 }
             });
         });
@@ -212,7 +277,8 @@ app.put('/api/auth/profile', authenticateToken, (req, res) => {
     const {
         name, age, gender, occupation,
         bio, wellness_goals, emergency_contact,
-        language, location, blood_group
+        language, location, blood_group,
+        working_time, week_off, hobbies, preferred_relief_style, user_type
     } = req.body;
     const userId = req.user.id;
 
@@ -220,19 +286,21 @@ app.put('/api/auth/profile', authenticateToken, (req, res) => {
         `UPDATE users SET 
             name = ?, age = ?, gender = ?, occupation = ?, 
             bio = ?, wellness_goals = ?, emergency_contact = ?, 
-            language = ?, location = ?, blood_group = ? 
+            language = ?, location = ?, blood_group = ?,
+            working_time = ?, week_off = ?, hobbies = ?, preferred_relief_style = ?, user_type = ?
          WHERE id = ?`,
         [
             name, age, gender, occupation,
             bio, wellness_goals, emergency_contact,
             language, location, blood_group,
+            working_time, week_off, hobbies, preferred_relief_style, user_type,
             userId
         ],
         function (err) {
             if (err) return res.status(500).json({ error: err.message });
 
             // Return updated user object
-            db.get(`SELECT id, name, email, age, gender, occupation, bio, wellness_goals, emergency_contact, language, location, blood_group FROM users WHERE id = ?`, [userId], (err, row) => {
+            db.get(`SELECT id, name, email, age, gender, occupation, bio, wellness_goals, emergency_contact, language, location, blood_group, working_time, week_off, hobbies, preferred_relief_style, user_type FROM users WHERE id = ?`, [userId], (err, row) => {
                 if (err) return res.status(500).json({ error: err.message });
                 res.json({ user: row, message: "Profile updated successfully" });
             });
@@ -256,6 +324,11 @@ app.get('/api/init', async (req, res) => {
                 age INTEGER,
                 gender TEXT,
                 occupation TEXT,
+                working_time TEXT,
+                week_off TEXT,
+                hobbies TEXT,
+                preferred_relief_style TEXT,
+                user_type TEXT,
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             );`,
             `CREATE TABLE IF NOT EXISTS assessments (
@@ -301,18 +374,28 @@ app.post('/api/assessment', authenticateToken, (req, res) => {
         const { round1_score, round2_score, answers } = req.body;
         const userId = req.user.id;
 
-        // Use the robust analysis engine
-        const analysis = generateAnalysis(round1_score, round2_score, answers);
+        // Fetch full user profile to pass to generator
+        db.get(`SELECT * FROM users WHERE id = ?`, [userId], (err, row) => {
+            if (err) return res.status(500).json({ error: "Failed to load user profile" });
 
-        const isPostgres = !!process.env.DATABASE_URL;
-        let query = `INSERT INTO assessments (user_id, round1_score, round2_score, answers, analysis) VALUES (?, ?, ?, ?, ?)`;
-        if (isPostgres) query += ` RETURNING id`;
+            // Use the robust analysis engine
+            const analysis = generateAnalysis(round1_score, round2_score, answers, row || {});
 
-        db.run(query, [userId, round1_score, round2_score, JSON.stringify(answers), analysis], function (err) {
-            if (err) return res.status(500).json({ error: err.message });
-            res.json({ message: 'Assessment saved', id: this.lastID, analysis });
+            const isPostgres = !!process.env.DATABASE_URL;
+            let query = `INSERT INTO assessments (user_id, round1_score, round2_score, answers, analysis) VALUES (?, ?, ?, ?, ?)`;
+            if (isPostgres) query += ` RETURNING id`;
+
+            db.run(query, [userId, round1_score, round2_score, JSON.stringify(answers), analysis], function (err) {
+                if (err) {
+                     console.error("DEBUG: db.run error:", err);
+                     return res.status(500).json({ error: err.message });
+                }
+                console.log("DEBUG: Assessment saved successfully!", this.lastID);
+                res.json({ message: 'Assessment saved', id: this.lastID, analysis });
+            });
         });
     } catch (e) {
+        console.error("DEBUG: Catch block in /api/assessment:", e);
         res.status(500).json({ error: "Submission failed" });
     }
 });
@@ -337,57 +420,52 @@ const openai = new OpenAI({
 app.post('/api/chat', authenticateToken, async (req, res) => {
     const { message } = req.body;
     const userId = req.user.id;
-
     let botResponse = "";
 
     try {
-        const openaiKey = process.env.OPENAI_API_KEY;
-        const groqKey = process.env.GROQ_API_KEY;
+        const gemKey = process.env.GEMINI_API_KEY;
+        const systemPrompt = "You are MindWell, a stress support and lifestyle guidance assistant for students and employees. Your goal is to provide supportive, non-judgmental advice, suggest hobby-based activities, give practical day-to-day stress relief ideas, and explain stress reports in simple terms. Avoid medical diagnosis tone, medication suggestions, or clinical treatment advice. Only if stress seems persistently high, gently suggest consulting a doctor or mental health professional. Keep your responses concise and supportive.";
 
-        if (groqKey && (groqKey.startsWith('gsk_'))) {
-            // --- USE FREE GROQ ---
-            const groqOpenai = new OpenAI({
-                apiKey: groqKey,
-                baseURL: "https://api.groq.com/openai/v1"
-            });
-
-            const completion = await groqOpenai.chat.completions.create({
-                messages: [
-                    { role: "system", content: "You are MindWell, a compassionate mental health AI. Provide supportive, non-judgmental advice. You are NOT a doctor. If the user is in danger, provide crisis resources. Keep responses concise and empathetic." },
-                    { role: "user", content: message }
-                ],
-                model: "llama-3.3-70b-versatile",
-            });
-            botResponse = completion.choices[0].message.content;
-
-        } else if (openaiKey && !openaiKey.includes('mock-key')) {
-            // --- USE OPENAI ---
-            const activeOpenai = new OpenAI({ apiKey: openaiKey });
-            const completion = await activeOpenai.chat.completions.create({
-                messages: [
-                    { role: "system", content: "You are MindWell, a compassionate and professional mental health AI assistant. Your goal is to provide supportive, non-judgmental, and evidence-based advice. You are NOT a replacement for a doctor. If a user expresses severe distress or self-harm intent, provide crisis resources immediately. Keep responses concise, empathetic, and actionable." },
-                    { role: "user", content: message }
-                ],
-                model: "gpt-3.5-turbo",
-            });
-            botResponse = completion.choices[0].message.content;
+        if (gemKey && gemKey.startsWith('AIzaSy')) {
+            const { GoogleGenerativeAI } = require('@google/generative-ai');
+            const genAI = new GoogleGenerativeAI(gemKey);
+            
+            // Available models found: 'models/gemini-2.0-flash'
+            const modelsToTry = ['gemini-2.0-flash', 'gemini-1.5-flash'];
+            let lastErr = "";
+            
+            for (const modelName of modelsToTry) {
+                try {
+                    const model = genAI.getGenerativeModel({ model: modelName });
+                    const result = await model.generateContent(`${systemPrompt}\n\nUser: ${message}\nMindWell:`);
+                    const responseText = result.response.text();
+                    if (responseText) {
+                        botResponse = responseText;
+                        break;
+                    }
+                } catch (e) {
+                    lastErr = e.message;
+                    continue;
+                }
+            }
+            if (!botResponse) throw new Error("Gemini models failed: " + lastErr);
         } else {
-            botResponse = "I'm currently in offline mode. Please configure a GROQ_API_KEY (Free) or OPENAI_API_KEY in Vercel settings to unlock my full potential!";
+            throw new Error("Gemini API key missing");
         }
     } catch (err) {
-        console.error("AI Service Error:", err.message);
-
-        if (err.message.includes('429') || err.message.includes('quota')) {
-            // Compassionate Fallback instead of raw error
-            botResponse = "I'm currently moving at a slower pace than usual, but I'm still here for you. Remember that taking things one step at a time is a victory in itself. How are you feeling in this moment?";
+        console.error("Gemini Route Error:", err.message);
+        const lower = message.toLowerCase();
+        if (lower.includes('stress') || lower.includes('anxious') || lower.includes('help')) {
+            botResponse = "I hear that you're feeling a bit overwhelmed. It's really important to take a moment for yourself—try a deep breathing exercise or step outside for a short 5-minute walk. I'm here to listen.";
         } else {
-            botResponse = `MindWell is temporarily unavailable (Error: ${err.message}). Please try again shortly.`;
+            botResponse = "Hello! I'm your MindWell assistant. How can I help you find more balance today?";
         }
     }
 
+    // Save to Database
     db.run(`INSERT INTO messages (user_id, content, sender) VALUES (?, ?, ?)`, [userId, message, 'user']);
     db.run(`INSERT INTO messages (user_id, content, sender) VALUES (?, ?, ?)`, [userId, botResponse, 'ai'], function (err) {
-        if (err) return res.status(500).json({ error: "Chat error" });
+        if (err) return res.status(500).json({ error: "Chat DB error" });
         res.json({ response: botResponse });
     });
 });

@@ -150,7 +150,7 @@ const Round1 = () => {
             <div className="max-w-2xl mx-auto">
                 <div className="bg-white rounded-3xl shadow-sm border border-gray-100 p-8 md:p-12">
                     {/* Page Title */}
-                    <h1 className="text-4xl font-bold text-gray-900 mb-6 text-center">Mental Health Assessment – Round 1</h1>
+                    <h1 className="text-4xl font-bold text-gray-900 mb-6 text-center">Stress Assessment Test – Round 1</h1>
 
                     <div className="flex items-center justify-between mb-8">
                         <span className="text-sm font-bold text-gray-400 uppercase tracking-widest">Question {currentStep + 1}/{questions.length}</span>

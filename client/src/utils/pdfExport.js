@@ -14,7 +14,7 @@ export const exportComprehensivePDF = async (record, user, chartImages = {}) => 
 
     const metrics = analysis.metrics || { total: 0, depression: 0, anxiety: 0, stress: 0, wellness: 0 };
     const insights = analysis.insights || analysis.details || [];
-    const suggestions = analysis.suggestions || [];
+    const suggestions = analysis.suggestions || analysis.recommendations || [];
 
     // Charts are now captured in the component and passed as base64 strings
     const { pieChart: pieChartImage, barChart: barChartImage } = chartImages;
@@ -45,7 +45,7 @@ export const exportComprehensivePDF = async (record, user, chartImages = {}) => 
 
     doc.setFontSize(12);
     doc.setFont(undefined, 'normal');
-    doc.text('Mental Health Predictor', pageWidth / 2, 23, { align: 'center' });
+    doc.text('Stress Analysis & Lifestyle Guidance', pageWidth / 2, 23, { align: 'center' });
 
     yPos = 45;
     doc.setTextColor(0, 0, 0);
@@ -53,7 +53,7 @@ export const exportComprehensivePDF = async (record, user, chartImages = {}) => 
     // Report Title
     doc.setFontSize(18);
     doc.setFont(undefined, 'bold');
-    doc.text('Mental Health Assessment Report', pageWidth / 2, yPos, { align: 'center' });
+    doc.text('Stress Assessment & Lifestyle Report', pageWidth / 2, yPos, { align: 'center' });
     yPos += 10;
 
     // Date and Time
@@ -82,7 +82,12 @@ export const exportComprehensivePDF = async (record, user, chartImages = {}) => 
         ['Native Language', user?.language || 'Not specified'],
         ['Location', user?.location || 'Not specified'],
         ['Blood Group', user?.blood_group || 'Not specified'],
-        ['Emergency Contact', user?.emergency_contact || 'Not specified']
+        ['Emergency Contact', user?.emergency_contact || 'Not specified'],
+        ['User Type', user?.user_type || 'Not specified'],
+        ['Working/Study Time', user?.working_time || 'Not specified'],
+        ['Week-off/Free Day', user?.week_off || 'Not specified'],
+        ['Hobbies/Interests', user?.hobbies || 'Not specified'],
+        ['Relief Style', user?.preferred_relief_style || 'Not specified']
     ];
 
     autoTable(doc, {
@@ -147,7 +152,7 @@ export const exportComprehensivePDF = async (record, user, chartImages = {}) => 
     doc.setFontSize(14);
     doc.setFont(undefined, 'bold');
     doc.setTextColor(74, 129, 128);
-    doc.text('Detailed Mental Health Metrics', margin, yPos);
+    doc.text('Detailed Stress & Lifestyle Metrics', margin, yPos);
     yPos += 8;
 
     const metricsTableData = [
@@ -263,7 +268,7 @@ export const exportComprehensivePDF = async (record, user, chartImages = {}) => 
     doc.setFontSize(14);
     doc.setFont(undefined, 'bold');
     doc.setTextColor(74, 129, 128);
-    doc.text('Clinical Assessment Summary', margin, yPos);
+    doc.text('Analysis Summary', margin, yPos);
     yPos += 10;
 
     doc.setFontSize(10);
@@ -283,7 +288,7 @@ export const exportComprehensivePDF = async (record, user, chartImages = {}) => 
         doc.setFontSize(14);
         doc.setFont(undefined, 'bold');
         doc.setTextColor(74, 129, 128);
-        doc.text('Technical Health Insights', margin, yPos);
+        doc.text('Lifestyle & Stress Insights', margin, yPos);
         yPos += 10;
 
         doc.setFontSize(10);
@@ -335,8 +340,8 @@ export const exportComprehensivePDF = async (record, user, chartImages = {}) => 
         doc.setFontSize(8);
         doc.setFont(undefined, 'italic');
         doc.setTextColor(128, 128, 128);
-        doc.text(`MindWell Mental Health Report - Page ${i} of ${pageCount}`, pageWidth / 2, pageHeight - 10, { align: 'center' });
-        doc.text('Confidential Medical Document', margin, pageHeight - 10);
+        doc.text(`MindWell Stress & Lifestyle Report - Page ${i} of ${pageCount}`, pageWidth / 2, pageHeight - 10, { align: 'center' });
+        doc.text('Confidential User Report', margin, pageHeight - 10);
     }
     if (!doc.internal.pages || doc.internal.pages.length === 0) {
         throw new Error('PDF generation failed');

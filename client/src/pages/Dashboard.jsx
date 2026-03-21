@@ -31,10 +31,10 @@ const Dashboard = () => {
         { name: 'Rest', value: 15, fill: '#CBD5E1' },
     ];
 
-    const medicalQuotes = [
-        { text: "Mental health is not a destination, but a process. It's about how you drive, not where you're going.", author: "Clinical Review" },
+    const wellnessQuotes = [
+        { text: "Mental wellness is not a destination, but a process. It's about how you drive, not where you're going.", author: "Wellness Review" },
         { text: "Self-care is how you take your power back.", author: "Wellness Protocol" },
-        { text: "The greatest wealth is health. Mental health is the foundation of clinical recovery.", author: "Health Systems" }
+        { text: "The greatest wealth is health. Mental wellbeing is the foundation of overall recovery.", author: "Health Systems" }
     ];
 
     return (
@@ -46,7 +46,7 @@ const Dashboard = () => {
                     <div className="absolute top-0 right-0 w-64 h-64 bg-slate-50 rounded-full -mr-32 -mt-32 -z-0"></div>
 
                     <div className="relative z-10 flex-1">
-                        <span className="inline-block px-3 py-1 bg-teal-50 text-[#4A8180] text-[12px] font-bold uppercase tracking-widest rounded-md mb-4 border border-teal-100">Patient Overview</span>
+                        <span className="inline-block px-3 py-1 bg-teal-50 text-[#4A8180] text-[12px] font-bold uppercase tracking-widest rounded-md mb-4 border border-teal-100">User Overview</span>
                         <h2 className="text-6xl font-bold text-slate-900 tracking-tight mb-4 flex items-center gap-3">
                             <span className="opacity-80 font-semibold">{getGreeting()},</span>
                             <span className="italic" style={{ fontFamily: "'Playfair Display', serif" }}>
@@ -54,7 +54,7 @@ const Dashboard = () => {
                             </span>
                         </h2>
                         <p className="text-slate-500 text-[19px] font-medium max-w-2xl leading-relaxed">
-                            Your comprehensive mental health report and clinical analysis are now ready. Based on <span className="text-slate-700 font-bold">{history.length} documented assessments</span> in your history, your longitudinal data suggests a sustained positive shift in emotional stability.
+                            Your comprehensive lifestyle and stress analysis are now ready. Based on <span className="text-slate-700 font-bold">{history.length} documented assessments</span> in your history, your longitudinal data suggests a sustained positive shift in emotional stability.
                         </p>
                         <div className="flex flex-wrap gap-4 mt-8">
                             <Link to="/round1" className="bg-[#4A8180] text-white px-10 py-4 rounded-2xl font-bold text-xl hover:bg-[#3d6b6a] transition-all shadow-xl shadow-teal-900/20 flex items-center gap-3">
@@ -75,7 +75,7 @@ const Dashboard = () => {
                             </div>
                             <div>
                                 <p className="text-[11px] font-bold text-slate-400 uppercase tracking-[0.2em] leading-none mb-3">Current Protocol</p>
-                                <p className="text-2xl font-bold text-slate-900 leading-tight">Diagnostic Tier 1</p>
+                                <p className="text-2xl font-bold text-slate-900 leading-tight">Wellness Tier 1</p>
                                 <div className="mt-3 inline-flex items-center gap-2 px-3 py-1 bg-emerald-50 rounded-full">
                                     <div className="w-1.5 h-1.5 rounded-full bg-emerald-500"></div>
                                     <p className="text-[10px] text-emerald-600 font-bold uppercase tracking-wider">Status: Operational</p>
@@ -125,7 +125,7 @@ const Dashboard = () => {
                             </div>
 
                             <textarea
-                                placeholder="Enter clinical observations or personal notes for the AI assistant..."
+                                placeholder="Enter wellness observations or personal notes for the AI assistant..."
                                 className="w-full bg-slate-50 border border-slate-200 rounded-xl p-6 text-lg font-bold text-slate-900 outline-none focus:ring-4 ring-slate-100 h-32 transition-all resize-none placeholder:text-slate-400"
                             />
                             <div className="flex justify-end mt-4">
@@ -139,7 +139,7 @@ const Dashboard = () => {
                         <div className="bg-white rounded-3xl p-10 border border-slate-200 shadow-sm mb-8">
                             <h3 className="text-2xl font-bold text-slate-900 tracking-tight mb-6 flex items-center gap-2">
                                 <svg className="w-5 h-5 text-[#4A8180]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
-                                Upcoming Specialist Consultations
+                                Upcoming Consultations
                             </h3>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 {[
@@ -239,9 +239,9 @@ const Dashboard = () => {
                         <div className="bg-[#4A8180] rounded-3xl p-8 text-white text-center relative overflow-hidden shadow-lg shadow-teal-900/10">
                             <div className="absolute -left-2 -top-2 text-6xl font-serif text-white/10">“</div>
                             <p className="text-lg font-semibold italic mb-4 relative z-10 leading-relaxed">
-                                {medicalQuotes[Math.floor(Math.random() * medicalQuotes.length)].text}
+                                {wellnessQuotes[Math.floor(Math.random() * wellnessQuotes.length)].text}
                             </p>
-                            <p className="text-[9px] font-black uppercase tracking-widest text-white/60">Source: Clinical Registry</p>
+                            <p className="text-[9px] font-black uppercase tracking-widest text-white/60">Source: Wellness Registry</p>
                         </div>
 
                     </div>

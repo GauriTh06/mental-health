@@ -65,7 +65,7 @@ const Home = () => {
                             <span className="text-[#2D4F4E]">Heal <br />Together</span>
                         </h1>
                         <p className="text-2xl text-gray-700 mb-12 max-w-2xl leading-relaxed font-medium">
-                            Empowering mental wellness through scientifically validated AI assessments and a supportive clinical network. Your journey to clarity starts here.
+                            Empowering mental wellness through scientifically validated AI assessments and a supportive wellness network. Your journey to clarity starts here.
                         </p>
                         <div className="flex flex-wrap gap-6">
                             <Link to="/register" className="bg-brand-primary text-white px-12 py-6 rounded-[2.5rem] font-black text-xl shadow-2xl hover:bg-brand-primary-hover transition-all transform hover:-translate-y-1">
@@ -98,7 +98,7 @@ const Home = () => {
                 <div className="max-w-7xl mx-auto px-6">
                     <div className="text-center max-w-3xl mx-auto mb-24 reveal">
                         <h2 className="text-5xl lg:text-6xl font-black text-gray-900 mb-8 leading-tight">Cutting-edge Mental Health Tools</h2>
-                        <p className="text-2xl text-gray-500 font-medium">Our platform combines clinical excellence with advanced technology to provide a comprehensive support system.</p>
+                        <p className="text-2xl text-gray-500 font-medium">Our platform combines wellness excellence with advanced technology to provide a comprehensive support system.</p>
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
@@ -107,7 +107,7 @@ const Home = () => {
                                 <img src={aiIcon} alt="AI Icon" className="w-14 h-14" />
                             </div>
                             <h3 className="text-3xl font-black mb-6 text-gray-900">Predictive AI Analysis</h3>
-                            <p className="text-xl text-gray-500 leading-relaxed mb-8 flex-1">Our AI models detect patterns and provide early warnings for mental health distress based on clinical assessments.</p>
+                            <p className="text-xl text-gray-500 leading-relaxed mb-8 flex-1">Our AI models detect patterns and provide early warnings for mental health distress based on stress assessments.</p>
                             <Link to="/register" className="text-brand-primary font-black text-lg flex items-center gap-3 group-hover:gap-4 transition-all">
                                 Learn more <span>&rarr;</span>
                             </Link>

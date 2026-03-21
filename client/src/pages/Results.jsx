@@ -107,10 +107,10 @@ const Results = () => {
     );
 
     if (history.length === 0) return (
-        <DashboardLayout title="Mental Health Dashboard">
+        <DashboardLayout title="Stress & Lifestyle Dashboard">
             <div className="max-w-4xl mx-auto mt-20 text-center p-12 bg-white rounded-2xl shadow-sm border border-slate-100">
                 <h3 className="text-4xl font-semibold text-slate-800 mb-4">No Assessment Data Found</h3>
-                <p className="text-lg text-slate-500 mb-8">Please complete your initial and secondary assessments to generate your clinical dashboard.</p>
+                <p className="text-lg text-slate-500 mb-8">Please complete your initial and secondary assessments to generate your analytics dashboard.</p>
                 <a href="/round1" className="bg-[#4A8180] text-white px-8 py-3 rounded-lg font-medium hover:bg-[#3A6665] transition-colors">Start First Round</a>
             </div>
         </DashboardLayout>
@@ -123,6 +123,7 @@ const Results = () => {
 
     const metrics = analysis.metrics || { total: 0, depression: 0, anxiety: 0, stress: 0, wellness: 0 };
     const insights = analysis.insights || analysis.details || [];
+    const suggestions = analysis.suggestions || analysis.recommendations || [];
 
     // Global stats for timeline
     const timelineData = [...history].reverse().map((r, i) => {
@@ -147,13 +148,13 @@ const Results = () => {
     ].filter(d => d.value > 0);
 
     return (
-        <DashboardLayout title="Clinical Diagnostics Dashboard">
+        <DashboardLayout title="Stress & Lifestyle Analytics Dashboard">
             <div className="max-w-[1600px] mx-auto space-y-6 text-slate-900">
 
                 {/* TOP HEADER / SELECTOR */}
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-[#4A6072] p-4 rounded-xl text-white shadow-md">
                     <div>
-                        <h2 className="text-2xl font-bold tracking-tight uppercase">Mental Health Analytics Dashboard - {new Date(record.created_at).getFullYear()} Session</h2>
+                        <h2 className="text-2xl font-bold tracking-tight uppercase">Stress & Lifestyle Analytics Dashboard - {new Date(record.created_at).getFullYear()} Session</h2>
                         <p className="text-base opacity-80 font-medium">Session Record #{history.length - selectedIdx} | {new Date(record.created_at).toLocaleDateString()}</p>
                     </div>
                     <div className="flex items-center gap-3">
@@ -248,7 +249,7 @@ const Results = () => {
                         {/* CHART ROW 2 */}
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div ref={radarChartRef} className="bg-white p-6 rounded-xl shadow-sm border border-slate-100">
-                                <h4 className="text-base font-bold text-slate-400 uppercase tracking-widest mb-6 border-b pb-2">Psychological Spectrum Radar</h4>
+                                <h4 className="text-base font-bold text-slate-400 uppercase tracking-widest mb-6 border-b pb-2">Stress & Wellness Radar</h4>
                                 <div className="h-56">
                                     <ResponsiveContainer width="100%" height="100%">
                                         <RadarChart cx="50%" cy="50%" outerRadius="70%" data={categoryData}>
@@ -261,7 +262,7 @@ const Results = () => {
                                 </div>
                             </div>
                             <div className="bg-white p-6 rounded-xl shadow-sm border border-slate-100 flex flex-col justify-center overflow-hidden">
-                                <h4 className="text-base font-bold text-slate-400 uppercase tracking-widest mb-4 border-b pb-2">Diagnostic Conclusion</h4>
+                                <h4 className="text-base font-bold text-slate-400 uppercase tracking-widest mb-4 border-b pb-2">Analysis Summary</h4>
                                 <div className="p-4 bg-slate-50 rounded-lg border border-slate-100">
                                     <p className="text-lg font-bold text-slate-800 leading-relaxed mb-2 opacity-90 italic">"{analysis.summary}"</p>
                                     <div className="h-1.5 w-full bg-slate-200 rounded-full mt-4 overflow-hidden">
@@ -279,7 +280,7 @@ const Results = () => {
                         <div className="bg-[#1e293b] text-white p-8 rounded-xl shadow-lg h-full border-t-4 border-[#4A8180]">
                             <h4 className="text-[12px] font-black uppercase tracking-[0.3em] text-[#4A8180] mb-8 flex items-center gap-3">
                                 <span className="w-4 h-4 rounded-full border border-[#4A8180] flex items-center justify-center text-[8px]">!</span>
-                                Technical Health Insights
+                                Lifestyle & Stress Insights
                             </h4>
                             <div className="space-y-5">
                                 {insights.map((insight, i) => (
@@ -292,21 +293,38 @@ const Results = () => {
                                     </div>
                                 ))}
                                 {insights.length === 0 && (
-                                    <p className="text-base italic opacity-50">Detailed clinical parameters are currently within normal baseline variation.</p>
+                                    <p className="text-base italic opacity-50">Stress levels and parameters are currently within normal bounds.</p>
                                 )}
                             </div>
 
                             {/* CONDITIONAL CTA */}
                             {metrics.total >= 80 && (
                                 <div className="mt-12 p-5 bg-[#4A8180]/10 rounded-xl border border-[#4A8180]/20">
-                                    <p className="text-[10px] font-black uppercase tracking-widest text-[#4A8180] mb-2">Notice of Criticality</p>
-                                    <p className="text-xs leading-relaxed mb-6 font-medium text-slate-300">The current metric cluster indicates high-risk markers. Professional clinical oversight is recommended.</p>
+                                    <p className="text-[10px] font-black uppercase tracking-widest text-[#4A8180] mb-2">Notice of High Stress</p>
+                                    <p className="text-xs leading-relaxed mb-6 font-medium text-slate-300">The current metric cluster indicates high stress markers. Professional consultation or medical support is recommended.</p>
                                     <button
                                         onClick={() => window.location.href = '/doctors'}
                                         className="w-full bg-[#4A8180] text-white py-3 rounded-lg font-bold text-[12px] uppercase tracking-[0.2em] hover:bg-[#3A6665] transition-all"
                                     >
-                                        Consult Specialist
+                                        Consult specialist / Seek Support
                                     </button>
+                                </div>
+                            )}
+
+                            {/* PERSIONALIZED RECOMMENDATIONS SECTION (HOBBY-BASED) */}
+                            {suggestions.length > 0 && (
+                                <div className="mt-8 pt-8 border-t border-slate-700/50">
+                                    <h4 className="text-[12px] font-black uppercase tracking-[0.3em] text-[#10b981] mb-6 flex items-center gap-3">
+                                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                                        Personalized Recommendations
+                                    </h4>
+                                    <div className="space-y-4">
+                                        {suggestions.map((suggestion, i) => (
+                                            <div key={i} className="bg-white/5 p-4 rounded-xl border border-white/10 hover:bg-white/10 transition-all">
+                                                <p className="text-sm font-semibold text-white/90 leading-relaxed">{suggestion}</p>
+                                            </div>
+                                        ))}
+                                    </div>
                                 </div>
                             )}
                         </div>
@@ -317,7 +335,7 @@ const Results = () => {
                 {/* BOTTOM HISTORY TICKER (Table style) */}
                 <div className="bg-white rounded-xl shadow-sm border border-slate-100 overflow-hidden">
                     <div className="p-4 bg-slate-50 border-b border-slate-100 flex justify-between items-center">
-                        <h4 className="text-[12px] font-black uppercase tracking-[0.2em] text-slate-400">Historical Diagnostic Index</h4>
+                        <h4 className="text-[12px] font-black uppercase tracking-[0.2em] text-slate-400">Historical Analysis Index</h4>
                         <span className="text-[12px] font-bold text-slate-400 italic">Total Records: {history.length}</span>
                     </div>
                     <div className="overflow-x-auto">
@@ -327,7 +345,7 @@ const Results = () => {
                                     <th className="px-6 py-4">Report ID</th>
                                     <th className="px-6 py-4">Date Logged</th>
                                     <th className="px-6 py-4">Distress Score</th>
-                                    <th className="px-6 py-4">Clinical Impression</th>
+                                    <th className="px-6 py-4">Summary Impression</th>
                                     <th className="px-6 py-4">Action</th>
                                 </tr>
                             </thead>

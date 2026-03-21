@@ -86,6 +86,11 @@ const userTableQuery = `
         language TEXT,
         location TEXT,
         blood_group TEXT,
+        working_time TEXT,
+        week_off TEXT,
+        hobbies TEXT,
+        preferred_relief_style TEXT,
+        user_type TEXT,
         created_at ${isPostgres ? 'TIMESTAMP' : 'DATETIME'} DEFAULT CURRENT_TIMESTAMP
     );
 `;
@@ -96,7 +101,12 @@ const migrationQueries = [
     `ALTER TABLE users ADD COLUMN IF NOT EXISTS emergency_contact TEXT;`,
     `ALTER TABLE users ADD COLUMN IF NOT EXISTS language TEXT;`,
     `ALTER TABLE users ADD COLUMN IF NOT EXISTS location TEXT;`,
-    `ALTER TABLE users ADD COLUMN IF NOT EXISTS blood_group TEXT;`
+    `ALTER TABLE users ADD COLUMN IF NOT EXISTS blood_group TEXT;`,
+    `ALTER TABLE users ADD COLUMN IF NOT EXISTS working_time TEXT;`,
+    `ALTER TABLE users ADD COLUMN IF NOT EXISTS week_off TEXT;`,
+    `ALTER TABLE users ADD COLUMN IF NOT EXISTS hobbies TEXT;`,
+    `ALTER TABLE users ADD COLUMN IF NOT EXISTS preferred_relief_style TEXT;`,
+    `ALTER TABLE users ADD COLUMN IF NOT EXISTS user_type TEXT;`
 ];
 
 if (isPostgres) {

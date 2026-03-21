@@ -17,7 +17,12 @@ const Profile = () => {
         emergency_contact: user?.emergency_contact || '',
         language: user?.language || '',
         location: user?.location || '',
-        blood_group: user?.blood_group || ''
+        blood_group: user?.blood_group || '',
+        working_time: user?.working_time || '',
+        week_off: user?.week_off || '',
+        hobbies: user?.hobbies || '',
+        preferred_relief_style: user?.preferred_relief_style || '',
+        user_type: user?.user_type || 'Student'
     });
     const [message, setMessage] = useState('');
     const [loading, setLoading] = useState(false);
@@ -106,6 +111,11 @@ const Profile = () => {
                                 { label: 'Full Name', name: 'name', type: 'text' },
                                 { label: 'Age', name: 'age', type: 'number' },
                                 { label: 'Occupation', name: 'occupation', type: 'text' },
+                                { label: 'User Type', name: 'user_type', type: 'select', options: ['Student', 'Employee', 'Other'] },
+                                { label: 'Working/Study Time', name: 'working_time', type: 'text' },
+                                { label: 'Week-off', name: 'week_off', type: 'text' },
+                                { label: 'Hobbies', name: 'hobbies', type: 'text' },
+                                { label: 'Relief Style', name: 'preferred_relief_style', type: 'text' },
                                 { label: 'Native Place', name: 'location', type: 'text' },
                                 { label: 'Language', name: 'language', type: 'text' },
                                 { label: 'Blood Group', name: 'blood_group', type: 'text' },
@@ -113,7 +123,13 @@ const Profile = () => {
                             ].map((field) => (
                                 <div key={field.name} className="space-y-3">
                                     <label className="text-sm font-semibold text-slate-600 uppercase tracking-wide ml-2">{field.label}</label>
-                                    <input name={field.name} type={field.type} value={formData[field.name]} onChange={handleChange} className="w-full bg-slate-100 border border-slate-200 rounded-2xl p-4 text-xl font-medium text-slate-950 outline-none focus:ring-8 ring-[#4A8180]/5 transition-all" />
+                                    {field.type === 'select' ? (
+                                        <select name={field.name} value={formData[field.name]} onChange={handleChange} className="w-full bg-slate-100 border border-slate-200 rounded-2xl p-4 text-xl font-medium text-slate-950 outline-none focus:ring-8 ring-[#4A8180]/5 transition-all appearance-none">
+                                            {field.options.map(opt => <option key={opt} value={opt}>{opt}</option>)}
+                                        </select>
+                                    ) : (
+                                        <input name={field.name} type={field.type} value={formData[field.name]} onChange={handleChange} className="w-full bg-slate-100 border border-slate-200 rounded-2xl p-4 text-xl font-medium text-slate-950 outline-none focus:ring-8 ring-[#4A8180]/5 transition-all" />
+                                    )}
                                 </div>
                             ))}
 
@@ -155,6 +171,11 @@ const Profile = () => {
                                 <InfoBlock label="Age" value={user?.age} icon={<svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>} />
                                 <InfoBlock label="Gender" value={user?.gender} icon={<svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>} />
                                 <InfoBlock label="Occupation" value={user?.occupation} icon={<svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>} />
+                                <InfoBlock label="User Type" value={user?.user_type} icon={<svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" /></svg>} />
+                                <InfoBlock label="Working Time" value={user?.working_time} icon={<svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>} />
+                                <InfoBlock label="Week-off" value={user?.week_off} icon={<svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>} />
+                                <InfoBlock label="Hobbies" value={user?.hobbies} icon={<svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>} />
+                                <InfoBlock label="Relief Style" value={user?.preferred_relief_style} icon={<svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" /></svg>} />
                                 <InfoBlock label="Native Place" value={user?.location} icon={<svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>} />
                                 <InfoBlock label="Blood Group" value={user?.blood_group} icon={<svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" /></svg>} />
                                 <InfoBlock label="Language" value={user?.language || 'English'} icon={<svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M3 5h12M9 3v2m1.048 9.5a18.022 18.022 0 01-3.833-5.5M7 10.5a8.908 8.908 0 013.977-1.41m.496 5.5a18.02 18.02 0 003.833-5.5M14.5 10.5a8.908 8.908 0 00-3.977-1.41M3 21h12m-9-3c1.5-1.5 3-4.5 4-4.5s2.5 3 4 4.5" /></svg>} />

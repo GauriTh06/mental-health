@@ -105,7 +105,7 @@ const DashboardLayout = ({ children, title }) => {
                     <div className="flex items-center gap-6">
                         <div className="hidden sm:flex flex-col text-right">
                             <span className="text-lg font-bold text-slate-800">Account Verified</span>
-                            <span className="text-[12px] font-black text-[#4A8180] uppercase tracking-widest leading-none">Clinical Standard</span>
+                            <span className="text-[12px] font-black text-[#4A8180] uppercase tracking-widest leading-none">Wellness Standard</span>
                         </div>
                         <div className="w-10 h-10 rounded-full bg-[#4A8180]/10 flex items-center justify-center border border-[#4A8180]/20 text-[#4A8180] font-black cursor-pointer hover:bg-[#4A8180] hover:text-white transition-all">
                             U

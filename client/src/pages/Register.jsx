@@ -12,8 +12,12 @@ const Register = () => {
         password: '',
         age: '',
         gender: 'Male',
-        occupation: '',
-        language: '' // Native language field
+        language: '', // Native language field
+        working_time: '',
+        week_off: '',
+        hobbies: '',
+        preferred_relief_style: '',
+        user_type: 'Student', // default
     });
     const [error, setError] = useState('');
     const [validationErrors, setValidationErrors] = useState({});
@@ -80,8 +84,10 @@ const Register = () => {
 
         setLoading(true);
         try {
-            const response = await api.post('/auth/register', formData);
-            login(response.data); // Log the user in immediately after registration
+            await api.post('/auth/register', formData);
+            // Immediately login the user after successful registration
+            const loginResponse = await api.post('/auth/login', { email: formData.email, password: formData.password });
+            login(loginResponse.data); 
             navigate('/dashboard');
         } catch (err) {
             setError(err.response?.data?.error || 'Registration failed');
@@ -222,6 +228,37 @@ const Register = () => {
                             <div>
                                 <label className="block text-sm font-medium text-gray-700">Occupation</label>
                                 <input name="occupation" type="text" required value={formData.occupation} onChange={handleChange} className="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-xl shadow-sm focus:ring-brand-primary focus:border-brand-primary sm:text-sm" placeholder="Software Engineer" />
+                            </div>
+
+                            <div className="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700">User Type</label>
+                                    <select name="user_type" value={formData.user_type} onChange={handleChange} className="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-xl shadow-sm focus:ring-brand-primary focus:border-brand-primary sm:text-sm">
+                                        <option value="Student">Student</option>
+                                        <option value="Employee">Employee</option>
+                                        <option value="Other">Other</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700">Working / Study Time</label>
+                                    <input name="working_time" type="text" required value={formData.working_time} onChange={handleChange} className="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-xl shadow-sm focus:ring-brand-primary focus:border-brand-primary sm:text-sm" placeholder="e.g., 9 AM - 5 PM" />
+                                </div>
+                            </div>
+                            
+                            <div className="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700">Week-off / Free Day</label>
+                                    <input name="week_off" type="text" required value={formData.week_off} onChange={handleChange} className="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-xl shadow-sm focus:ring-brand-primary focus:border-brand-primary sm:text-sm" placeholder="e.g., Sunday" />
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700">Hobbies / Interests</label>
+                                    <input name="hobbies" type="text" required value={formData.hobbies} onChange={handleChange} className="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-xl shadow-sm focus:ring-brand-primary focus:border-brand-primary sm:text-sm" placeholder="e.g., Reading, Music" />
+                                </div>
+                            </div>
+
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700">Preferred Stress Relief Style (Optional)</label>
+                                <input name="preferred_relief_style" type="text" value={formData.preferred_relief_style} onChange={handleChange} className="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-xl shadow-sm focus:ring-brand-primary focus:border-brand-primary sm:text-sm" placeholder="e.g., Meditation, Walking" />
                             </div>
                         </div>
 

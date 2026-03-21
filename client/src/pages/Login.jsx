@@ -59,7 +59,7 @@ const Login = () => {
                     <img src="https://res.cloudinary.com/dxen0alt5/image/upload/v1769139755/logomindwell_oo6uaw.jpg" alt="MindWell Logo" className="w-24 h-24 rounded-3xl mx-auto mb-8 shadow-2xl border-4 border-white transform hover:scale-105 transition-transform" />
                     <h2 className="text-4xl font-extrabold text-gray-900 mb-4 tracking-tight">Welcome Back to MindWell</h2>
                     <p className="text-lg text-gray-500 max-w-md mx-auto leading-relaxed">
-                        Your professional space for mental health tracking and clinical insights.
+                        Your professional space for mental health tracking and wellness insights.
                     </p>
                 </div>
                 {/* Decorative Circles */}
