@@ -423,37 +423,25 @@ app.post('/api/chat', authenticateToken, async (req, res) => {
     let botResponse = "";
 
     try {
-        const gemKey = process.env.GEMINI_API_KEY;
+        const cohereKey = process.env.COHERE_API_KEY;
         const systemPrompt = "You are MindWell, a stress support and lifestyle guidance assistant for students and employees. Your goal is to provide supportive, non-judgmental advice, suggest hobby-based activities, give practical day-to-day stress relief ideas, and explain stress reports in simple terms. Avoid medical diagnosis tone, medication suggestions, or clinical treatment advice. Only if stress seems persistently high, gently suggest consulting a doctor or mental health professional. Keep your responses concise and supportive.";
 
-        if (gemKey && gemKey.startsWith('AIzaSy')) {
-            const { GoogleGenerativeAI } = require('@google/generative-ai');
-            const genAI = new GoogleGenerativeAI(gemKey);
+        if (cohereKey) {
+            const { CohereClient } = require('cohere-ai');
+            const cohere = new CohereClient({ token: cohereKey });
             
-            // Available models found: 'models/gemini-2.0-flash'
-            const modelsToTry = ['gemini-2.0-flash', 'gemini-1.5-flash'];
-            let lastErr = "";
-            
-            for (const modelName of modelsToTry) {
-                try {
-                    const model = genAI.getGenerativeModel({ model: modelName });
-                    const result = await model.generateContent(`${systemPrompt}\n\nUser: ${message}\nMindWell:`);
-                    const responseText = result.response.text();
-                    if (responseText) {
-                        botResponse = responseText;
-                        break;
-                    }
-                } catch (e) {
-                    lastErr = e.message;
-                    continue;
-                }
-            }
-            if (!botResponse) throw new Error("Gemini models failed: " + lastErr);
+            // Using a stable, versioned model name for high quality and reliability
+            const response = await cohere.chat({
+                message: message,
+                preamble: systemPrompt,
+                model: 'command-r-plus-08-2024'
+            });
+            botResponse = response.text;
         } else {
-            throw new Error("Gemini API key missing");
+            throw new Error("Cohere key missing");
         }
     } catch (err) {
-        console.error("Gemini Route Error:", err.message);
+        console.error("Chatbot Error:", err.message);
         const lower = message.toLowerCase();
         if (lower.includes('stress') || lower.includes('anxious') || lower.includes('help')) {
             botResponse = "I hear that you're feeling a bit overwhelmed. It's really important to take a moment for yourself—try a deep breathing exercise or step outside for a short 5-minute walk. I'm here to listen.";
