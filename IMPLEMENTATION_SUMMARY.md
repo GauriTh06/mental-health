@@ -121,6 +121,15 @@ This document summarizes all the updates made to the MindWell mental health appl
 - ✅ Title displayed at top of assessment card
 - ✅ Consistent styling with Round 1
 
+### 7. Database Migration & Connection Account ✓
+
+**Infrastructure Updates**
+- ✅ Migrated database connection to new Neon PostgreSQL account
+- ✅ Updated `DATABASE_URL` in `server/.env` with the new cloud endpoint
+- ✅ Verified successful connection and schema initialization
+- ✅ Tables `users`, `assessments`, and `messages` successfully created and validated
+- ✅ Updated `server/.env.example` to guide future configuration
+
 ## 📁 Files Modified
 
 ### Frontend (Client)
@@ -133,7 +142,9 @@ This document summarizes all the updates made to the MindWell mental health appl
 
 ### Backend (Server)
 1. `server/server.js` - Updated registration and login endpoints for language field
-2. `server/database.js` - Already had language field from previous migrations
+2. `server/database.js` - Database initialization and PostgreSQL adapter
+3. `server/.env` - Updated connection string (ignored by git)
+4. `server/.env.example` - Added DATABASE_URL placeholder
 
 ## 🎨 Design Consistency
 
