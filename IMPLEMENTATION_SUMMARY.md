@@ -1,7 +1,7 @@
 # MindWell Mental Health App - Implementation Summary
 
 ## Overview
-This document summarizes all the updates made to the MindWell mental health application based on the requirements provided.
+The document summarizes all the updates made to the MindWell mental health application based on the requirements provided.
 
 ## ✅ Implemented Features
 
